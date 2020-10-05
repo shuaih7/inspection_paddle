@@ -25,7 +25,8 @@ batch_acc = fluid.layers.accuracy(input=predict, label=label)
 opt = fluid.optimizer.AdamOptimizer()
 opt.minimize(avg_cost)
 #initialize
-place = fluid.CPUPlace()
+#place = fluid.CPUPlace()
+place = fluid.CUDAPlace(0)
 exe = fluid.Executor(place)
 #模型训练之前要对参数进行初始化，且只需执行一次初始化操作
 #stratup_program存储模型参数的初始化操作
