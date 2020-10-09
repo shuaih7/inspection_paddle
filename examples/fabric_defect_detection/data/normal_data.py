@@ -1,4 +1,4 @@
-import os, sys, cv2, json
+import os, cv2, json
 import numpy as np
 
 
@@ -6,7 +6,7 @@ class NormalData(object):
     def __init__(self, mask_path):
         self.mask_path = mask_path
         
-    def generate(self, fname, val=None, pos=0.5): # pos: posibility for generating the positive sample
+    def generate(self, fname, val=None, pos=0.6): # pos: posibility for generating the positive sample
         mask_file = os.path.join(self.mask_path, fname+"_json_mask.png")
         if val is NOne: val = np.random_uniform(0, 1)
         if val < pos: return self.generate_positive(mask_file)
