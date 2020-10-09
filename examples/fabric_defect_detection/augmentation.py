@@ -29,15 +29,13 @@ class ImageRandomDistort(object):
         if val is None: val = np.random_uniform(lower, upper)
         return ImageEnhance.Color(img).enhance(val)
         
-    def random_flip_left_right(self, img, val=False, pos=0.5):
-        if val: return img.transpose(Image.FLIP_LEFT_RIGHT)
-        else: val = np.random_uniform(0, 1)
+    def random_flip_left_right(self, img, val=None, pos=0.5):
+        if val is None: val = np.random_uniform(0, 1)
         if val < pos: return img.transpose(Image.FLIP_LEFT_RIGHT)
         else: return img
         
-    def random_flip_top_bottom(self, img, val=False, pos=0.5):
-        if val: return img.transpose(Image.FLIP_LEFT_RIGHT)
-        else: val = np.random_uniform(0, 1)
+    def random_flip_top_bottom(self, img, val=None, pos=0.5):
+        if val is None: val = np.random_uniform(0, 1)
         if val < pos: return img.transpose(Image.FLIP_TOP_BOTTOM)
         else: return img
         
@@ -49,12 +47,13 @@ class ImageRandomDistort(object):
         
 def pillow_test(img_file):
     img = Image.open(img_file)
-    #img_sub = img.crop([128,128,384,384])
-    #print(img_sub.size)
+    #img_sub = img.crop([128,128,512,512])
+    #plt.imshow(img_sub, cmap="gray")
+    
     aug = ImageRandomDistort()
     img_bright   = aug.random_brightness(img, 1.5)
     img_contrast = aug.random_contrast(img, 1.5)
-    img_flip     = aug.random_flip_top_bottom(img, True)
+    img_flip     = aug.random_flip_top_bottom(img, 0)
     plt.subplot(1,4,1), plt.imshow(img, cmap="gray"), plt.title("Original Image")
     plt.subplot(1,4,2), plt.imshow(img_bright, cmap="gray"), plt.title("Bright Image")
     plt.subplot(1,4,3), plt.imshow(img_contrast, cmap="gray"), plt.title("Contrast Image")
