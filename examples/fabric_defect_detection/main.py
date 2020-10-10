@@ -7,7 +7,7 @@ from data import train_generator, valid_generator
 
 #input层
 
-image = fluid.layers.data(name='pixel', shape=[3,224,224], dtype='float32')
+image = fluid.layers.data(name='pixel', shape=[1,224,224], dtype='float32')
 label = fluid.layers.data(name='label', shape=[1], dtype='int64')
 
 Model = ResNet(layers=50)
@@ -20,7 +20,7 @@ avg_cost = fluid.layers.mean(cost)
 batch_acc = fluid.layers.accuracy(input=fluid.layers.softmax(predict), label=label)
 
 # Optimizer
-opt = fluid.optimizer.AdamOptimizer(learning_rate=1e-3)
+opt = fluid.optimizer.AdamOptimizer(learning_rate=2e-4)
 opt.minimize(avg_cost)
 
 # # CPU Configurations
@@ -36,20 +36,20 @@ test_program=fluid.default_main_program().clone(for_test=True)
 exe.run(fluid.default_startup_program())
 
 # Load the pretrained weights
-pre_path = r"E:\Projects\Engine_Inspection\VGG16CAM\ResNet50\variable"
+pre_path = None #r"E:\Projects\Engine_Inspection\VGG16CAM\ResNet50\variable"
 try: 
     fluid.io.load_params(executor=exe,dirname=pre_path)
     print("Successfully loaded the pretrained weights.")
 except: print("Warning: The pretrained weights have not been loaded.")
 
 # Load the dataset
-batch_size = 32
+batch_size   = 32
 train_reader = paddle.batch(train_generator, batch_size=batch_size)
 test_reader  = paddle.batch(valid_generator, batch_size=batch_size)
-feeder=fluid.DataFeeder(place=place,feed_list=[image,label])
+feeder       = fluid.DataFeeder(place=place, feed_list=[image,label])
 
 # Create the logger
-log_path = r"E:\Projects\Engine_Inspection\VGG16CAM\ResNet50\log"
+log_path = r"E:\Projects\Fabric_Defect_Detection\model_proto\log"
 log_writer = LogWriter(log_path, sync_cycle=5)
 # 获取训练全部参数
 params_name = fluid.default_startup_program().global_block().all_parameters()[0].name
@@ -73,11 +73,11 @@ with log_writer.mode('test') as writer:
 ### For LogWriter information please refer to: https://blog.csdn.net/hua111hua/article/details/89422661
 
 # Training
-epoch_num = 10
-report_freq = 10
+epoch_num = 100
+report_freq = 1
 base_acc = 0.0
-model_save_path = r"E:\Projects\Engine_Inspection\VGG16CAM\ResNet50\model"
-var_save_path   = r"E:\Projects\Engine_Inspection\VGG16CAM\ResNet50\variable"
+model_save_path = r"E:\Projects\Fabric_Defect_Detection\model_proto\saved_model"
+var_save_path   = r"E:\Projects\Fabric_Defect_Detection\model_proto\saved_var"
 
 train_step, test_step = 0, 0
 for epoch_id in range(epoch_num):

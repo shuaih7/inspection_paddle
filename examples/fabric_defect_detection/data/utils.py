@@ -1,7 +1,51 @@
 import os, cv2, shutil, json
 import glob as gb
 import numpy as np
+from sklearn.utils import shuffle
 from skimage.measure import label, regionprops
+
+
+def write_into_txt(normal_path, aitex_path=None, save_path=None, save_name="List", is_shuffle=True):
+    normal_list = gb.glob(normal_path+r"/*.png")
+    if aitex_path is not None: aitex_list = gb.glob(aitex_path+r"/*.png")
+    else: aitex_list = []
+    
+    file_list   = normal_list + aitex_list
+    if is_shuffle: file_list = shuffle(file_list)
+    
+    txt_name = os.path.join(save_path, save_name+".txt")
+    with open(txt_name, "w") as f:
+        for fname in file_list:
+            _, temp_name = os.path.split(fname)
+            filename, _ = os.path.splitext(temp_name)
+            f.write(filename)
+            f.write("\n")
+        f.close()
+    
+    print("Done")
+    
+    
+def rgb_to_gray(path, save_path, suf=".png"):
+    img_list = gb.glob(path+r"/*"+suf)
+    
+    for img_file in img_list:
+        img = cv2.imread(img_file, cv2.IMREAD_GRAYSCALE)
+        _, filename = os.path.split(img_file)
+        cv2.imwrite(os.path.join(save_path,filename), img)
+        
+    print("Done")
+    
+    
+def channel_search(path, suf=".png"):
+    img_list = gb.glob(path+r"/*"+suf)
+    
+    for img_file in img_list:
+        img = cv2.imread(img_file, -1)
+        if img.shape[-1] in [2, 3, 4]: 
+            _, filename = os.path.split(img_file)
+            print(filename)
+            gray_img = cv2.imread(img_file, cv2.IMREAD_GRAYSCALE)
+            cv2.imwrite(filename, gray_img)
 
 
 def region_proposals():
@@ -80,5 +124,19 @@ def sort_images():
     
     
 if __name__ == "__main__":
-    region_proposals()
+    #path = r"E:\BaiduNetdiskDownload\fabric_defects\AITEX\NODefect_images\src"
+    #channel_search(path)
+    
+    #path = r"E:\Projects\Fabric_Defect_Detection\model_proto\dataset\x_valid"
+    #save_path = r"E:\Projects\Fabric_Defect_Detection\model_proto\dataset\x_valid"
+    #rgb_to_gray(path, save_path)
+    
+    # For training ...
+    # normal_path = r"E:\Projects\Fabric_Defect_Detection\model_proto\dataset\x_train"
+    # aitex_path  = r"E:\BaiduNetdiskDownload\fabric_defects\AITEX\NODefect_images\src"
+    # save_path   = r"C:\Users\shuai\Documents\GitHub\inspection_paddle\examples\fabric_defect_detection"
+    
+    normal_path = r"E:\Projects\Fabric_Defect_Detection\model_proto\dataset\random_valid_neg"
+    save_path   = r"C:\Users\shuai\Documents\GitHub\inspection_paddle\examples\fabric_defect_detection"
+    write_into_txt(normal_path, aitex_path=None, save_path=save_path, save_name="valid_neg", is_shuffle=True)
     

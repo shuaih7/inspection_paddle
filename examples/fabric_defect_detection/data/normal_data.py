@@ -8,14 +8,14 @@ class NormalData(object):
         
     def generate(self, fname, val=None, pos=0.6): # pos: posibility for generating the positive sample
         mask_file = os.path.join(self.mask_path, fname+"_json_mask.png")
-        if val is NOne: val = np.random_uniform(0, 1)
+        if val is None: val = np.random.uniform(0, 1)
         if val < pos: return self.generate_positive(mask_file)
         else: return self.generate_negative(mask_file)
         
     def generate_positive(self, mask_file):
         min_len = 256
         max_len = 512 # width, height of the mask image
-        pixel_thres = 500
+        pixel_thres = 1000
         
         # Set the length of the box edge
         length = np.random.randint(min_len, max_len) 

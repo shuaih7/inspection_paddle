@@ -1,7 +1,7 @@
 # https://blog.csdn.net/qq_36834959/article/details/79958446
 
-import os, sys, cv2
-from PIL import Image, ImageEnhance
+import os
+from PIL import Image, ImageOps, ImageEnhance
 import numpy as np
 from matplotlib import pyplot as plt
 
@@ -14,34 +14,55 @@ class ImageRandomDistort(object):
         pass
         
     def random_brightness(self, img, val=None, lower=0.9, upper=1.1):
-        if val is None: val = np.random_uniform(lower, upper)
+        if val is None: val = np.random.uniform(lower, upper)
         return ImageEnhance.Brightness(img).enhance(val)
         
     def random_contrast(self, img, val=None, lower=0.9, upper=1.1):
-        if val is None: val = np.random_uniform(lower, upper)
+        if val is None: val = np.random.uniform(lower, upper)
         return ImageEnhance.Contrast(img).enhance(val)
         
     def random_sharpness(self, img, val=None, lower=0.9, upper=1.1):
-        if val is None: val = np.random_uniform(lower, upper)
+        if val is None: val = np.random.uniform(lower, upper)
         return ImageEnhance.Sharpness(img).enhance(val)
         
     def random_color(self, img, val=None, lower=0.9, upper=1.1):
-        if val is None: val = np.random_uniform(lower, upper)
+        if val is None: val = np.random.uniform(lower, upper)
         return ImageEnhance.Color(img).enhance(val)
         
+    def random_rotate(self, img, val=None, pos=0.5): # Note: only for image while img_h == img_w
+        if val is None: val = np.random.uniform(0, 1)
+        if val < pos: 
+            kind = np.random.randint(0,2)
+            if kind == 0: img = img.rotate(90)
+            if kind == 1: img = img.rotate(270) 
+        return img
+        
+    def random_flip(self, img, val=None, pos=0.5):
+        if val is None: val = np.random.uniform(0, 1)
+        if val < pos: 
+            kind = np.random.randint(0,3)
+            if kind in [1,3]: img = self.random_flip_left_right(img, val=0)
+            if kind in [2,3]: img = self.random_flip_top_bottom(img, val=0) 
+        return img
+        
     def random_flip_left_right(self, img, val=None, pos=0.5):
-        if val is None: val = np.random_uniform(0, 1)
+        if val is None: val = np.random.uniform(0, 1)
         if val < pos: return img.transpose(Image.FLIP_LEFT_RIGHT)
         else: return img
         
     def random_flip_top_bottom(self, img, val=None, pos=0.5):
-        if val is None: val = np.random_uniform(0, 1)
+        if val is None: val = np.random.uniform(0, 1)
         if val < pos: return img.transpose(Image.FLIP_TOP_BOTTOM)
+        else: return img
+        
+    def random_invert(self, img, val=None, pos=0.3):
+        if val is None: val = np.random.uniform(0, 1)
+        if val < pos: return ImageOps.invert(img)
         else: return img
         
     def crop_and_resize(self, img, box=None, size=None, resample=Image.BILINEAR):
         if box is not None: img = img.crop(box)
-        if size is not None: img = Image.resize(size, resample=resample)
+        if size is not None: img = img.resize(size, resample=resample)
         return img
         
         
@@ -53,11 +74,13 @@ def pillow_test(img_file):
     aug = ImageRandomDistort()
     img_bright   = aug.random_brightness(img, 1.5)
     img_contrast = aug.random_contrast(img, 1.5)
-    img_flip     = aug.random_flip_top_bottom(img, 0)
-    plt.subplot(1,4,1), plt.imshow(img, cmap="gray"), plt.title("Original Image")
-    plt.subplot(1,4,2), plt.imshow(img_bright, cmap="gray"), plt.title("Bright Image")
-    plt.subplot(1,4,3), plt.imshow(img_contrast, cmap="gray"), plt.title("Contrast Image")
-    plt.subplot(1,4,4), plt.imshow(img_flip, cmap="gray"), plt.title("Flip Image")
+    img_flip     = aug.random_rotate(img, 0)
+    img_invert   = aug.random_invert(img, 0)
+    plt.subplot(1,5,1), plt.imshow(img, cmap="gray"), plt.title("Original Image")
+    plt.subplot(1,5,2), plt.imshow(img_bright, cmap="gray"), plt.title("Bright Image")
+    plt.subplot(1,5,3), plt.imshow(img_contrast, cmap="gray"), plt.title("Contrast Image")
+    plt.subplot(1,5,4), plt.imshow(img_flip, cmap="gray"), plt.title("Flip Image")
+    plt.subplot(1,5,5), plt.imshow(img_invert, cmap="gray"), plt.title("Invert Image")
     plt.show()
     
      
@@ -65,13 +88,4 @@ def pillow_test(img_file):
 if __name__ == "__main__":
     img_file = "sample.png"
     pillow_test(img_file)
-    #img = cv2.imread(img_file, -1)
-    #aug = ImageRandomDistort()
-    #img_aug = aug.random_brightness(img_file, 1.1)
-    #print(type(img_aug))
-    """
-    plt.subplot(1,2,1), plt.imshow(img, cmap="gray"), plt.title("Original Image")
-    plt.subplot(1,2,2), plt.imshow(img_aug, cmap="gray"), plt.title("Brightness 1.1")
-    plt.show()
-    """
 

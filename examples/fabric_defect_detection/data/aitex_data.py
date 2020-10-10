@@ -11,7 +11,7 @@ class AITEXData(object):
         
     def generate(self, fname, val=None, pos=0.2): # pos: posibility for generating the positive sample
         json_file = os.path.join(self.json_path, fname+".json")
-        if val is NOne: val = np.random_uniform(0, 1)
+        if val is None: val = np.random.uniform(0, 1)
         if val < pos: return self.generate_positive(json_file)
         else: return self.generate_negative(json_file)
         
@@ -69,9 +69,6 @@ class AITEXData(object):
         if len(defects) == 0: x0 = np.random.randint(left, img_w-length)
         else: 
             neg_blocks = self.generate_negative_block(left, defects)
-            print(neg_blocks)
-            print()
-            
             id = np.random.randint(0,len(neg_blocks))
             xmin, xmax = neg_blocks[id]
             x0 = np.random.randint(xmin, xmax-length)

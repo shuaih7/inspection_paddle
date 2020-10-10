@@ -10,12 +10,12 @@ from paddle.fluid.param_attr import ParamAttr
 __all__ = ["ResNet", "ResNet18", "ResNet34", "ResNet50", "ResNet101", "ResNet152"]
 
 train_parameters = {
-    "input_size": [3, 224, 224],
+    "input_size": [1, 224, 224],
     "input_mean": [0.485, 0.456, 0.406],
     "input_std": [0.229, 0.224, 0.225],
     "learning_strategy": {
         "name": "piecewise_decay",
-        "batch_size": 256,
+        "batch_size": 32,
         "epochs": [30, 60, 90],
         "steps": [0.1, 0.01, 0.001, 0.0001]
     }
@@ -70,10 +70,21 @@ class ResNet(object):
             pool = fluid.layers.pool2d(
                 input=conv, pool_size=7, pool_type='avg', global_pooling=True)
             stdv = 1.0 / math.sqrt(pool.shape[1] * 1.0)
+            """
+            fc0 = fluid.layers.fc(input=pool,
+                                  size=2048,
+                                  param_attr=fluid.param_attr.ParamAttr(
+                                      initializer=fluid.initializer.Uniform(-stdv, stdv)))
+            out = fluid.layers.fc(input=fc0,
+                                  size=class_dim,
+                                  param_attr=fluid.param_attr.ParamAttr(
+                                      initializer=fluid.initializer.Uniform(-stdv, stdv)))
+            """
             out = fluid.layers.fc(input=pool,
                                   size=class_dim,
                                   param_attr=fluid.param_attr.ParamAttr(
                                       initializer=fluid.initializer.Uniform(-stdv, stdv)))
+            
         else:
             for block in range(len(depth)):
                 for i in range(depth[block]):
@@ -88,10 +99,21 @@ class ResNet(object):
             pool = fluid.layers.pool2d(
                 input=conv, pool_size=7, pool_type='avg', global_pooling=True)
             stdv = 1.0 / math.sqrt(pool.shape[1] * 1.0)
+            """
+            fc0 = fluid.layers.fc(input=pool,
+                                  size=2048,
+                                  param_attr=fluid.param_attr.ParamAttr(
+                                      initializer=fluid.initializer.Uniform(-stdv, stdv)))
+            out = fluid.layers.fc(input=fc0,
+                                  size=class_dim,
+                                  param_attr=fluid.param_attr.ParamAttr(
+                                      initializer=fluid.initializer.Uniform(-stdv, stdv)))
+            """
             out = fluid.layers.fc(input=pool,
                                   size=class_dim,
                                   param_attr=fluid.param_attr.ParamAttr(
                                       initializer=fluid.initializer.Uniform(-stdv, stdv)))
+            
         return out
 
     def conv_bn_layer(self,
