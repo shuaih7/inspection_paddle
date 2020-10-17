@@ -35,18 +35,6 @@ def rgb_to_gray(path, save_path, suf=".png"):
         
     print("Done")
     
-    
-def channel_search(path, suf=".png"):
-    img_list = gb.glob(path+r"/*"+suf)
-    
-    for img_file in img_list:
-        img = cv2.imread(img_file, -1)
-        if img.shape[-1] in [2, 3, 4]: 
-            _, filename = os.path.split(img_file)
-            print(filename)
-            gray_img = cv2.imread(img_file, cv2.IMREAD_GRAYSCALE)
-            cv2.imwrite(filename, gray_img)
-
 
 def region_proposals():
     mask_file = r"E:\BaiduNetdiskDownload\fabric_defects\AITEX\def_masks\0001_002_00_mask.png"
@@ -90,14 +78,14 @@ def region_proposals():
 
 
 def image_label_check():
-    image_path = r"E:\BaiduNetdiskDownload\fabric_defects\AITEX\Defect_images\src"
-    label_path = r"E:\BaiduNetdiskDownload\fabric_defects\AITEX\Mask_images\src"
+    image_path = r"E:\Projects\Fabric_Defect_Detection\model_proto\dataset\ThreeGun\train"
+    label_path = r"E:\Projects\Fabric_Defect_Detection\model_proto\dataset\ThreeGun\train"
     
-    image_list = gb.glob(image_path + r"/*.png")
+    image_list = gb.glob(image_path + r"/*.bmp")
     for file in image_list:
         _, filename = os.path.split(file)
         fname, suf = os.path.splitext(filename)
-        label_file = os.path.join(label_path, fname+"_mask"+suf)
+        label_file = os.path.join(label_path, fname+".json")
         if not os.path.isfile(label_file): print("Could not find the mask file "+label_file)
         # else: 
             # shutil.copy(file, os.path.join(r"E:\BaiduNetdiskDownload\fabric_defects\AITEX\def_images", filename))
@@ -132,11 +120,12 @@ if __name__ == "__main__":
     #rgb_to_gray(path, save_path)
     
     # For training ...
-    # normal_path = r"E:\Projects\Fabric_Defect_Detection\model_proto\dataset\x_train"
+    # normal_path = r"E:\Projects\Fabric_Defect_Detection\model_proto\dataset\ThreeGun\train"
     # aitex_path  = r"E:\BaiduNetdiskDownload\fabric_defects\AITEX\NODefect_images\src"
     # save_path   = r"C:\Users\shuai\Documents\GitHub\inspection_paddle\examples\fabric_defect_detection"
     
-    normal_path = r"E:\Projects\Fabric_Defect_Detection\model_proto\dataset\random_valid_neg"
+    normal_path = r"E:\Projects\Fabric_Defect_Detection\model_proto\dataset\ThreeGun\pos_neg_train"
     save_path   = r"C:\Users\shuai\Documents\GitHub\inspection_paddle\examples\fabric_defect_detection"
-    write_into_txt(normal_path, aitex_path=None, save_path=save_path, save_name="valid_neg", is_shuffle=True)
+    write_into_txt(normal_path, aitex_path=None, save_path=save_path, save_name="train", is_shuffle=True)
+
     

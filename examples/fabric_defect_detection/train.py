@@ -10,7 +10,7 @@ from data import train_generator, valid_pos_generator, valid_neg_generator
 image = fluid.layers.data(name='image', shape=[1,224,224], dtype='float32')
 label = fluid.layers.data(name='label', shape=[1], dtype='int64')
 
-Model = ResNet(layers=34)
+Model = ResNet(layers=18)
 predict = fluid.layers.softmax(Model.net(input=image, class_dim=2))
 
 # Loss Function
@@ -30,7 +30,7 @@ avg_cost = fluid.layers.mean(cost)
 batch_acc = fluid.layers.accuracy(input=predict, label=label)
 """
 # Optimizer
-opt = fluid.optimizer.AdamOptimizer(learning_rate=1e-4)
+opt = fluid.optimizer.AdamOptimizer(learning_rate=1e-3)
 opt.minimize(avg_cost)
 
 # # CPU Configurations
