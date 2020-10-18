@@ -1,4 +1,4 @@
 # Fabric Defect Detection Using PaddlePaddle
 
-Dataset: Captured Images + AITEX
-Network: ResNet50
+Dataset: Snapshots from ThreeGun factory
+Network: ResNet-18
