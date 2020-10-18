@@ -1,4 +1,4 @@
 # inspection_paddle
-AI library based on Baidu Paddle 
+AI library based on Baidu PaddlePaddle
 
 
