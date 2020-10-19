@@ -1,8 +1,8 @@
 # https://blog.csdn.net/qq_36834959/article/details/79958446
 
 import os
-from PIL import Image, ImageOps, ImageEnhance
 import numpy as np
+from PIL import Image, ImageOps, ImageEnhance
 from matplotlib import pyplot as plt
 
 
