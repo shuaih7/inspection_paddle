@@ -45,7 +45,7 @@ def get_reader(img_path, ann_path, txt_file, max_box_num=5, mode="train"):
             
     return reader
 
-
+"""
 def preprocess(img, bbox_labels, input_size, mode):
     img_width, img_height = img.size
     sample_labels = np.array(bbox_labels)
@@ -117,3 +117,4 @@ def custom_reader(file_list, data_dir, input_size, mode):
                 yield Image.open(img_path)
 
     return reader
+"""

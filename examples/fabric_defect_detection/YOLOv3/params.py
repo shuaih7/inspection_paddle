@@ -1,7 +1,7 @@
 train_parameters = {
     "img_dir": r"E:\Projects\Fabric_Defect_Detection\model_proto\dataset\ThreeGun_YOLO\train",
     "ann_dir": r"E:\Projects\Fabric_Defect_Detection\model_proto\dataset\ThreeGun_YOLO\train",
-    "train_list": "train.txt",
+    "train_list": r"C:\Users\shuai\Documents\GitHub\inspection_paddle\examples\fabric_defect_detection\YOLOv3\train.txt",
     "valid_list": "valid.txt",
     "eval_list": "eval.txt",
     "class_dim": 1,
@@ -17,7 +17,7 @@ train_parameters = {
     "use_tiny": True,          # 是否使用 裁剪 tiny 模型
     "max_box_num": 5,          # 一幅图上最多有多少个目标
     "num_epochs": 80,
-    "train_batch_size": 16,      # 对于完整 yolov3，每一批的训练样本不能太多，内存会炸掉；如果使用 tiny，可以适当大一些
+    "train_batch_size": 8,      # 对于完整 yolov3，每一批的训练样本不能太多，内存会炸掉；如果使用 tiny，可以适当大一些
     "use_gpu": True,
     "yolo_cfg": {
         "input_size": [1, 352, 352],    # 原版的边长大小为608，为了提高训练速度和预测速度，此处压缩为448
