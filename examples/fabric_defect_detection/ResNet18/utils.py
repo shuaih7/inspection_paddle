@@ -5,6 +5,7 @@ from PIL import Image
 from sklearn.utils import shuffle
 from data import AITEXData, NormalData, TGData, ImageRandomDistort
 
+
 valid_path = r"E:\Projects\Fabric_Defect_Detection\model_proto\dataset\ThreeGun\valid"
 mask_path = r"E:\Projects\Fabric_Defect_Detection\oih-fabric-detect-detection\dataset\oih_stitch_skipping\mask"
 json_path = r"E:\BaiduNetdiskDownload\fabric_defects\AITEX\NODefect_images\src"

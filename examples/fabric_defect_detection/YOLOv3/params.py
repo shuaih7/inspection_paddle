@@ -1,29 +1,31 @@
 train_parameters = {
-    "data_dir": "data/data6045",
+    "img_dir": r"E:\Projects\Fabric_Defect_Detection\model_proto\dataset\ThreeGun_YOLO\train",
+    "ann_dir": r"E:\Projects\Fabric_Defect_Detection\model_proto\dataset\ThreeGun_YOLO\train",
     "train_list": "train.txt",
+    "valid_list": "valid.txt",
     "eval_list": "eval.txt",
-    "class_dim": -1,
+    "class_dim": 1,
     "label_dict": {},
     "num_dict": {},
     "image_count": -1,
-    "continue_train": True,     # 是否加载前一次的训练参数，接着训练
+    "continue_train": False,     # 是否加载前一次的训练参数，接着训练
     "pretrained": False,
     "pretrained_model_dir": "./pretrained-model",
-    "save_model_dir": "./yolo-model",
+    "save_model_dir": r"E:\Projects\Fabric_Defect_Detection\model_proto\YOLOv3\saved_model",
     "model_prefix": "yolo-v3",
     "freeze_dir": "freeze_model",
     "use_tiny": True,          # 是否使用 裁剪 tiny 模型
-    "max_box_num": 20,          # 一幅图上最多有多少个目标
+    "max_box_num": 5,          # 一幅图上最多有多少个目标
     "num_epochs": 80,
-    "train_batch_size": 32,      # 对于完整 yolov3，每一批的训练样本不能太多，内存会炸掉；如果使用 tiny，可以适当大一些
+    "train_batch_size": 16,      # 对于完整 yolov3，每一批的训练样本不能太多，内存会炸掉；如果使用 tiny，可以适当大一些
     "use_gpu": True,
     "yolo_cfg": {
-        "input_size": [3, 448, 448],    # 原版的边长大小为608，为了提高训练速度和预测速度，此处压缩为448
+        "input_size": [1, 352, 352],    # 原版的边长大小为608，为了提高训练速度和预测速度，此处压缩为448
         "anchors": [7, 10, 12, 22, 24, 17, 22, 45, 46, 33, 43, 88, 85, 66, 115, 146, 275, 240],
         "anchor_mask": [[6, 7, 8], [3, 4, 5], [0, 1, 2]]
     },
     "yolo_tiny_cfg": {
-        "input_size": [3, 256, 256],
+        "input_size": [1, 352, 352],
         "anchors": [6, 8, 13, 15, 22, 34, 48, 50, 81, 100, 205, 191],
         "anchor_mask": [[3, 4, 5], [0, 1, 2]]
     },

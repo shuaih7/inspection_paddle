@@ -3,9 +3,9 @@ import numpy as np
 import glob as gb
 from PIL import Image
 from sklearn.utils import shuffle
-from augmentation import ImageRandomDistort
 from skimage.measure import label, regionprops
 from lxml.etree import Element, SubElement, tostring, ElementTree
+from .augmentation import ImageRandomDistort
 
 
 def random_split_train_valid(ann_path, train_save_path, valid_save_path, percent=0.8, is_shuffle=True):
