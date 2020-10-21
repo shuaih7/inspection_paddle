@@ -21,7 +21,7 @@ train_parameters = {
     "pretrained_model_dir": r"E:\Projects\Fabric_Defect_Detection\model_proto\ShuffleNetV2_YOLOv3\pretrained_model",
     "save_model_dir": r"E:\Projects\Fabric_Defect_Detection\model_proto\ShuffleNetV2_YOLOv3\saved_model",
     "model_prefix": "yolo-v3",
-    "freeze_dir": "model/freeze_model",
+    "freeze_dir": r"E:\Projects\Fabric_Defect_Detection\model_proto\ShuffleNetV2_YOLOv3\freeze_model",
     "use_tiny": True,          # 是否使用 裁剪 tiny 模型
     "max_box_num": 5,          # 一幅图上最多有多少个目标
     "num_epochs": 101,

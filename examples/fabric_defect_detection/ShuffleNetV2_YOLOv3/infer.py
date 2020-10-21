@@ -106,16 +106,16 @@ def infer(image):
 
 
 if __name__ == '__main__':
-    image_path = '../data/data4379/pascalvoc/VOCdevkit/VOC2012/JPEGImages/2011_002192.jpg'
+    image_path = r'E:\Projects\Fabric_Defect_Detection\model_proto\dataset\ThreeGun_YOLO\valid\valid_2.png'
     img = cv2.imread(image_path)
     flag, box, label, scores, bboxes, period = infer(img)
     if flag:
         img = draw_bbox_image(img, box, label)
         img = cv2.cvtColor(np.asarray(img), cv2.COLOR_RGB2BGR)
-        print('检测到目标')
+        print('Defect detected.')
         cv2.imwrite('result.jpg', img)
-        print('检测结果保存为result.jpg')
+        print('Detection result saved as result.jpg')
     else:
-        print(image_path, "没检测出来")
+        print(image_path, "No defect detected.")
         pass
     print('infer one picture cost {} ms'.format(period))
