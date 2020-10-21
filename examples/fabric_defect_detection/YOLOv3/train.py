@@ -1,4 +1,4 @@
-import os, time
+import os, time, sys
 import numpy as np
 import paddle.fluid as fluid
 from params import train_parameters
@@ -12,8 +12,7 @@ logger = get_logger()
 def train():
     print("start train YOLOv3 ...")
     
-    #place = fluid.CUDAPlace(0) if train_parameters['use_gpu'] else fluid.CPUPlace()
-    place = fluid.CUDAPlace(0)
+    place = fluid.CUDAPlace(0) if train_parameters['use_gpu'] else fluid.CPUPlace()
     train_program = fluid.Program()
     start_program = fluid.Program()
     feeder, reader, loss = build_program_with_feeder(train_program, start_program, place)
@@ -51,7 +50,6 @@ def train():
             batch_id += 1
             total_batch_count += 1
 
-            print("batch id =", batch_id)
             if batch_id % 10 == 0:
                 print("pass {}, trainbatch {}, loss {} time {}".format(pass_id, batch_id, loss, "%2.2f sec" % period))
                 
