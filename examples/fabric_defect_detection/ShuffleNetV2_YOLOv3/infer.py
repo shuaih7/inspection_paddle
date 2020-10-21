@@ -106,16 +106,32 @@ def infer(image):
 
 
 if __name__ == '__main__':
-    image_path = r'E:\Projects\Fabric_Defect_Detection\model_proto\dataset\ThreeGun_YOLO\valid\valid_2.png'
-    img = cv2.imread(image_path)
-    flag, box, label, scores, bboxes, period = infer(img)
-    if flag:
-        img = draw_bbox_image(img, box, label)
-        img = cv2.cvtColor(np.asarray(img), cv2.COLOR_RGB2BGR)
-        print('Defect detected.')
-        cv2.imwrite('result.jpg', img)
-        print('Detection result saved as result.jpg')
-    else:
-        print(image_path, "No defect detected.")
-        pass
-    print('infer one picture cost {} ms'.format(period))
+    import glob as gb
+    image_path = r'E:\Projects\Fabric_Defect_Detection\model_proto\dataset\ThreeGun_YOLO\valid'
+    save_path  = r"E:\Projects\Fabric_Defect_Detection\model_proto\dataset\ThreeGun_YOLO\valid_output"
+    image_list = gb.glob(image_path + r"/*.png")
+    total_time = 0.
+    
+    for image_file in image_list:
+        img = cv2.imread(image_file)
+        flag, box, label, scores, bboxes, period = infer(img)
+        total_time += period
+        
+        if flag:
+            img = draw_bbox_image(img, box, label)
+            img = cv2.cvtColor(np.asarray(img), cv2.COLOR_RGB2BGR)
+            print('Defect detected at image', image_file)
+            _, filename = os.path.split(image_file)
+            save_name = os.path.join(save_path, filename)
+            cv2.imwrite(save_name, img)
+        else:
+            print(image_path, "No defect detected.")
+            _, filename = os.path.split(image_file)
+            save_name = os.path.join(save_path, filename)
+            shutil.copy(image_file, save_name)
+        #print('infer one picture cost {} ms'.format(period))
+        
+    average_time = total_time / len(image_list)
+    fps = int(1000/average_time)
+    print("The avergae processing time for one image is", average_time)
+    print("The fps is", fps)

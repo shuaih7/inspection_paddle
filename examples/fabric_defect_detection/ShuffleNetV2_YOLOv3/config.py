@@ -47,7 +47,7 @@ train_parameters = {
     "nms_top_k": 400,
     "nms_pos_k": 100,
     "valid_thresh": 0.005,
-    "nms_thresh": 0.45,
+    "nms_thresh": 0.1,
     "image_distort_strategy": {
         "expand_prob": 0.5,
         "expand_max_ratio": 4,
