@@ -12,6 +12,7 @@ import json
 from PIL import Image
 from PIL import ImageDraw
 import shutil
+from data import PascalVocXmlParser
 
 train_parameters = config.init_train_parameters()
 label_dict = train_parameters['num_dict']
@@ -43,7 +44,7 @@ def draw_bbox_image(img, boxes, labels, gt=False):
         draw.rectangle((xmin, ymin, xmax, ymax), None, c, width=3)
         draw.text((xmin, ymin), label_dict[int(label)], (255, 255, 0))
     return img
-
+    
 
 def resize_img(img, target_size):
     """
@@ -106,28 +107,33 @@ def infer(image):
 
 
 if __name__ == '__main__':
+    import sys
     import glob as gb
     image_path = r'E:\Projects\Fabric_Defect_Detection\model_proto\dataset\ThreeGun_YOLO\valid'
+    label_path = r'E:\Projects\Fabric_Defect_Detection\model_proto\dataset\ThreeGun_YOLO\valid'
     save_path  = r"E:\Projects\Fabric_Defect_Detection\model_proto\dataset\ThreeGun_YOLO\valid_output"
     image_list = gb.glob(image_path + r"/*.png")
     total_time = 0.
     
+    pvoc = PascalVocXmlParser()
+    
     for image_file in image_list:
         img = cv2.imread(image_file)
+        _, filename = os.path.split(image_file)
+        fname, _ = os.path.splitext(filename)
+        save_name = os.path.join(save_path, filename)
+        #label_file = os.path.join(label_path, fname+".xml")
+        
         flag, box, label, scores, bboxes, period = infer(img)
         total_time += period
         
         if flag:
-            img = draw_bbox_image(img, box, label)
+            img = draw_bbox_image(img, box, scores)
             img = cv2.cvtColor(np.asarray(img), cv2.COLOR_RGB2BGR)
             print('Defect detected at image', image_file)
-            _, filename = os.path.split(image_file)
-            save_name = os.path.join(save_path, filename)
             cv2.imwrite(save_name, img)
         else:
             print(image_path, "No defect detected.")
-            _, filename = os.path.split(image_file)
-            save_name = os.path.join(save_path, filename)
             shutil.copy(image_file, save_name)
         #print('infer one picture cost {} ms'.format(period))
         
