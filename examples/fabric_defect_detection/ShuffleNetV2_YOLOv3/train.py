@@ -402,7 +402,7 @@ def get_loss(model, outputs, gt_box, gt_label, main_prog):
             downsample_ratio //= 2
         loss = sum(losses)
         #optimizer, lr = optimizer_rms_setting()
-        optimizer, lr = optimizer_custom_setting(learning_rate=0.0005)
+        optimizer, lr = optimizer_custom_setting(learning_rate=0.0002)
         optimizer.minimize(loss)
         return [loss, lr]
 

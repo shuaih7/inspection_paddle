@@ -40,7 +40,7 @@ if __name__ == "__main__":
     
     view_batch(img_path, ann_path, label=label)
     """
-    img_path = r"E:\Projects\Fabric_Defect_Detection\model_proto\dataset\ThreeGun_YOLO\train"
-    ann_path = r"E:\Projects\Fabric_Defect_Detection\model_proto\dataset\ThreeGun_YOLO\train"
+    img_path = r"E:\Projects\Fabric_Defect_Detection\model_proto\ShuffleNetV2_YOLOv3\v1.0.1\dataset\train"
+    ann_path = r"E:\Projects\Fabric_Defect_Detection\model_proto\ShuffleNetV2_YOLOv3\v1.0.1\dataset\train"
     view_batch(img_path, ann_path, label="defect", color=255, line_width=1)
     

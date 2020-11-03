@@ -7,8 +7,8 @@ import logging
 import codecs
 
 train_parameters = {
-    "data_dir": r"E:\Projects\Fabric_Defect_Detection\model_proto\dataset\ThreeGun_YOLO\train",
-    "val_dir": r"E:\Projects\Fabric_Defect_Detection\model_proto\dataset\ThreeGun_YOLO\valid",
+    "data_dir": r"E:\Projects\Fabric_Defect_Detection\model_proto\ShuffleNetV2_YOLOv3\v1.0.2\dataset\train",
+    "val_dir": r"E:\Projects\Fabric_Defect_Detection\model_proto\ShuffleNetV2_YOLOv3\v1.0.2\dataset\valid",
     "train_list": "train.txt",
     "eval_list": "valid.txt",
     "use_filter": False,
@@ -18,10 +18,10 @@ train_parameters = {
     "image_count": -1,
     "continue_train": True,     # 是否加载前一次的训练参数，接着训练
     "pretrained": False,
-    "pretrained_model_dir": r"E:\Projects\Fabric_Defect_Detection\model_proto\ShuffleNetV2_YOLOv3\pretrained_model",
-    "save_model_dir": r"E:\Projects\Fabric_Defect_Detection\model_proto\ShuffleNetV2_YOLOv3\saved_model",
+    "pretrained_model_dir": r"E:\Projects\Fabric_Defect_Detection\model_proto\ShuffleNetV2_YOLOv3\v1.0.2\pretrained_model",
+    "save_model_dir": r"E:\Projects\Fabric_Defect_Detection\model_proto\ShuffleNetV2_YOLOv3\v1.0.2\saved_model",
     "model_prefix": "yolo-v3",
-    "freeze_dir": r"E:\Projects\Fabric_Defect_Detection\model_proto\ShuffleNetV2_YOLOv3\freeze_model",
+    "freeze_dir": r"E:\Projects\Fabric_Defect_Detection\model_proto\ShuffleNetV2_YOLOv3\v1.0.2\freeze_model",
     "use_tiny": True,          # 是否使用 裁剪 tiny 模型
     "max_box_num": 5,          # 一幅图上最多有多少个目标
     "num_epochs": 101,
@@ -36,7 +36,7 @@ train_parameters = {
     },
     "yolo_tiny_cfg": {
         "input_size": [3, 352, 352],
-        "anchors": [38, 15, 109, 15, 228, 15, 351, 17, 352, 25, 352, 37],
+        "anchors": [115, 15, 211, 15, 285, 17, 334, 16, 351, 17, 352, 29],
         "anchor_mask": [[3, 4, 5], [0, 1, 2]]
     },
     "ignore_thresh": 0.7,

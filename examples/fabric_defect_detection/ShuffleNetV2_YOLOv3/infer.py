@@ -22,16 +22,16 @@ exe = fluid.Executor(place)
 path = train_parameters['freeze_dir']  # 'model/freeze_model'
 [inference_program, feed_target_names, fetch_targets] = fluid.io.load_inference_model(dirname=path, executor=exe, model_filename='__model__', params_filename='params')
 
-
+"""
 def draw_bbox_image(img, boxes, labels, gt=False):
-    """
+    '''
     给图片画上外接矩形框
     :param img:
     :param boxes:
     :param save_name:
     :param labels
     :return:
-    """
+    '''
     color = ['red', 'blue']
     if gt:
         c = color[1]
@@ -43,6 +43,30 @@ def draw_bbox_image(img, boxes, labels, gt=False):
         xmin, ymin, xmax, ymax = box[0], box[1], box[2], box[3]
         draw.rectangle((xmin, ymin, xmax, ymax), None, c, width=3)
         draw.text((xmin, ymin), label_dict[int(label)], (255, 255, 0))
+    return img
+"""
+
+
+def draw_bbox_image(img, boxes, scores, gt=False):
+    '''
+    给图片画上外接矩形框
+    :param img:
+    :param boxes:
+    :param save_name:
+    :param labels
+    :return:
+    '''
+    color = ['red', 'blue']
+    if gt:
+        c = color[1]
+    else:
+        c = color[0]
+    img = Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
+    draw = ImageDraw.Draw(img)
+    for box, score in zip(boxes, scores):
+        xmin, ymin, xmax, ymax = box[0], box[1], box[2], box[3]
+        draw.rectangle((xmin, ymin, xmax, ymax), None, c, width=3)
+        draw.text((xmin, ymin), str(score), (255, 255, 0))
     return img
     
 
@@ -109,9 +133,9 @@ def infer(image):
 if __name__ == '__main__':
     import sys
     import glob as gb
-    image_path = r'E:\Projects\Fabric_Defect_Detection\model_proto\dataset\ThreeGun_YOLO\valid'
-    label_path = r'E:\Projects\Fabric_Defect_Detection\model_proto\dataset\ThreeGun_YOLO\valid'
-    save_path  = r"E:\Projects\Fabric_Defect_Detection\model_proto\dataset\ThreeGun_YOLO\valid_output"
+    image_path = r'E:\Projects\Fabric_Defect_Detection\model_proto\ShuffleNetV2_YOLOv3\v1.0.2\dataset\valid'
+    label_path = r'E:\Projects\Fabric_Defect_Detection\model_proto\ShuffleNetV2_YOLOv3\v1.0.1\dataset\valid'
+    save_path  = r"E:\Projects\Fabric_Defect_Detection\model_proto\ShuffleNetV2_YOLOv3\v1.0.2\dataset\valid_output"
     image_list = gb.glob(image_path + r"/*.png")
     total_time = 0.
     
