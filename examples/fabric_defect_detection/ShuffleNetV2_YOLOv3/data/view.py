@@ -1,7 +1,9 @@
 import os, cv2
 import numpy as np
 import glob as gb
+from PIL import Image, ImageEnhance
 from matplotlib import pyplot as plt
+from sklearn.utils import shuffle
 from PascalVocParser import PascalVocXmlParser
 
 
@@ -22,8 +24,9 @@ def view_single(img_file, ann_file, label="missing_hole", color=(255,0,0), line_
     plt.show()
     
     
-def view_batch(img_path, ann_path, label="missing_hole", color=(255,0,0), line_width=5):
+def view_batch(img_path, ann_path, label="missing_hole", color=(255,0,0), line_width=5, is_shuffle=True):
     img_list = gb.glob(img_path + r"/*.png")
+    if is_shuffle: img_list = shuffle(img_list)
     
     for img_file in img_list:
         _, filename = os.path.split(img_file)
@@ -31,8 +34,38 @@ def view_batch(img_path, ann_path, label="missing_hole", color=(255,0,0), line_w
         ann_file = os.path.join(ann_path, fname+".xml")
         view_single(img_file, ann_file, label=label, color=color, line_width=line_width)
         
+        
+class view_preprocessing(object):
+    def __init__(self):
+        pass
+        
+    def view_brightness(self, img_file, vals=[]):
+        if len(vals) == 0: return
+        else: num_plots = len(vals)
+        
+        img = Image.open(img_file)
+        for i, val in enumerate(vals):
+            plot_img = ImageEnhance.Brightness(img).enhance(val)
+            plt.subplot(1,num_plots,i+1), plt.imshow(plot_img, cmap='gray'), plt.title("Brightness "+str(val))
+        plt.show()
+        
+    def view_contrast(self, img_file, vals=[]):
+        if len(vals) == 0: return
+        else: num_plots = len(vals)
+        
+        img = Image.open(img_file)
+        for i, val in enumerate(vals):
+            plot_img = ImageEnhance.Contrast(img).enhance(val)
+            plt.subplot(1,num_plots,i+1), plt.imshow(plot_img, cmap='gray'), plt.title("Contrast "+str(val))
+        plt.show()
+        
 
 if __name__ == "__main__":
+    """
+    img_file = r"E:\Projects\Fabric_Defect_Detection\model_proto\ShuffleNetV2_YOLOv3\v1.0.2\dataset\train\train_1407_1760.png"
+    ann_file = r"E:\Projects\Fabric_Defect_Detection\model_proto\ShuffleNetV2_YOLOv3\v1.0.2\dataset\train\train_1407_1760.xml"
+    view_single(img_file, ann_file, label="defect", color=255, line_width=1)
+    """
     """
     label = r"Spurious_copper"
     img_path = os.path.join(r"E:\BaiduNetdiskDownload\PCB_DATASET\images", label)
@@ -40,7 +73,18 @@ if __name__ == "__main__":
     
     view_batch(img_path, ann_path, label=label)
     """
-    img_path = r"E:\Projects\Fabric_Defect_Detection\model_proto\ShuffleNetV2_YOLOv3\v1.0.1\dataset\train"
-    ann_path = r"E:\Projects\Fabric_Defect_Detection\model_proto\ShuffleNetV2_YOLOv3\v1.0.1\dataset\train"
+    
+    
+    img_path = r"E:\Projects\Fabric_Defect_Detection\model_proto\ShuffleNetV2_YOLOv3\v1.0.2\dataset\train"
+    ann_path = r"E:\Projects\Fabric_Defect_Detection\model_proto\ShuffleNetV2_YOLOv3\v1.0.2\dataset\train"
     view_batch(img_path, ann_path, label="defect", color=255, line_width=1)
+    """
+    
+    img_file = r"E:\Projects\Fabric_Defect_Detection\model_proto\ShuffleNetV2_YOLOv3\v1.0.2\dataset\train\train_1392_1440.png"
+    
+    viewer = view_preprocessing()
+    viewer.view_brightness(img_file, vals=[0.5, 1, 1.5])
+    viewer.view_contrast(img_file, vals=[0.5, 1, 1.5])
+    """
+
     

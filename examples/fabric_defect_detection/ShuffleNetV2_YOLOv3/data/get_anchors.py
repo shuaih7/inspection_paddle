@@ -82,7 +82,7 @@ def encode_dataset(path, x_thres=300):
 """   
     
 if __name__ == "__main__":
-    path = r"E:\Projects\Fabric_Defect_Detection\model_proto\ShuffleNetV2_YOLOv3\v1.0.2\dataset\train"
+    path = r"E:\Projects\Fabric_Defect_Detection\model_proto\ShuffleNetV2_YOLOv3\v1.1\dataset\train"
     #show_histogram(path)
     ac = cluster_anchors(path, k=6)
     print(ac)

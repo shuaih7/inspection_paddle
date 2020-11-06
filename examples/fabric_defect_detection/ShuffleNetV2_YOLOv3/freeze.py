@@ -17,7 +17,8 @@ def freeze_model(score_threshold):
     :param score_threshold:
     :return:
     """
-    exe = fluid.Executor(fluid.CPUPlace())
+    place = fluid.CUDAPlace(0) if train_parameters['use_gpu'] else fluid.CPUPlace()
+    exe = fluid.Executor(place)
     ues_tiny = train_parameters['use_tiny']
     yolo_config = train_parameters['yolo_tiny_cfg'] if ues_tiny else train_parameters['yolo_cfg']
     path = train_parameters['save_model_dir']
@@ -60,4 +61,4 @@ def freeze_model(score_threshold):
 
 
 if __name__ == '__main__':
-    freeze_model(0.1)
+    freeze_model(0.5)

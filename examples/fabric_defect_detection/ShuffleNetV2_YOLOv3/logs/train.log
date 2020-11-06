@@ -1,269 +1,37 @@
-2020-11-03 00:15:14,882 - train.py[line:438] - INFO: start train YOLOv3, train params:{'data_dir': 'E:\\Projects\\Fabric_Defect_Detection\\model_proto\\ShuffleNetV2_YOLOv3\\v1.0.2\\dataset\\train', 'val_dir': 'E:\\Projects\\Fabric_Defect_Detection\\model_proto\\ShuffleNetV2_YOLOv3\\v1.0.2\\dataset\\valid', 'train_list': 'train.txt', 'eval_list': 'valid.txt', 'use_filter': False, 'class_dim': 1, 'label_dict': {'defect': 0}, 'num_dict': {0: 'defect'}, 'image_count': 3000, 'continue_train': True, 'pretrained': False, 'pretrained_model_dir': 'E:\\Projects\\Fabric_Defect_Detection\\model_proto\\ShuffleNetV2_YOLOv3\\v1.0.2\\pretrained_model', 'save_model_dir': 'E:\\Projects\\Fabric_Defect_Detection\\model_proto\\ShuffleNetV2_YOLOv3\\v1.0.2\\saved_model', 'model_prefix': 'yolo-v3', 'freeze_dir': 'E:\\Projects\\Fabric_Defect_Detection\\model_proto\\ShuffleNetV2_YOLOv3\\v1.0.2\\freeze_model', 'use_tiny': True, 'max_box_num': 5, 'num_epochs': 101, 'train_batch_size': 32, 'use_gpu': True, 'yolo_cfg': {'input_size': [3, 352, 352], 'anchors': [9, 12, 15, 28, 30, 21, 28, 56, 57, 42, 54, 110, 107, 83, 144, 183, 344, 301], 'anchor_mask': [[6, 7, 8], [3, 4, 5], [0, 1, 2]]}, 'yolo_tiny_cfg': {'input_size': [3, 352, 352], 'anchors': [115, 15, 211, 15, 285, 17, 334, 16, 351, 17, 352, 29], 'anchor_mask': [[3, 4, 5], [0, 1, 2]]}, 'ignore_thresh': 0.7, 'mean_rgb': [127.5, 127.5, 127.5], 'mode': 'train', 'multi_data_reader_count': 4, 'apply_distort': True, 'nms_top_k': 400, 'nms_pos_k': 100, 'valid_thresh': 0.005, 'nms_thresh': 0.1, 'image_distort_strategy': {'expand_prob': 0.5, 'expand_max_ratio': 4, 'hue_prob': 0.5, 'hue_delta': 18, 'contrast_prob': 0.5, 'contrast_delta': 0.5, 'saturation_prob': 0.5, 'saturation_delta': 0.5, 'brightness_prob': 0.5, 'brightness_delta': 0.5}, 'sgd_strategy': {'learning_rate': 0.002, 'lr_epochs': [10, 45, 80, 110, 135, 160, 180], 'lr_decay': [1, 0.5, 0.25, 0.1, 0.025, 0.004, 0.001, 0.0005]}, 'early_stop': {'sample_frequency': 50, 'rise_limit': 10, 'min_loss': 5e-08, 'min_curr_map': 0.84}}
-2020-11-03 00:15:14,891 - train.py[line:440] - INFO: create place, use gpu:True
-2020-11-03 00:15:14,892 - train.py[line:443] - INFO: build network and program
-2020-11-03 00:15:15,190 - train.py[line:456] - INFO: build executor and init params
-2020-11-03 00:15:17,114 - train.py[line:418] - INFO: load param from retrain model
-2020-11-03 00:15:17,281 - train.py[line:475] - INFO: current pass: 0, start read image
-2020-11-03 00:16:38,295 - train.py[line:492] - INFO: pass 0 train result, current pass mean loss: 6.943433604341872
-2020-11-03 00:16:45,948 - train.py[line:498] - INFO: 0 epoch current pass map is 0.6743140816688538, accum_map is 0.6743140816688538
-2020-11-03 00:16:45,949 - train.py[line:504] - INFO: model save 0 epcho train result, current best pass MAP 0.6743140816688538
-2020-11-03 00:16:46,431 - train.py[line:508] - INFO: best pass 0 current best pass MAP is 0.6743140816688538
-2020-11-03 00:16:46,439 - train.py[line:475] - INFO: current pass: 1, start read image
-2020-11-03 00:18:05,913 - train.py[line:492] - INFO: pass 1 train result, current pass mean loss: 6.912112190368328
-2020-11-03 00:18:05,915 - train.py[line:475] - INFO: current pass: 2, start read image
-2020-11-03 00:19:25,409 - train.py[line:492] - INFO: pass 2 train result, current pass mean loss: 6.839647247436199
-2020-11-03 00:19:25,410 - train.py[line:475] - INFO: current pass: 3, start read image
-2020-11-03 00:20:46,295 - train.py[line:492] - INFO: pass 3 train result, current pass mean loss: 6.874650204435308
-2020-11-03 00:20:46,297 - train.py[line:475] - INFO: current pass: 4, start read image
-2020-11-03 00:22:05,601 - train.py[line:492] - INFO: pass 4 train result, current pass mean loss: 6.833139160846142
-2020-11-03 00:22:05,603 - train.py[line:475] - INFO: current pass: 5, start read image
-2020-11-03 00:23:25,436 - train.py[line:492] - INFO: pass 5 train result, current pass mean loss: 6.8119429172353545
-2020-11-03 00:23:32,918 - train.py[line:498] - INFO: 5 epoch current pass map is 0.651260495185852, accum_map is 0.6616582870483398
-2020-11-03 00:23:32,919 - train.py[line:508] - INFO: best pass 0 current best pass MAP is 0.6743140816688538
-2020-11-03 00:23:32,920 - train.py[line:475] - INFO: current pass: 6, start read image
-2020-11-03 00:24:53,080 - train.py[line:492] - INFO: pass 6 train result, current pass mean loss: 6.816472271655468
-2020-11-03 00:24:53,081 - train.py[line:475] - INFO: current pass: 7, start read image
-2020-11-03 00:26:11,306 - train.py[line:492] - INFO: pass 7 train result, current pass mean loss: 6.783302378147207
-2020-11-03 00:26:11,308 - train.py[line:475] - INFO: current pass: 8, start read image
-2020-11-03 00:27:29,366 - train.py[line:492] - INFO: pass 8 train result, current pass mean loss: 6.818773873308872
-2020-11-03 00:27:29,368 - train.py[line:475] - INFO: current pass: 9, start read image
-2020-11-03 00:28:48,819 - train.py[line:492] - INFO: pass 9 train result, current pass mean loss: 6.8349984351624835
-2020-11-03 00:28:48,821 - train.py[line:475] - INFO: current pass: 10, start read image
-2020-11-03 00:30:08,633 - train.py[line:492] - INFO: pass 10 train result, current pass mean loss: 6.800203155963979
-2020-11-03 00:30:16,087 - train.py[line:498] - INFO: 10 epoch current pass map is 0.6827644109725952, accum_map is 0.6696295738220215
-2020-11-03 00:30:16,489 - train.py[line:504] - INFO: model save 10 epcho train result, current best pass MAP 0.6827644109725952
-2020-11-03 00:30:16,943 - train.py[line:508] - INFO: best pass 10 current best pass MAP is 0.6827644109725952
-2020-11-03 00:30:16,952 - train.py[line:475] - INFO: current pass: 11, start read image
-2020-11-03 00:31:36,303 - train.py[line:492] - INFO: pass 11 train result, current pass mean loss: 6.8080908897075245
-2020-11-03 00:31:36,305 - train.py[line:475] - INFO: current pass: 12, start read image
-2020-11-03 00:32:55,664 - train.py[line:492] - INFO: pass 12 train result, current pass mean loss: 6.835758498374452
-2020-11-03 00:32:55,666 - train.py[line:475] - INFO: current pass: 13, start read image
-2020-11-03 00:34:16,046 - train.py[line:492] - INFO: pass 13 train result, current pass mean loss: 6.762235088551298
-2020-11-03 00:34:16,490 - train.py[line:475] - INFO: current pass: 14, start read image
-2020-11-03 00:35:37,110 - train.py[line:492] - INFO: pass 14 train result, current pass mean loss: 6.783779174723524
-2020-11-03 00:35:37,111 - train.py[line:475] - INFO: current pass: 15, start read image
-2020-11-03 00:36:57,446 - train.py[line:492] - INFO: pass 15 train result, current pass mean loss: 6.674402521011677
-2020-11-03 00:37:04,890 - train.py[line:498] - INFO: 15 epoch current pass map is 0.6521528959274292, accum_map is 0.6645588278770447
-2020-11-03 00:37:04,893 - train.py[line:508] - INFO: best pass 10 current best pass MAP is 0.6827644109725952
-2020-11-03 00:37:04,894 - train.py[line:475] - INFO: current pass: 16, start read image
-2020-11-03 00:38:24,133 - train.py[line:492] - INFO: pass 16 train result, current pass mean loss: 6.762256419405024
-2020-11-03 00:38:24,135 - train.py[line:475] - INFO: current pass: 17, start read image
-2020-11-03 00:39:43,695 - train.py[line:492] - INFO: pass 17 train result, current pass mean loss: 6.70541993607866
-2020-11-03 00:39:43,696 - train.py[line:475] - INFO: current pass: 18, start read image
-2020-11-03 00:41:03,813 - train.py[line:492] - INFO: pass 18 train result, current pass mean loss: 6.701524161277933
-2020-11-03 00:41:03,815 - train.py[line:475] - INFO: current pass: 19, start read image
-2020-11-03 00:42:22,611 - train.py[line:492] - INFO: pass 19 train result, current pass mean loss: 6.779664638194632
-2020-11-03 00:42:23,020 - train.py[line:475] - INFO: current pass: 20, start read image
-2020-11-03 00:43:41,906 - train.py[line:492] - INFO: pass 20 train result, current pass mean loss: 6.670419393701756
-2020-11-03 00:43:49,497 - train.py[line:498] - INFO: 20 epoch current pass map is 0.6454079747200012, accum_map is 0.6605406999588013
-2020-11-03 00:43:49,529 - train.py[line:508] - INFO: best pass 10 current best pass MAP is 0.6827644109725952
-2020-11-03 00:43:49,536 - train.py[line:475] - INFO: current pass: 21, start read image
-2020-11-03 00:45:09,936 - train.py[line:492] - INFO: pass 21 train result, current pass mean loss: 6.627877504267591
-2020-11-03 00:45:09,937 - train.py[line:475] - INFO: current pass: 22, start read image
-2020-11-03 00:46:30,570 - train.py[line:492] - INFO: pass 22 train result, current pass mean loss: 6.658069752632303
-2020-11-03 00:46:30,572 - train.py[line:475] - INFO: current pass: 23, start read image
-2020-11-03 00:47:50,928 - train.py[line:492] - INFO: pass 23 train result, current pass mean loss: 6.686368551660092
-2020-11-03 00:47:50,931 - train.py[line:475] - INFO: current pass: 24, start read image
-2020-11-03 00:49:10,536 - train.py[line:492] - INFO: pass 24 train result, current pass mean loss: 6.600679397583008
-2020-11-03 00:49:10,538 - train.py[line:475] - INFO: current pass: 25, start read image
-2020-11-03 00:50:29,398 - train.py[line:492] - INFO: pass 25 train result, current pass mean loss: 6.665911278826125
-2020-11-03 00:50:36,831 - train.py[line:498] - INFO: 25 epoch current pass map is 0.6656114459037781, accum_map is 0.6614624857902527
-2020-11-03 00:50:37,280 - train.py[line:508] - INFO: best pass 10 current best pass MAP is 0.6827644109725952
-2020-11-03 00:50:37,282 - train.py[line:475] - INFO: current pass: 26, start read image
-2020-11-03 00:51:56,643 - train.py[line:492] - INFO: pass 26 train result, current pass mean loss: 6.642515020167574
-2020-11-03 00:51:56,645 - train.py[line:475] - INFO: current pass: 27, start read image
-2020-11-03 00:53:15,759 - train.py[line:492] - INFO: pass 27 train result, current pass mean loss: 6.627745557338633
-2020-11-03 00:53:15,760 - train.py[line:475] - INFO: current pass: 28, start read image
-2020-11-03 00:54:35,815 - train.py[line:492] - INFO: pass 28 train result, current pass mean loss: 6.661407115611624
-2020-11-03 00:54:36,032 - train.py[line:475] - INFO: current pass: 29, start read image
-2020-11-03 00:55:54,702 - train.py[line:492] - INFO: pass 29 train result, current pass mean loss: 6.6604791854290255
-2020-11-03 00:55:54,943 - train.py[line:475] - INFO: current pass: 30, start read image
-2020-11-03 00:57:14,939 - train.py[line:492] - INFO: pass 30 train result, current pass mean loss: 6.7135807757681984
-2020-11-03 00:57:22,429 - train.py[line:498] - INFO: 30 epoch current pass map is 0.5851828455924988, accum_map is 0.6483567953109741
-2020-11-03 00:57:22,430 - train.py[line:508] - INFO: best pass 10 current best pass MAP is 0.6827644109725952
-2020-11-03 00:57:22,431 - train.py[line:475] - INFO: current pass: 31, start read image
-2020-11-03 00:58:42,220 - train.py[line:492] - INFO: pass 31 train result, current pass mean loss: 6.579064090201196
-2020-11-03 00:58:42,227 - train.py[line:475] - INFO: current pass: 32, start read image
-2020-11-03 01:00:00,705 - train.py[line:492] - INFO: pass 32 train result, current pass mean loss: 6.645532186995161
-2020-11-03 01:00:00,707 - train.py[line:475] - INFO: current pass: 33, start read image
-2020-11-03 01:01:20,800 - train.py[line:492] - INFO: pass 33 train result, current pass mean loss: 6.630123052191227
-2020-11-03 01:01:20,802 - train.py[line:475] - INFO: current pass: 34, start read image
-2020-11-03 01:02:40,693 - train.py[line:492] - INFO: pass 34 train result, current pass mean loss: 6.6148256849735345
-2020-11-03 01:02:40,983 - train.py[line:475] - INFO: current pass: 35, start read image
-2020-11-03 01:04:00,343 - train.py[line:492] - INFO: pass 35 train result, current pass mean loss: 6.572021560466036
-2020-11-03 01:04:07,743 - train.py[line:498] - INFO: 35 epoch current pass map is 0.6385332345962524, accum_map is 0.6470962166786194
-2020-11-03 01:04:07,970 - train.py[line:508] - INFO: best pass 10 current best pass MAP is 0.6827644109725952
-2020-11-03 01:04:07,982 - train.py[line:475] - INFO: current pass: 36, start read image
-2020-11-03 01:05:28,148 - train.py[line:492] - INFO: pass 36 train result, current pass mean loss: 6.5365858686731215
-2020-11-03 01:05:28,441 - train.py[line:475] - INFO: current pass: 37, start read image
-2020-11-03 01:06:46,785 - train.py[line:492] - INFO: pass 37 train result, current pass mean loss: 6.519273828952871
-2020-11-03 01:06:46,794 - train.py[line:475] - INFO: current pass: 38, start read image
-2020-11-03 01:08:05,913 - train.py[line:492] - INFO: pass 38 train result, current pass mean loss: 6.553230148680667
-2020-11-03 01:08:05,915 - train.py[line:475] - INFO: current pass: 39, start read image
-2020-11-03 01:09:26,799 - train.py[line:492] - INFO: pass 39 train result, current pass mean loss: 6.559530552397383
-2020-11-03 01:09:26,799 - train.py[line:475] - INFO: current pass: 40, start read image
-2020-11-03 01:10:45,785 - train.py[line:492] - INFO: pass 40 train result, current pass mean loss: 6.5494605429629065
-2020-11-03 01:10:53,284 - train.py[line:498] - INFO: 40 epoch current pass map is 0.672616183757782, accum_map is 0.6510844826698303
-2020-11-03 01:10:53,653 - train.py[line:508] - INFO: best pass 10 current best pass MAP is 0.6827644109725952
-2020-11-03 01:10:53,665 - train.py[line:475] - INFO: current pass: 41, start read image
-2020-11-03 01:12:14,275 - train.py[line:492] - INFO: pass 41 train result, current pass mean loss: 6.564784836261831
-2020-11-03 01:12:14,276 - train.py[line:475] - INFO: current pass: 42, start read image
-2020-11-03 01:13:33,834 - train.py[line:492] - INFO: pass 42 train result, current pass mean loss: 6.536288469395739
-2020-11-03 01:13:33,836 - train.py[line:475] - INFO: current pass: 43, start read image
-2020-11-03 01:14:53,633 - train.py[line:492] - INFO: pass 43 train result, current pass mean loss: 6.519509685800431
-2020-11-03 01:14:53,946 - train.py[line:475] - INFO: current pass: 44, start read image
-2020-11-03 01:16:14,028 - train.py[line:492] - INFO: pass 44 train result, current pass mean loss: 6.464987272911883
-2020-11-03 01:16:14,029 - train.py[line:475] - INFO: current pass: 45, start read image
-2020-11-03 01:17:33,093 - train.py[line:492] - INFO: pass 45 train result, current pass mean loss: 6.402782678604126
-2020-11-03 01:17:40,651 - train.py[line:498] - INFO: 45 epoch current pass map is 0.64860999584198, accum_map is 0.6502771377563477
-2020-11-03 01:17:40,844 - train.py[line:508] - INFO: best pass 10 current best pass MAP is 0.6827644109725952
-2020-11-03 01:17:40,848 - train.py[line:475] - INFO: current pass: 46, start read image
-2020-11-03 01:19:02,010 - train.py[line:492] - INFO: pass 46 train result, current pass mean loss: 6.391873598098755
-2020-11-03 01:19:02,011 - train.py[line:475] - INFO: current pass: 47, start read image
-2020-11-03 01:20:21,603 - train.py[line:492] - INFO: pass 47 train result, current pass mean loss: 6.438784771777214
-2020-11-03 01:20:21,672 - train.py[line:475] - INFO: current pass: 48, start read image
-2020-11-03 01:21:41,381 - train.py[line:492] - INFO: pass 48 train result, current pass mean loss: 6.493732396592486
-2020-11-03 01:21:41,383 - train.py[line:475] - INFO: current pass: 49, start read image
-2020-11-03 01:23:01,165 - train.py[line:492] - INFO: pass 49 train result, current pass mean loss: 6.4062055932714586
-2020-11-03 01:23:01,593 - train.py[line:475] - INFO: current pass: 50, start read image
-2020-11-03 01:24:21,410 - train.py[line:492] - INFO: pass 50 train result, current pass mean loss: 6.421332481059622
-2020-11-03 01:24:29,024 - train.py[line:498] - INFO: 50 epoch current pass map is 0.6941518187522888, accum_map is 0.6555461883544922
-2020-11-03 01:24:29,220 - train.py[line:504] - INFO: model save 50 epcho train result, current best pass MAP 0.6941518187522888
-2020-11-03 01:24:29,663 - train.py[line:508] - INFO: best pass 50 current best pass MAP is 0.6941518187522888
-2020-11-03 01:24:29,665 - train.py[line:475] - INFO: current pass: 51, start read image
-2020-11-03 01:25:48,667 - train.py[line:492] - INFO: pass 51 train result, current pass mean loss: 6.458766977837745
-2020-11-03 01:25:48,669 - train.py[line:475] - INFO: current pass: 52, start read image
-2020-11-03 01:27:09,355 - train.py[line:492] - INFO: pass 52 train result, current pass mean loss: 6.4048663301670805
-2020-11-03 01:27:09,357 - train.py[line:475] - INFO: current pass: 53, start read image
-2020-11-03 01:28:31,321 - train.py[line:492] - INFO: pass 53 train result, current pass mean loss: 6.3062342024864035
-2020-11-03 01:28:31,322 - train.py[line:475] - INFO: current pass: 54, start read image
-2020-11-03 01:29:49,609 - train.py[line:492] - INFO: pass 54 train result, current pass mean loss: 6.354501495970056
-2020-11-03 01:29:49,611 - train.py[line:475] - INFO: current pass: 55, start read image
-2020-11-03 01:31:09,262 - train.py[line:492] - INFO: pass 55 train result, current pass mean loss: 6.361182669375805
-2020-11-03 01:31:17,162 - train.py[line:498] - INFO: 55 epoch current pass map is 0.6769137978553772, accum_map is 0.6575337052345276
-2020-11-03 01:31:17,165 - train.py[line:508] - INFO: best pass 50 current best pass MAP is 0.6941518187522888
-2020-11-03 01:31:17,166 - train.py[line:475] - INFO: current pass: 56, start read image
-2020-11-03 01:32:37,093 - train.py[line:492] - INFO: pass 56 train result, current pass mean loss: 6.36502449563209
-2020-11-03 01:32:37,095 - train.py[line:475] - INFO: current pass: 57, start read image
-2020-11-03 01:33:56,994 - train.py[line:492] - INFO: pass 57 train result, current pass mean loss: 6.349523341402095
-2020-11-03 01:33:56,996 - train.py[line:475] - INFO: current pass: 58, start read image
-2020-11-03 01:35:18,198 - train.py[line:492] - INFO: pass 58 train result, current pass mean loss: 6.344840054816388
-2020-11-03 01:35:18,208 - train.py[line:475] - INFO: current pass: 59, start read image
-2020-11-03 01:36:38,050 - train.py[line:492] - INFO: pass 59 train result, current pass mean loss: 6.277379066386121
-2020-11-03 01:36:38,051 - train.py[line:475] - INFO: current pass: 60, start read image
-2020-11-03 01:37:57,825 - train.py[line:492] - INFO: pass 60 train result, current pass mean loss: 6.320084602274793
-2020-11-03 01:38:05,339 - train.py[line:498] - INFO: 60 epoch current pass map is 0.6440332531929016, accum_map is 0.6550795435905457
-2020-11-03 01:38:05,340 - train.py[line:508] - INFO: best pass 50 current best pass MAP is 0.6941518187522888
-2020-11-03 01:38:05,341 - train.py[line:475] - INFO: current pass: 61, start read image
-2020-11-03 01:39:25,315 - train.py[line:492] - INFO: pass 61 train result, current pass mean loss: 6.243657309958276
-2020-11-03 01:39:25,317 - train.py[line:475] - INFO: current pass: 62, start read image
-2020-11-03 01:40:44,701 - train.py[line:492] - INFO: pass 62 train result, current pass mean loss: 6.227281854507771
-2020-11-03 01:40:44,703 - train.py[line:475] - INFO: current pass: 63, start read image
-2020-11-03 01:42:03,324 - train.py[line:492] - INFO: pass 63 train result, current pass mean loss: 6.282171797245107
-2020-11-03 01:42:03,385 - train.py[line:475] - INFO: current pass: 64, start read image
-2020-11-03 01:43:23,100 - train.py[line:492] - INFO: pass 64 train result, current pass mean loss: 6.196583276099347
-2020-11-03 01:43:23,101 - train.py[line:475] - INFO: current pass: 65, start read image
-2020-11-03 01:44:42,734 - train.py[line:492] - INFO: pass 65 train result, current pass mean loss: 6.313531748791958
-2020-11-03 01:44:50,212 - train.py[line:498] - INFO: 65 epoch current pass map is 0.5738673806190491, accum_map is 0.6449685096740723
-2020-11-03 01:44:50,213 - train.py[line:508] - INFO: best pass 50 current best pass MAP is 0.6941518187522888
-2020-11-03 01:44:50,214 - train.py[line:475] - INFO: current pass: 66, start read image
-2020-11-03 01:46:09,886 - train.py[line:492] - INFO: pass 66 train result, current pass mean loss: 6.287295995874608
-2020-11-03 01:46:09,887 - train.py[line:475] - INFO: current pass: 67, start read image
-2020-11-03 01:47:29,948 - train.py[line:492] - INFO: pass 67 train result, current pass mean loss: 6.265776132015472
-2020-11-03 01:47:30,211 - train.py[line:475] - INFO: current pass: 68, start read image
-2020-11-03 01:48:50,110 - train.py[line:492] - INFO: pass 68 train result, current pass mean loss: 6.233804053448616
-2020-11-03 01:48:50,112 - train.py[line:475] - INFO: current pass: 69, start read image
-2020-11-03 01:50:09,990 - train.py[line:492] - INFO: pass 69 train result, current pass mean loss: 6.1717509462478315
-2020-11-03 01:50:09,991 - train.py[line:475] - INFO: current pass: 70, start read image
-2020-11-03 01:51:29,415 - train.py[line:492] - INFO: pass 70 train result, current pass mean loss: 6.179886462840628
-2020-11-03 01:51:36,878 - train.py[line:498] - INFO: 70 epoch current pass map is 0.6694355607032776, accum_map is 0.6467974185943604
-2020-11-03 01:51:37,026 - train.py[line:508] - INFO: best pass 50 current best pass MAP is 0.6941518187522888
-2020-11-03 01:51:37,029 - train.py[line:475] - INFO: current pass: 71, start read image
-2020-11-03 01:52:57,640 - train.py[line:492] - INFO: pass 71 train result, current pass mean loss: 6.157163077212394
-2020-11-03 01:52:57,648 - train.py[line:475] - INFO: current pass: 72, start read image
-2020-11-03 01:54:17,177 - train.py[line:492] - INFO: pass 72 train result, current pass mean loss: 6.175391542150619
-2020-11-03 01:54:17,179 - train.py[line:475] - INFO: current pass: 73, start read image
-2020-11-03 01:55:38,836 - train.py[line:492] - INFO: pass 73 train result, current pass mean loss: 6.142071216664416
-2020-11-03 01:55:38,838 - train.py[line:475] - INFO: current pass: 74, start read image
-2020-11-03 01:56:58,685 - train.py[line:492] - INFO: pass 74 train result, current pass mean loss: 6.1869153063348
-2020-11-03 01:56:58,687 - train.py[line:475] - INFO: current pass: 75, start read image
-2020-11-03 01:58:18,186 - train.py[line:492] - INFO: pass 75 train result, current pass mean loss: 6.120841665470854
-2020-11-03 01:58:25,612 - train.py[line:498] - INFO: 75 epoch current pass map is 0.6051482558250427, accum_map is 0.643220067024231
-2020-11-03 01:58:25,770 - train.py[line:508] - INFO: best pass 50 current best pass MAP is 0.6941518187522888
-2020-11-03 01:58:25,773 - train.py[line:475] - INFO: current pass: 76, start read image
-2020-11-03 01:59:44,961 - train.py[line:492] - INFO: pass 76 train result, current pass mean loss: 6.2283731927262975
-2020-11-03 01:59:44,963 - train.py[line:475] - INFO: current pass: 77, start read image
-2020-11-03 02:01:06,353 - train.py[line:492] - INFO: pass 77 train result, current pass mean loss: 6.164064427639576
-2020-11-03 02:01:06,355 - train.py[line:475] - INFO: current pass: 78, start read image
-2020-11-03 02:02:27,647 - train.py[line:492] - INFO: pass 78 train result, current pass mean loss: 6.138246414509226
-2020-11-03 02:02:27,650 - train.py[line:475] - INFO: current pass: 79, start read image
-2020-11-03 02:03:48,482 - train.py[line:492] - INFO: pass 79 train result, current pass mean loss: 6.097402455958914
-2020-11-03 02:03:48,489 - train.py[line:475] - INFO: current pass: 80, start read image
-2020-11-03 02:05:07,117 - train.py[line:492] - INFO: pass 80 train result, current pass mean loss: 6.06550900986854
-2020-11-03 02:05:14,548 - train.py[line:498] - INFO: 80 epoch current pass map is 0.6192784905433655, accum_map is 0.6409751176834106
-2020-11-03 02:05:14,549 - train.py[line:508] - INFO: best pass 50 current best pass MAP is 0.6941518187522888
-2020-11-03 02:05:14,550 - train.py[line:475] - INFO: current pass: 81, start read image
-2020-11-03 02:06:33,816 - train.py[line:492] - INFO: pass 81 train result, current pass mean loss: 6.097288228095846
-2020-11-03 02:06:34,114 - train.py[line:475] - INFO: current pass: 82, start read image
-2020-11-03 02:07:53,410 - train.py[line:492] - INFO: pass 82 train result, current pass mean loss: 6.113719199566131
-2020-11-03 02:07:53,499 - train.py[line:475] - INFO: current pass: 83, start read image
-2020-11-03 02:09:14,603 - train.py[line:492] - INFO: pass 83 train result, current pass mean loss: 6.017539957736401
-2020-11-03 02:09:14,606 - train.py[line:475] - INFO: current pass: 84, start read image
-2020-11-03 02:10:34,610 - train.py[line:492] - INFO: pass 84 train result, current pass mean loss: 6.062076000457115
-2020-11-03 02:10:34,612 - train.py[line:475] - INFO: current pass: 85, start read image
-2020-11-03 02:11:54,977 - train.py[line:492] - INFO: pass 85 train result, current pass mean loss: 6.034553203176944
-2020-11-03 02:12:02,822 - train.py[line:498] - INFO: 85 epoch current pass map is 0.6381199955940247, accum_map is 0.6406604051589966
-2020-11-03 02:12:03,037 - train.py[line:508] - INFO: best pass 50 current best pass MAP is 0.6941518187522888
-2020-11-03 02:12:03,040 - train.py[line:475] - INFO: current pass: 86, start read image
-2020-11-03 02:13:22,062 - train.py[line:492] - INFO: pass 86 train result, current pass mean loss: 6.050092296397432
-2020-11-03 02:13:22,064 - train.py[line:475] - INFO: current pass: 87, start read image
-2020-11-03 02:14:41,953 - train.py[line:492] - INFO: pass 87 train result, current pass mean loss: 6.051443399266994
-2020-11-03 02:14:41,955 - train.py[line:475] - INFO: current pass: 88, start read image
-2020-11-03 02:16:01,553 - train.py[line:492] - INFO: pass 88 train result, current pass mean loss: 5.99968982757406
-2020-11-03 02:16:01,555 - train.py[line:475] - INFO: current pass: 89, start read image
-2020-11-03 02:17:21,230 - train.py[line:492] - INFO: pass 89 train result, current pass mean loss: 6.06703932741855
-2020-11-03 02:17:21,260 - train.py[line:475] - INFO: current pass: 90, start read image
-2020-11-03 02:18:40,769 - train.py[line:492] - INFO: pass 90 train result, current pass mean loss: 6.001077890396118
-2020-11-03 02:18:48,182 - train.py[line:498] - INFO: 90 epoch current pass map is 0.662952184677124, accum_map is 0.6418030858039856
-2020-11-03 02:18:48,299 - train.py[line:508] - INFO: best pass 50 current best pass MAP is 0.6941518187522888
-2020-11-03 02:18:48,311 - train.py[line:475] - INFO: current pass: 91, start read image
-2020-11-03 02:20:08,605 - train.py[line:492] - INFO: pass 91 train result, current pass mean loss: 6.036894615660322
-2020-11-03 02:20:16,042 - train.py[line:498] - INFO: 91 epoch current pass map is 0.6103470921516418, accum_map is 0.6390876173973083
-2020-11-03 02:20:16,456 - train.py[line:508] - INFO: best pass 50 current best pass MAP is 0.6941518187522888
-2020-11-03 02:20:16,466 - train.py[line:475] - INFO: current pass: 92, start read image
-2020-11-03 02:21:36,359 - train.py[line:492] - INFO: pass 92 train result, current pass mean loss: 5.966463129571143
-2020-11-03 02:21:43,802 - train.py[line:498] - INFO: 92 epoch current pass map is 0.6436482667922974, accum_map is 0.6387957334518433
-2020-11-03 02:21:43,804 - train.py[line:508] - INFO: best pass 50 current best pass MAP is 0.6941518187522888
-2020-11-03 02:21:43,811 - train.py[line:475] - INFO: current pass: 93, start read image
-2020-11-03 02:23:03,585 - train.py[line:492] - INFO: pass 93 train result, current pass mean loss: 5.9393092114874655
-2020-11-03 02:23:10,976 - train.py[line:498] - INFO: 93 epoch current pass map is 0.6592040061950684, accum_map is 0.6394364833831787
-2020-11-03 02:23:11,154 - train.py[line:508] - INFO: best pass 50 current best pass MAP is 0.6941518187522888
-2020-11-03 02:23:11,156 - train.py[line:475] - INFO: current pass: 94, start read image
-2020-11-03 02:24:30,628 - train.py[line:492] - INFO: pass 94 train result, current pass mean loss: 5.983300772119076
-2020-11-03 02:24:38,065 - train.py[line:498] - INFO: 94 epoch current pass map is 0.6264930963516235, accum_map is 0.6386232376098633
-2020-11-03 02:24:38,073 - train.py[line:508] - INFO: best pass 50 current best pass MAP is 0.6941518187522888
-2020-11-03 02:24:38,074 - train.py[line:475] - INFO: current pass: 95, start read image
-2020-11-03 02:25:58,329 - train.py[line:492] - INFO: pass 95 train result, current pass mean loss: 6.030288249888319
-2020-11-03 02:26:05,742 - train.py[line:498] - INFO: 95 epoch current pass map is 0.6770728230476379, accum_map is 0.6401629447937012
-2020-11-03 02:26:05,744 - train.py[line:508] - INFO: best pass 50 current best pass MAP is 0.6941518187522888
-2020-11-03 02:26:05,751 - train.py[line:475] - INFO: current pass: 96, start read image
-2020-11-03 02:27:25,439 - train.py[line:492] - INFO: pass 96 train result, current pass mean loss: 5.906011079220062
-2020-11-03 02:27:32,895 - train.py[line:498] - INFO: 96 epoch current pass map is 0.6259949803352356, accum_map is 0.6394543647766113
-2020-11-03 02:27:32,897 - train.py[line:508] - INFO: best pass 50 current best pass MAP is 0.6941518187522888
-2020-11-03 02:27:32,903 - train.py[line:475] - INFO: current pass: 97, start read image
-2020-11-03 02:28:51,798 - train.py[line:492] - INFO: pass 97 train result, current pass mean loss: 6.014027504210777
-2020-11-03 02:28:59,205 - train.py[line:498] - INFO: 97 epoch current pass map is 0.6651257276535034, accum_map is 0.6407347321510315
-2020-11-03 02:28:59,466 - train.py[line:508] - INFO: best pass 50 current best pass MAP is 0.6941518187522888
-2020-11-03 02:28:59,474 - train.py[line:475] - INFO: current pass: 98, start read image
-2020-11-03 02:30:19,779 - train.py[line:492] - INFO: pass 98 train result, current pass mean loss: 5.963057193350284
-2020-11-03 02:30:27,252 - train.py[line:498] - INFO: 98 epoch current pass map is 0.6619244813919067, accum_map is 0.6413722634315491
-2020-11-03 02:30:27,253 - train.py[line:508] - INFO: best pass 50 current best pass MAP is 0.6941518187522888
-2020-11-03 02:30:27,260 - train.py[line:475] - INFO: current pass: 99, start read image
-2020-11-03 02:31:48,381 - train.py[line:492] - INFO: pass 99 train result, current pass mean loss: 5.832226464088927
-2020-11-03 02:31:55,798 - train.py[line:498] - INFO: 99 epoch current pass map is 0.6417576670646667, accum_map is 0.6412123441696167
-2020-11-03 02:31:56,059 - train.py[line:508] - INFO: best pass 50 current best pass MAP is 0.6941518187522888
-2020-11-03 02:31:56,070 - train.py[line:475] - INFO: current pass: 100, start read image
-2020-11-03 02:33:15,336 - train.py[line:492] - INFO: pass 100 train result, current pass mean loss: 5.958789820366717
-2020-11-03 02:33:23,075 - train.py[line:498] - INFO: 100 epoch current pass map is 0.6518507599830627, accum_map is 0.6414191126823425
-2020-11-03 02:33:23,141 - train.py[line:508] - INFO: best pass 50 current best pass MAP is 0.6941518187522888
-2020-11-03 02:33:23,152 - train.py[line:525] - INFO: end training
+2020-11-05 21:52:27,296 - train.py[line:438] - INFO: start train YOLOv3, train params:{'data_dir': 'E:\\Projects\\Fabric_Defect_Detection\\model_proto\\ShuffleNetV2_YOLOv3\\v1.1\\dataset\\train', 'val_dir': 'E:\\Projects\\Fabric_Defect_Detection\\model_proto\\ShuffleNetV2_YOLOv3\\v1.1\\dataset\\valid', 'train_list': 'train.txt', 'eval_list': 'valid.txt', 'use_filter': False, 'class_dim': 1, 'label_dict': {'defect': 0}, 'num_dict': {0: 'defect'}, 'image_count': 5000, 'continue_train': False, 'pretrained': False, 'pretrained_model_dir': 'E:\\Projects\\Fabric_Defect_Detection\\model_proto\\ShuffleNetV2_YOLOv3\\v1.1\\pretrained_model', 'save_model_dir': 'E:\\Projects\\Fabric_Defect_Detection\\model_proto\\ShuffleNetV2_YOLOv3\\v1.1\\saved_model', 'model_prefix': 'yolo-v3', 'freeze_dir': 'E:\\Projects\\Fabric_Defect_Detection\\model_proto\\ShuffleNetV2_YOLOv3\\v1.1\\freeze_model', 'use_tiny': True, 'max_box_num': 5, 'num_epochs': 101, 'train_batch_size': 32, 'use_gpu': True, 'yolo_cfg': {'input_size': [3, 352, 352], 'anchors': [79, 15, 140, 15, 188, 16, 235, 16, 274, 16, 319, 17, 351, 16, 351, 23, 351, 31], 'anchor_mask': [[6, 7, 8], [3, 4, 5], [0, 1, 2]]}, 'yolo_tiny_cfg': {'input_size': [3, 352, 352], 'anchors': [96, 15, 157, 15, 240, 16, 303, 17, 351, 16, 351, 26], 'anchor_mask': [[3, 4, 5], [0, 1, 2]]}, 'ignore_thresh': 0.7, 'mean_rgb': [127.5, 127.5, 127.5], 'mode': 'train', 'multi_data_reader_count': 4, 'apply_distort': True, 'nms_top_k': 400, 'nms_pos_k': 100, 'valid_thresh': 0.005, 'nms_thresh': 0.1, 'image_distort_strategy': {'expand_prob': 0.5, 'expand_max_ratio': 4, 'hue_prob': 0.5, 'hue_delta': 18, 'contrast_prob': 0.5, 'contrast_delta': 0.5, 'saturation_prob': 0.5, 'saturation_delta': 0.5, 'brightness_prob': 0.5, 'brightness_delta': 0.5}, 'sgd_strategy': {'learning_rate': 0.002, 'lr_epochs': [10, 45, 80, 110, 135, 160, 180], 'lr_decay': [1, 0.5, 0.25, 0.1, 0.025, 0.004, 0.001, 0.0005]}, 'early_stop': {'sample_frequency': 50, 'rise_limit': 10, 'min_loss': 5e-08, 'min_curr_map': 0.84}}
+2020-11-05 21:52:27,305 - train.py[line:440] - INFO: create place, use gpu:True
+2020-11-05 21:52:27,306 - train.py[line:443] - INFO: build network and program
+2020-11-05 21:52:29,686 - train.py[line:456] - INFO: build executor and init params
+2020-11-05 21:52:31,739 - train.py[line:475] - INFO: current pass: 0, start read image
+2020-11-05 21:54:50,288 - train.py[line:492] - INFO: pass 0 train result, current pass mean loss: 751.3121349553394
+2020-11-05 21:55:40,988 - train.py[line:498] - INFO: 0 epoch current pass map is 0.0001242411381099373, accum_map is 0.0001242411381099373
+2020-11-05 21:55:40,988 - train.py[line:504] - INFO: model save 0 epcho train result, current best pass MAP 0.0001242411381099373
+2020-11-05 21:55:43,260 - train.py[line:508] - INFO: best pass 0 current best pass MAP is 0.0001242411381099373
+2020-11-05 21:55:43,262 - train.py[line:475] - INFO: current pass: 1, start read image
+2020-11-05 21:58:01,354 - train.py[line:492] - INFO: pass 1 train result, current pass mean loss: 90.13939601144973
+2020-11-05 21:58:01,356 - train.py[line:475] - INFO: current pass: 2, start read image
+2020-11-05 22:00:19,917 - train.py[line:492] - INFO: pass 2 train result, current pass mean loss: 28.73611738119915
+2020-11-05 22:01:10,880 - train.py[line:498] - INFO: 2 epoch current pass map is 0.12424637377262115, accum_map is 0.062498725950717926
+2020-11-05 22:01:10,880 - train.py[line:504] - INFO: model save 2 epcho train result, current best pass MAP 0.12424637377262115
+2020-11-05 22:01:13,194 - train.py[line:508] - INFO: best pass 2 current best pass MAP is 0.12424637377262115
+2020-11-05 22:01:13,195 - train.py[line:475] - INFO: current pass: 3, start read image
+2020-11-05 22:03:31,451 - train.py[line:492] - INFO: pass 3 train result, current pass mean loss: 15.286431907848188
+2020-11-05 22:03:31,453 - train.py[line:475] - INFO: current pass: 4, start read image
+2020-11-05 22:05:50,323 - train.py[line:492] - INFO: pass 4 train result, current pass mean loss: 10.725729498893593
+2020-11-05 22:06:39,833 - train.py[line:498] - INFO: 4 epoch current pass map is 0.8554415702819824, accum_map is 0.23377551138401031
+2020-11-05 22:06:39,843 - train.py[line:504] - INFO: model save 4 epcho train result, current best pass MAP 0.8554415702819824
+2020-11-05 22:06:42,016 - train.py[line:508] - INFO: best pass 4 current best pass MAP is 0.8554415702819824
+2020-11-05 22:06:42,025 - train.py[line:475] - INFO: current pass: 5, start read image
+2020-11-05 22:09:00,326 - train.py[line:492] - INFO: pass 5 train result, current pass mean loss: 8.488177150677723
+2020-11-05 22:09:00,328 - train.py[line:475] - INFO: current pass: 6, start read image
+2020-11-05 22:11:19,710 - train.py[line:492] - INFO: pass 6 train result, current pass mean loss: 6.9007820080799664
+2020-11-05 22:12:09,915 - train.py[line:498] - INFO: 6 epoch current pass map is 0.9679310321807861, accum_map is 0.457092821598053
+2020-11-05 22:12:09,916 - train.py[line:504] - INFO: model save 6 epcho train result, current best pass MAP 0.9679310321807861
+2020-11-05 22:12:11,817 - train.py[line:508] - INFO: best pass 6 current best pass MAP is 0.9679310321807861
+2020-11-05 22:12:11,817 - train.py[line:475] - INFO: current pass: 7, start read image
+2020-11-05 22:14:30,526 - train.py[line:492] - INFO: pass 7 train result, current pass mean loss: 5.993104694755214
+2020-11-05 22:14:30,528 - train.py[line:475] - INFO: current pass: 8, start read image
+2020-11-05 22:16:48,699 - train.py[line:492] - INFO: pass 8 train result, current pass mean loss: 5.426705187293375
+2020-11-05 22:17:38,124 - train.py[line:498] - INFO: 8 epoch current pass map is 0.8992418050765991, accum_map is 0.5562847852706909
+2020-11-05 22:17:38,126 - train.py[line:508] - INFO: best pass 6 current best pass MAP is 0.9679310321807861
+2020-11-05 22:17:38,134 - train.py[line:475] - INFO: current pass: 9, start read image

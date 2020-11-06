@@ -133,9 +133,9 @@ def infer(image):
 if __name__ == '__main__':
     import sys
     import glob as gb
-    image_path = r'E:\Projects\Fabric_Defect_Detection\model_proto\ShuffleNetV2_YOLOv3\v1.0.2\dataset\valid'
-    label_path = r'E:\Projects\Fabric_Defect_Detection\model_proto\ShuffleNetV2_YOLOv3\v1.0.1\dataset\valid'
-    save_path  = r"E:\Projects\Fabric_Defect_Detection\model_proto\ShuffleNetV2_YOLOv3\v1.0.2\dataset\valid_output"
+    image_path = r'E:\Projects\Fabric_Defect_Detection\model_proto\ShuffleNetV2_YOLOv3\v1.1\dataset\valid'
+    label_path = r'E:\Projects\Fabric_Defect_Detection\model_proto\ShuffleNetV2_YOLOv3\v1.1\dataset\valid'
+    save_path  = r"E:\Projects\Fabric_Defect_Detection\model_proto\ShuffleNetV2_YOLOv3\v1.1\dataset\valid_output"
     image_list = gb.glob(image_path + r"/*.png")
     total_time = 0.
     

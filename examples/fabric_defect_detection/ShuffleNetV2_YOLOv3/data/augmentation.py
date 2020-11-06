@@ -1,9 +1,10 @@
 # https://blog.csdn.net/qq_36834959/article/details/79958446
 
-import os
+import os, sys
 import numpy as np
 from PIL import Image, ImageOps, ImageEnhance
 from matplotlib import pyplot as plt
+#from lxml.etree import Element, SubElement, tostring, ElementTree
 
 
 class ImageRandomDistort(object):
@@ -29,31 +30,80 @@ class ImageRandomDistort(object):
         if val is None: val = np.random.uniform(lower, upper)
         return ImageEnhance.Color(img).enhance(val)
         
-    def random_rotate(self, img, val=None, pos=0.5): # Note: only for image while img_h == img_w
+    def random_rotate(self, img, xml_tree, val=None, pos=0.5): # Note: only for image while img_h == img_w
         if val is None: val = np.random.uniform(0, 1)
         if val < pos: 
             kind = np.random.randint(0,2)
-            if kind == 0: img = img.rotate(90)
-            if kind == 1: img = img.rotate(270) 
+            if kind == 0: img = img.rotate(90)  # Todo: Need to consider about the label
+            if kind == 1: img = img.rotate(270) # Yodo: Need to consider about the label
         return img
         
-    def random_flip(self, img, val=None, pos=0.5):
+    def random_flip(self, img, xml_tree, val=None, pos=0.5):
         if val is None: val = np.random.uniform(0, 1)
         if val < pos: 
             kind = np.random.randint(0,3)
-            if kind in [1,3]: img = self.random_flip_left_right(img, val=0)
-            if kind in [2,3]: img = self.random_flip_top_bottom(img, val=0) 
-        return img
+            if kind in [1,3]: img, xml_tree = self.random_flip_left_right(img, xml_tree, val=0)      
+            if kind in [2,3]: img, xml_tree = self.random_flip_top_bottom(img, xml_tree, val=0) 
+
+        return img, xml_tree
         
-    def random_flip_left_right(self, img, val=None, pos=0.5):
+    def random_flip_left_right(self, img, xml_tree, val=None, pos=0.5):
         if val is None: val = np.random.uniform(0, 1)
-        if val < pos: return img.transpose(Image.FLIP_LEFT_RIGHT)
-        else: return img
+        if val < pos: 
+            img = img.transpose(Image.FLIP_LEFT_RIGHT)
+            root = xml_tree.getroot()
+            
+            # Get the image width and height
+            width, height = 0,0 
+            for node in root.iter():
+                if node.tag == "size":
+                    for item in node.iter():
+                        if item.tag == "width": width = int(item.text)
+                        elif item.tag == "height": height = int(item.text)
+            assert width > 0 and height > 0
+            
+            # Left right flip the image and the corresponding bbxs
+            for node in root.iter():
+                if node.tag == "object":
+                    xs = []
+                    for item in node.iter():
+                        if item.tag in ["xmin", "xmax"]: xs.append(str(width - int(item.text)))
+                    if len(xs) == 0: break
+                    
+                    for item in node.iter():
+                        if item.tag == "xmin":   item.text = str(min(xs))
+                        elif item.tag == "xmax": item.text = str(max(xs))
+            
+        return img, xml_tree
         
-    def random_flip_top_bottom(self, img, val=None, pos=0.5):
+    def random_flip_top_bottom(self, img, xml_tree, val=None, pos=0.5):
         if val is None: val = np.random.uniform(0, 1)
-        if val < pos: return img.transpose(Image.FLIP_TOP_BOTTOM)
-        else: return img
+        if val < pos: 
+            img = img.transpose(Image.FLIP_TOP_BOTTOM)
+            root = xml_tree.getroot()
+            
+            # Get the image width and height
+            width, height = 0,0 
+            for node in root.iter():
+                if node.tag == "size":
+                    for item in node.iter():
+                        if item.tag == "width": width = int(item.text)
+                        elif item.tag == "height": height = int(item.text)
+            assert width > 0 and height > 0
+            
+            # Top bottom flip the image and the corresponding bbxs
+            for node in root.iter():
+                if node.tag == "object":
+                    ys = []
+                    for item in node.iter():
+                        if item.tag in ["ymin", "ymax"]: ys.append(str(height - int(item.text)))
+                    if len(ys) == 0: break
+                    
+                    for item in node.iter():
+                        if item.tag == "ymin":   item.text = str(min(ys))
+                        elif item.tag == "ymax": item.text = str(max(ys))
+            
+        return img, xml_tree
         
     def random_invert(self, img, val=None, pos=0.3):
         if val is None: val = np.random.uniform(0, 1)

@@ -179,8 +179,8 @@ def distort_image(img):
     np.random.shuffle(ops) 
     img = ops[0](img)
     img = ops[1](img)
-    img = ops[2](img)
-    img = ops[3](img)
+    #img = ops[2](img)
+    #img = ops[3](img)
     return img
 
 
@@ -341,6 +341,37 @@ def shuffle_gtbox(gtbox, gtlabel):
     return gt[:, :4], gt[:, 4]
 
 
+def custom_preprocess(img, bbox_labels, input_size, mode):
+    """
+    preprocess
+    :param img:
+    :param bbox_labels:
+    :param input_size:
+    :param mode:
+    :return:
+    """
+    img_width, img_height = img.size
+    sample_labels = np.array(bbox_labels)
+    if mode == 'train':
+        if train_parameters['apply_distort']: 
+            img = distort_image(img)
+            
+        gtboxes = sample_labels[:, 1:5] # Define the ground true bounding box
+        gtlabels = sample_labels[:, 0]  # Define the ground true labels
+        
+        img, gtboxes = random_flip(img, gtboxes, thresh=0.5)
+        gtboxes, gtlabels = shuffle_gtbox(gtboxes, gtlabels)
+        
+        sample_labels[:, 0] = gtlabels
+        sample_labels[:, 1:5] = gtboxes
+        
+    img = np.array(img).astype('float32')
+    img -= train_parameters['mean_rgb']
+    img = img.transpose((2, 0, 1))  # HWC to CHW
+    img *= 0.007843
+    return img, sample_labels
+    
+    
 def preprocess(img, bbox_labels, input_size, mode):
     """
     preprocess
@@ -416,7 +447,8 @@ def custom_reader(file_list, data_dir,input_size, mode):
                     bbox_labels.append(bbox_sample)
                 if len(bbox_labels) == 0:
                     continue
-                img, sample_labels = preprocess(img, bbox_labels, input_size, mode)
+                #img, sample_labels = preprocess(img, bbox_labels, input_size, mode)
+                img, sample_labels = custom_preprocess(img, bbox_labels, input_size, mode)
                 # sample_labels = np.array(sample_labels)
                 if len(sample_labels) == 0: continue
                 boxes = sample_labels[:, 1:5]

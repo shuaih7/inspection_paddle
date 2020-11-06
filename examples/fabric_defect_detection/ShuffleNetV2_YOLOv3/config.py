@@ -7,8 +7,8 @@ import logging
 import codecs
 
 train_parameters = {
-    "data_dir": r"E:\Projects\Fabric_Defect_Detection\model_proto\ShuffleNetV2_YOLOv3\v1.0.2\dataset\train",
-    "val_dir": r"E:\Projects\Fabric_Defect_Detection\model_proto\ShuffleNetV2_YOLOv3\v1.0.2\dataset\valid",
+    "data_dir": r"E:\Projects\Fabric_Defect_Detection\model_proto\ShuffleNetV2_YOLOv3\v1.1\dataset\train",
+    "val_dir": r"E:\Projects\Fabric_Defect_Detection\model_proto\ShuffleNetV2_YOLOv3\v1.1\dataset\valid",
     "train_list": "train.txt",
     "eval_list": "valid.txt",
     "use_filter": False,
@@ -16,12 +16,12 @@ train_parameters = {
     "label_dict": {},
     "num_dict": {},
     "image_count": -1,
-    "continue_train": True,     # 是否加载前一次的训练参数，接着训练
+    "continue_train": False,     # 是否加载前一次的训练参数，接着训练
     "pretrained": False,
-    "pretrained_model_dir": r"E:\Projects\Fabric_Defect_Detection\model_proto\ShuffleNetV2_YOLOv3\v1.0.2\pretrained_model",
-    "save_model_dir": r"E:\Projects\Fabric_Defect_Detection\model_proto\ShuffleNetV2_YOLOv3\v1.0.2\saved_model",
+    "pretrained_model_dir": r"E:\Projects\Fabric_Defect_Detection\model_proto\ShuffleNetV2_YOLOv3\v1.1\pretrained_model",
+    "save_model_dir": r"E:\Projects\Fabric_Defect_Detection\model_proto\ShuffleNetV2_YOLOv3\v1.1\saved_model",
     "model_prefix": "yolo-v3",
-    "freeze_dir": r"E:\Projects\Fabric_Defect_Detection\model_proto\ShuffleNetV2_YOLOv3\v1.0.2\freeze_model",
+    "freeze_dir": r"E:\Projects\Fabric_Defect_Detection\model_proto\ShuffleNetV2_YOLOv3\v1.1\freeze_model",
     "use_tiny": True,          # 是否使用 裁剪 tiny 模型
     "max_box_num": 5,          # 一幅图上最多有多少个目标
     "num_epochs": 101,
@@ -30,13 +30,13 @@ train_parameters = {
     "yolo_cfg": {
         "input_size": [3, 352, 352],    # 原版的边长大小为608，为了提高训练速度和预测速度，此处压缩为448
         # "anchors": [10, 13, 16, 30, 33, 23, 30, 61, 62, 45, 59, 119, 116, 90, 156, 198, 373, 326], #416
-        "anchors": [9, 12, 15, 28, 30, 21,  28, 56, 57, 42, 54, 110, 107, 83, 144, 183, 344, 301],#384
+        "anchors": [79, 15, 140, 15, 188, 16, 235, 16, 274, 16, 319, 17, 351, 16, 351, 23, 351, 31],#384
         # "anchors": [8, 10, 12, 23, 25, 18, 23, 47, 48, 35, 45, 92, 89, 69, 120, 152, 287, 251],#320
         "anchor_mask": [[6, 7, 8], [3, 4, 5], [0, 1, 2]]
     },
     "yolo_tiny_cfg": {
         "input_size": [3, 352, 352],
-        "anchors": [115, 15, 211, 15, 285, 17, 334, 16, 351, 17, 352, 29],
+        "anchors": [96, 15, 157, 15, 240, 16, 303, 17, 351, 16, 351, 26],
         "anchor_mask": [[3, 4, 5], [0, 1, 2]]
     },
     "ignore_thresh": 0.7,

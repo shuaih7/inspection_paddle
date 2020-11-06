@@ -402,7 +402,7 @@ def get_loss(model, outputs, gt_box, gt_label, main_prog):
             downsample_ratio //= 2
         loss = sum(losses)
         #optimizer, lr = optimizer_rms_setting()
-        optimizer, lr = optimizer_custom_setting(learning_rate=0.0002)
+        optimizer, lr = optimizer_custom_setting(learning_rate=0.0005)
         optimizer.minimize(loss)
         return [loss, lr]
 
@@ -491,7 +491,7 @@ def train():
         pass_mean_loss = total_loss / batch_id
         logger.info("pass {0} train result, current pass mean loss: {1}".format(pass_id, pass_mean_loss))
 
-        if pass_id >= 90 or pass_id % 5 == 0:
+        if pass_id >= 90 or pass_id % 2 == 0:
             
             cur_map_, accum_map_ = eval(test_program, [pred.name], eval_program,
                                         [cur_map.name, accum_map.name], eval_feeder)
