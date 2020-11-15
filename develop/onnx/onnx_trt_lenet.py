@@ -17,7 +17,7 @@ TRT_LOGGER = trt.Logger()
     
 def get_img_np_nchw(filename): # -> read grayscale image
     #image_cv = cv2.imread(filename, cv2.IMREAD_GRAYSCALE)
-    image_cv = np.zones((28,28), dtype=np.float32)
+    image_cv = np.zeros((28,28), dtype=np.float32)
     img_np = np.array(image_cv, dtype=np.float)/255.
     img_np_nchw = np.expand_dims(np.expand_dims(np.squeeze(img_np), 0), 0)
     return img_np_nchw
@@ -62,44 +62,37 @@ def allocate_buffers(engine):
     return inputs, outputs, bindings, stream
     
     
-def get_engine(max_batch_size=1, onnx_file_path="", engine_file_path="", fp16_mode=False, save_engine=False):
-    '''
-    通过加载onnx文件，构建engine
-    :param onnx_file_path: onnx文件路径
-    :return: engine
-    '''
-    # 打印日志
-    _LOGGER = trt.Logger(trt.Logger.WARNING)
-    
-    # 如果已经存在序列化之后的引擎，则直接反序列化得到cudaEngine
+def get_engine(onnx_file_path, engine_file_path=""):
+    """Attempts to load a serialized engine if available, otherwise builds a new TensorRT engine and saves it."""
+    def build_engine():
+        """Takes an ONNX file and creates a TensorRT engine to run inference with"""
+        with trt.Builder(TRT_LOGGER) as builder, builder.create_network() as network, trt.OnnxParser(network, TRT_LOGGER) as parser:
+            builder.max_workspace_size = 1 << 30 # 1GB
+            builder.max_batch_size = 1
+            builder.fp16_mode = True
+            # Parse model file
+            if not os.path.exists(onnx_file_path):
+                print('ONNX file {} not found, please run yolov3_to_onnx.py first to generate it.'.format(onnx_file_path))
+                exit(0)
+            print('Loading ONNX file from path {}...'.format(onnx_file_path))
+            with open(onnx_file_path, 'rb') as model:
+                print('Beginning ONNX file parsing')
+                parser.parse(model.read())
+            print('Completed parsing of ONNX file')
+            print('Building an engine from file {}; this may take a while...'.format(onnx_file_path))
+            engine = builder.build_cuda_engine(network)
+            print("Completed creating Engine")
+            with open(engine_file_path, "wb") as f:
+                f.write(engine.serialize())
+            return engine
+
     if os.path.exists(engine_file_path):
-        print("Reading engine from file: {}".format(engine_file_path))
-        with open(engine_file_path, 'rb') as f, \
-            trt.Runtime(TRT_LOGGER) as runtime:
-            return runtime.deserialize_cuda_engine(f.read())  # 反序列化
- 
-    with trt.Builder(TRT_LOGGER) as builder, builder.create_network() as network, trt.OnnxParser(network, TRT_LOGGER) as parser:
-        builder.fp16_mode = fp16_mode
-        builder.max_batch_size = max_batch_size
-        builder.max_workspace_size = 1 << 20
- 
-    print('Loading ONNX file from path {}...'.format(onnx_file_path))
-    with open(onnx_file_path, 'rb') as model:
-        print('Beginning ONNX file parsing')
-        parser.parse(model.read())
-        print('Completed parsing of ONNX file')
- 
-    print('Building an engine from file {}; this may take a while...'.format(onnx_file_path))
-    engine = builder.build_cuda_engine(network)
-    print("Completed creating Engine")
-    
-    if save_engine:  #保存engine供以后直接反序列化使用
-        with open(engine_file_path, 'wb') as f: f.write(engine.serialize())  # 序列化
- 
-    # 保存计划文件
-    # with open(engine_file_path, "wb") as f:
-    #  f.write(engine.serialize())
-    return engine
+        # If a serialized engine exists, use it instead of building an engine.
+        print("Reading engine from file {}".format(engine_file_path))
+        with open(engine_file_path, "rb") as f, trt.Runtime(TRT_LOGGER) as runtime:
+            return runtime.deserialize_cuda_engine(f.read())
+    else:
+        return build_engine()
     
 
 '''
@@ -177,10 +170,9 @@ def postprocess_the_outputs(h_outputs, shape_of_output):
 
 img_np_nchw = get_img_np_nchw(filename).astype(np.float32)
 #These two modes are depend on hardwares
-fp16_mode = False
 trt_engine_path = "./model_fp16_{}.trt".format(fp16_mode)
 # Build an cudaEngine
-engine = get_engine(max_batch_size, onnx_model_path, trt_engine_path, fp16_mode)
+engine = get_engine(onnx_model_path, trt_engine_path)
 # 创建CudaEngine之后,需要将该引擎应用到不同的卡上配置执行环境
 context = engine.create_execution_context()
 inputs, outputs, bindings, stream = allocate_buffers(engine) # input, output: host # bindings
