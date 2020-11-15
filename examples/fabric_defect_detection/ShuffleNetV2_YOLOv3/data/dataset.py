@@ -45,6 +45,27 @@ def write_into_txt(file_path, suffix=".xml", save_path=None, save_name="List", i
     
     print("Done")
     
+    
+def write_into_txt_PascalVOC(img_path, ann_path, img_head="", ann_head="", save_path=None, save_name="List", is_shuffle=True): 
+    ann_list = gb.glob(ann_path + r"/*.xml")
+    if is_shuffle: ann_list = shuffle(ann_list)
+    
+    txt_name = os.path.join(save_path, save_name+".txt")
+    with open(txt_name, "w") as f:
+        for ann_file in ann_list:
+            _, filename = os.path.split(ann_file)
+            fname, _ = os.path.splitext(filename)
+            img_file = os.path.join(img_path, fname+".png")
+            
+            assert os.path.isfile(img_file)
+            img_item = os.path.join(img_head, fname+".png")
+            ann_item = os.path.join(ann_head, fname+".xml")
+            f.write(img_item + " " + ann_item)
+            f.write("\n")
+        f.close()
+    
+    print("Done")
+    
 
 class random_data_generator(object):
     def __init__(self, win_w=1600, win_h=1600, resize_w=352, resize_h=352, def_line_w=15, min_def_w=50, min_def_h=15, 
@@ -325,9 +346,15 @@ if __name__ == "__main__":
             
     
     # 5. Create the training and validation txt file
-    ann_path = r"E:\Projects\Fabric_Defect_Detection\model_proto\ShuffleNetV2_YOLOv3\v1.1\dataset\train"
-    save_path = r"C:\Users\shuai\Documents\GitHub\inspection_paddle\examples\fabric_defect_detection\ShuffleNetV2_YOLOv3"
-    write_into_txt(ann_path, save_path=save_path, save_name="train")
+    img_head = r"ThreeGun_Fabric_1013\Images\valid"
+    ann_head = r"ThreeGun_Fabric_1013\Annotations\valid"
+    img_path = r"E:\Projects\Fabric_Defect_Detection\model_proto\ShuffleNetV2_YOLOv3\v1.1\dataset\valid"
+    ann_path = r"E:\Projects\Fabric_Defect_Detection\model_proto\ShuffleNetV2_YOLOv3\v1.1\dataset\valid"
+    save_path = r"E:\Projects\Fabric_Defect_Detection\model_proto\dataset\ThreeGun_Fabric_1013"
+    #save_path = r"C:\Users\shuai\Documents\GitHub\inspection_paddle\examples\fabric_defect_detection\ShuffleNetV2_YOLOv3"
+    #write_into_txt(ann_path, save_path=save_path, save_name="train")
+    
+    write_into_txt_PascalVOC(img_path, ann_path, img_head, ann_head, save_path=save_path, save_name="valid")
     
     
         

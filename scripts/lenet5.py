@@ -36,13 +36,16 @@ exe.run(fluid.default_startup_program())
 #初始化后的参数存放在fluid.global_scope()中，可通过参数名从该scope中获取参数
 
 train_reader = paddle.batch(paddle.dataset.mnist.train(), batch_size=128)
+model_save_path = r"C:\Users\shuai\Documents\GitHub\inspection_paddle\scripts\model"
 
 for epoch_id in range(5):
-	for batch_id, data in enumerate(train_reader()):
-		img_data = np.array([x[0].reshape([1,28,28]) for x in data]).astype('float32')
-		y_data = np.array([x[1] for x in data]).reshape([len(img_data),1]).astype('int64')
-		loss, acc = exe.run(fluid.default_main_program(), feed={'pixel':img_data, 'label':y_data}, fetch_list=[avg_cost, batch_acc])
-		print("epoch:%d, batch:%d, loss:%.5f, acc:%.5f"%(epoch_id, batch_id, loss, acc))
+    for batch_id, data in enumerate(train_reader()):
+        img_data = np.array([x[0].reshape([1,28,28]) for x in data]).astype('float32')
+        y_data = np.array([x[1] for x in data]).reshape([len(img_data),1]).astype('int64')
+        loss, acc = exe.run(fluid.default_main_program(), feed={'pixel':img_data, 'label':y_data}, fetch_list=[avg_cost, batch_acc])
+        print("epoch:%d, batch:%d, loss:%.5f, acc:%.5f"%(epoch_id, batch_id, loss, acc))
+        
+    fluid.io.save_inference_model(dirname=model_save_path, feeded_var_names=['pixel'], target_vars=[predict], executor=exe)
 
 """
 # 多卡训练

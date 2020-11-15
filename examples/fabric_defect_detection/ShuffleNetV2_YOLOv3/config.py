@@ -19,10 +19,10 @@ train_parameters = {
     "continue_train": False,     # 是否加载前一次的训练参数，接着训练
     "pretrained": False,
     "pretrained_model_dir": r"E:\Projects\Fabric_Defect_Detection\model_proto\ShuffleNetV2_YOLOv3\v1.1\pretrained_model",
-    "save_model_dir": r"E:\Projects\Fabric_Defect_Detection\model_proto\ShuffleNetV2_YOLOv3\v1.1\saved_model",
+    "save_model_dir": r"E:\Projects\Fabric_Defect_Detection\model_proto\ShuffleNetV2_YOLOv3\v1.1\ShuffleNetV2_s1.0\saved_model",
     "model_prefix": "yolo-v3",
     "freeze_dir": r"E:\Projects\Fabric_Defect_Detection\model_proto\ShuffleNetV2_YOLOv3\v1.1\freeze_model",
-    "use_tiny": True,          # 是否使用 裁剪 tiny 模型
+    "use_tiny": False,          # 是否使用 裁剪 tiny 模型
     "max_box_num": 5,          # 一幅图上最多有多少个目标
     "num_epochs": 101,
     "train_batch_size": 32,      # 对于完整 yolov3，每一批的训练样本不能太多，内存会炸掉
@@ -44,8 +44,8 @@ train_parameters = {
     "mode": "train",
     "multi_data_reader_count": 4,
     "apply_distort": True,
-    "nms_top_k": 400,
-    "nms_pos_k": 100,
+    "nms_top_k": 6,
+    "nms_pos_k": 6,
     "valid_thresh": 0.005,
     "nms_thresh": 0.1,
     "image_distort_strategy": {

@@ -458,6 +458,7 @@ def train():
     exe.run(start_program)
     train_fetch_list = [loss[0].name]
     load_pretrained_params(exe, train_program)
+    fluid.contrib.model_stat.summary(train_program) # Print out the model input / output size, total params, and FLOPS
 
     stop_strategy = train_parameters['early_stop']
     rise_limit = stop_strategy['rise_limit']

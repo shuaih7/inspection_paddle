@@ -1,37 +1,5 @@
-2020-11-05 21:52:27,296 - train.py[line:438] - INFO: start train YOLOv3, train params:{'data_dir': 'E:\\Projects\\Fabric_Defect_Detection\\model_proto\\ShuffleNetV2_YOLOv3\\v1.1\\dataset\\train', 'val_dir': 'E:\\Projects\\Fabric_Defect_Detection\\model_proto\\ShuffleNetV2_YOLOv3\\v1.1\\dataset\\valid', 'train_list': 'train.txt', 'eval_list': 'valid.txt', 'use_filter': False, 'class_dim': 1, 'label_dict': {'defect': 0}, 'num_dict': {0: 'defect'}, 'image_count': 5000, 'continue_train': False, 'pretrained': False, 'pretrained_model_dir': 'E:\\Projects\\Fabric_Defect_Detection\\model_proto\\ShuffleNetV2_YOLOv3\\v1.1\\pretrained_model', 'save_model_dir': 'E:\\Projects\\Fabric_Defect_Detection\\model_proto\\ShuffleNetV2_YOLOv3\\v1.1\\saved_model', 'model_prefix': 'yolo-v3', 'freeze_dir': 'E:\\Projects\\Fabric_Defect_Detection\\model_proto\\ShuffleNetV2_YOLOv3\\v1.1\\freeze_model', 'use_tiny': True, 'max_box_num': 5, 'num_epochs': 101, 'train_batch_size': 32, 'use_gpu': True, 'yolo_cfg': {'input_size': [3, 352, 352], 'anchors': [79, 15, 140, 15, 188, 16, 235, 16, 274, 16, 319, 17, 351, 16, 351, 23, 351, 31], 'anchor_mask': [[6, 7, 8], [3, 4, 5], [0, 1, 2]]}, 'yolo_tiny_cfg': {'input_size': [3, 352, 352], 'anchors': [96, 15, 157, 15, 240, 16, 303, 17, 351, 16, 351, 26], 'anchor_mask': [[3, 4, 5], [0, 1, 2]]}, 'ignore_thresh': 0.7, 'mean_rgb': [127.5, 127.5, 127.5], 'mode': 'train', 'multi_data_reader_count': 4, 'apply_distort': True, 'nms_top_k': 400, 'nms_pos_k': 100, 'valid_thresh': 0.005, 'nms_thresh': 0.1, 'image_distort_strategy': {'expand_prob': 0.5, 'expand_max_ratio': 4, 'hue_prob': 0.5, 'hue_delta': 18, 'contrast_prob': 0.5, 'contrast_delta': 0.5, 'saturation_prob': 0.5, 'saturation_delta': 0.5, 'brightness_prob': 0.5, 'brightness_delta': 0.5}, 'sgd_strategy': {'learning_rate': 0.002, 'lr_epochs': [10, 45, 80, 110, 135, 160, 180], 'lr_decay': [1, 0.5, 0.25, 0.1, 0.025, 0.004, 0.001, 0.0005]}, 'early_stop': {'sample_frequency': 50, 'rise_limit': 10, 'min_loss': 5e-08, 'min_curr_map': 0.84}}
-2020-11-05 21:52:27,305 - train.py[line:440] - INFO: create place, use gpu:True
-2020-11-05 21:52:27,306 - train.py[line:443] - INFO: build network and program
-2020-11-05 21:52:29,686 - train.py[line:456] - INFO: build executor and init params
-2020-11-05 21:52:31,739 - train.py[line:475] - INFO: current pass: 0, start read image
-2020-11-05 21:54:50,288 - train.py[line:492] - INFO: pass 0 train result, current pass mean loss: 751.3121349553394
-2020-11-05 21:55:40,988 - train.py[line:498] - INFO: 0 epoch current pass map is 0.0001242411381099373, accum_map is 0.0001242411381099373
-2020-11-05 21:55:40,988 - train.py[line:504] - INFO: model save 0 epcho train result, current best pass MAP 0.0001242411381099373
-2020-11-05 21:55:43,260 - train.py[line:508] - INFO: best pass 0 current best pass MAP is 0.0001242411381099373
-2020-11-05 21:55:43,262 - train.py[line:475] - INFO: current pass: 1, start read image
-2020-11-05 21:58:01,354 - train.py[line:492] - INFO: pass 1 train result, current pass mean loss: 90.13939601144973
-2020-11-05 21:58:01,356 - train.py[line:475] - INFO: current pass: 2, start read image
-2020-11-05 22:00:19,917 - train.py[line:492] - INFO: pass 2 train result, current pass mean loss: 28.73611738119915
-2020-11-05 22:01:10,880 - train.py[line:498] - INFO: 2 epoch current pass map is 0.12424637377262115, accum_map is 0.062498725950717926
-2020-11-05 22:01:10,880 - train.py[line:504] - INFO: model save 2 epcho train result, current best pass MAP 0.12424637377262115
-2020-11-05 22:01:13,194 - train.py[line:508] - INFO: best pass 2 current best pass MAP is 0.12424637377262115
-2020-11-05 22:01:13,195 - train.py[line:475] - INFO: current pass: 3, start read image
-2020-11-05 22:03:31,451 - train.py[line:492] - INFO: pass 3 train result, current pass mean loss: 15.286431907848188
-2020-11-05 22:03:31,453 - train.py[line:475] - INFO: current pass: 4, start read image
-2020-11-05 22:05:50,323 - train.py[line:492] - INFO: pass 4 train result, current pass mean loss: 10.725729498893593
-2020-11-05 22:06:39,833 - train.py[line:498] - INFO: 4 epoch current pass map is 0.8554415702819824, accum_map is 0.23377551138401031
-2020-11-05 22:06:39,843 - train.py[line:504] - INFO: model save 4 epcho train result, current best pass MAP 0.8554415702819824
-2020-11-05 22:06:42,016 - train.py[line:508] - INFO: best pass 4 current best pass MAP is 0.8554415702819824
-2020-11-05 22:06:42,025 - train.py[line:475] - INFO: current pass: 5, start read image
-2020-11-05 22:09:00,326 - train.py[line:492] - INFO: pass 5 train result, current pass mean loss: 8.488177150677723
-2020-11-05 22:09:00,328 - train.py[line:475] - INFO: current pass: 6, start read image
-2020-11-05 22:11:19,710 - train.py[line:492] - INFO: pass 6 train result, current pass mean loss: 6.9007820080799664
-2020-11-05 22:12:09,915 - train.py[line:498] - INFO: 6 epoch current pass map is 0.9679310321807861, accum_map is 0.457092821598053
-2020-11-05 22:12:09,916 - train.py[line:504] - INFO: model save 6 epcho train result, current best pass MAP 0.9679310321807861
-2020-11-05 22:12:11,817 - train.py[line:508] - INFO: best pass 6 current best pass MAP is 0.9679310321807861
-2020-11-05 22:12:11,817 - train.py[line:475] - INFO: current pass: 7, start read image
-2020-11-05 22:14:30,526 - train.py[line:492] - INFO: pass 7 train result, current pass mean loss: 5.993104694755214
-2020-11-05 22:14:30,528 - train.py[line:475] - INFO: current pass: 8, start read image
-2020-11-05 22:16:48,699 - train.py[line:492] - INFO: pass 8 train result, current pass mean loss: 5.426705187293375
-2020-11-05 22:17:38,124 - train.py[line:498] - INFO: 8 epoch current pass map is 0.8992418050765991, accum_map is 0.5562847852706909
-2020-11-05 22:17:38,126 - train.py[line:508] - INFO: best pass 6 current best pass MAP is 0.9679310321807861
-2020-11-05 22:17:38,134 - train.py[line:475] - INFO: current pass: 9, start read image
+2020-11-09 15:00:04,799 - train.py[line:438] - INFO: start train YOLOv3, train params:{'data_dir': 'E:\\Projects\\Fabric_Defect_Detection\\model_proto\\ShuffleNetV2_YOLOv3\\v1.1\\dataset\\train', 'val_dir': 'E:\\Projects\\Fabric_Defect_Detection\\model_proto\\ShuffleNetV2_YOLOv3\\v1.1\\dataset\\valid', 'train_list': 'train.txt', 'eval_list': 'valid.txt', 'use_filter': False, 'class_dim': 1, 'label_dict': {'defect': 0}, 'num_dict': {0: 'defect'}, 'image_count': 5000, 'continue_train': False, 'pretrained': False, 'pretrained_model_dir': 'E:\\Projects\\Fabric_Defect_Detection\\model_proto\\ShuffleNetV2_YOLOv3\\v1.1\\pretrained_model', 'save_model_dir': 'E:\\Projects\\Fabric_Defect_Detection\\model_proto\\ShuffleNetV2_YOLOv3\\v1.1\\ShuffleNetV2_s1.0\\saved_model', 'model_prefix': 'yolo-v3', 'freeze_dir': 'E:\\Projects\\Fabric_Defect_Detection\\model_proto\\ShuffleNetV2_YOLOv3\\v1.1\\freeze_model', 'use_tiny': False, 'max_box_num': 5, 'num_epochs': 101, 'train_batch_size': 32, 'use_gpu': True, 'yolo_cfg': {'input_size': [3, 352, 352], 'anchors': [79, 15, 140, 15, 188, 16, 235, 16, 274, 16, 319, 17, 351, 16, 351, 23, 351, 31], 'anchor_mask': [[6, 7, 8], [3, 4, 5], [0, 1, 2]]}, 'yolo_tiny_cfg': {'input_size': [3, 352, 352], 'anchors': [96, 15, 157, 15, 240, 16, 303, 17, 351, 16, 351, 26], 'anchor_mask': [[3, 4, 5], [0, 1, 2]]}, 'ignore_thresh': 0.7, 'mean_rgb': [127.5, 127.5, 127.5], 'mode': 'train', 'multi_data_reader_count': 4, 'apply_distort': True, 'nms_top_k': 400, 'nms_pos_k': 100, 'valid_thresh': 0.005, 'nms_thresh': 0.1, 'image_distort_strategy': {'expand_prob': 0.5, 'expand_max_ratio': 4, 'hue_prob': 0.5, 'hue_delta': 18, 'contrast_prob': 0.5, 'contrast_delta': 0.5, 'saturation_prob': 0.5, 'saturation_delta': 0.5, 'brightness_prob': 0.5, 'brightness_delta': 0.5}, 'sgd_strategy': {'learning_rate': 0.002, 'lr_epochs': [10, 45, 80, 110, 135, 160, 180], 'lr_decay': [1, 0.5, 0.25, 0.1, 0.025, 0.004, 0.001, 0.0005]}, 'early_stop': {'sample_frequency': 50, 'rise_limit': 10, 'min_loss': 5e-08, 'min_curr_map': 0.84}}
+2020-11-09 15:00:04,880 - train.py[line:440] - INFO: create place, use gpu:True
+2020-11-09 15:00:04,882 - train.py[line:443] - INFO: build network and program
+2020-11-09 15:00:08,536 - train.py[line:456] - INFO: build executor and init params
+2020-11-09 15:00:19,097 - train.py[line:476] - INFO: current pass: 0, start read image
