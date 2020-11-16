@@ -1,4 +1,4 @@
-import os, paddle
+import os, sys, paddle
 import numpy as np
 from paddle import fluid
 from visualdl import LogWriter
@@ -89,6 +89,9 @@ report_freq = 10
 base_metric = 0.0
 model_save_path = r"E:\Projects\Fabric_Defect_Detection\model_proto\saved_model"
 var_save_path   = r"E:\Projects\Fabric_Defect_Detection\model_proto\saved_var"
+
+fluid.contrib.model_stat.summary(fluid.default_main_program()) # Print out the model input / output size, total params, and FLOPS
+sys.exit()
 
 train_step, valid_pos_step, valid_neg_step = 0, 0, 0
 for epoch_id in range(epoch_num):

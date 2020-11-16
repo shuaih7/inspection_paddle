@@ -1,4 +1,4 @@
-import paddle
+import paddle, os, sys
 import numpy as np
 from paddle import fluid
 
@@ -38,7 +38,9 @@ exe.run(fluid.default_startup_program())
 train_reader = paddle.batch(paddle.dataset.mnist.train(), batch_size=128)
 model_save_path = r"C:\Users\shuai\Documents\GitHub\inspection_paddle\scripts\model"
 
-for epoch_id in range(5):
+fluid.contrib.model_stat.summary(fluid.default_main_program())
+
+for epoch_id in range(1):
     for batch_id, data in enumerate(train_reader()):
         img_data = np.array([x[0].reshape([1,28,28]) for x in data]).astype('float32')
         y_data = np.array([x[1] for x in data]).reshape([len(img_data),1]).astype('int64')

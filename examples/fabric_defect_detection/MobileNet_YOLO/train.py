@@ -8,7 +8,7 @@ import time
 import config
 import cv2
 import numpy as np
-from ShuffleNetV2_YOLOv3 import get_yolo
+from Fast_YOLO import get_yolo
 import paddle.fluid as fluid
 from reader import single_custom_reader
 from PIL import Image

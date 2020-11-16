@@ -5,7 +5,7 @@ from PIL import Image
 from sklearn.utils import shuffle
 from skimage.measure import label, regionprops
 from lxml.etree import Element, SubElement, tostring, ElementTree
-from .augmentation import ImageRandomDistort
+from augmentation import ImageRandomDistort
 
 
 def random_split_train_valid(ann_path, train_save_path, valid_save_path, percent=0.8, is_shuffle=True):
@@ -45,9 +45,31 @@ def write_into_txt(file_path, suffix=".xml", save_path=None, save_name="List", i
     
     print("Done")
     
+    
+def write_into_txt_PascalVOC(img_path, ann_path, img_head="", ann_head="", save_path=None, save_name="List", is_shuffle=True): 
+    ann_list = gb.glob(ann_path + r"/*.xml")
+    if is_shuffle: ann_list = shuffle(ann_list)
+    
+    txt_name = os.path.join(save_path, save_name+".txt")
+    with open(txt_name, "w") as f:
+        for ann_file in ann_list:
+            _, filename = os.path.split(ann_file)
+            fname, _ = os.path.splitext(filename)
+            img_file = os.path.join(img_path, fname+".png")
+            
+            assert os.path.isfile(img_file)
+            img_item = os.path.join(img_head, fname+".png")
+            ann_item = os.path.join(ann_head, fname+".xml")
+            f.write(img_item + " " + ann_item)
+            f.write("\n")
+        f.close()
+    
+    print("Done")
+    
 
 class random_data_generator(object):
-    def __init__(self, win_w=672, win_h=672, resize_w=352, resize_h=352, def_line_w=15, min_def_h=15): 
+    def __init__(self, win_w=1600, win_h=1600, resize_w=352, resize_h=352, def_line_w=15, min_def_w=50, min_def_h=15, 
+                 random_window=True, win_sizes=[1440, 1600, 1760]): 
         self.defects = []   # Update the defects info every image file
         
         self.width = win_w    # Width of the cropped window
@@ -57,7 +79,10 @@ class random_data_generator(object):
         self.img_w = 2448
         self.img_h = 2048
         self.def_line_w = def_line_w
-        self.min_def_h = min_def_h # Minimum defect height
+        self.min_def_w = min_def_w # Minimum defect width, referred to the resized image
+        self.min_def_h = min_def_h # Minimum defect height, referred to the resized image
+        self.random_window = random_window
+        self.win_sizes = win_sizes
     
     def generate(self, save_name, img_file, img_save_path, ann_save_path, json_path=None):
         """
@@ -77,13 +102,20 @@ class random_data_generator(object):
         fname, _ = os.path.splitext(filename)
         if json_path is None: json_path = img_path
         json_file = os.path.join(json_path, fname+".json")
+        info = "" # indicate the crop window size
+        
+        if self.random_window:
+            random_index = np.random.randint(0, len(self.win_sizes))
+            self.width = self.win_sizes[random_index]
+            self.height = self.win_sizes[random_index]
+            info = str(self.win_sizes[random_index])
         
         with open(json_file, "r", encoding="utf-8") as f:
             js_obj = json.load(f)
             roi = self.generate_roi(js_obj) # Generate an ROI with contains at lease one defect
             img, xml_tree = self.generate_img_ann(img_file, roi, js_obj)
             img, xml_tree = self.preprocessing(img, xml_tree)
-            self._save(img, xml_tree, save_name, img_save_path, ann_save_path)
+            self._save(img, xml_tree, save_name, img_save_path, ann_save_path, info)
             f.close()
         
     def generate_roi(self, js_obj):
@@ -96,7 +128,7 @@ class random_data_generator(object):
         # Get the left right position
         left_most, right_most = defect[0,0], defect[-1,0] - self.width
         if right_most > left_most: left = np.random.randint(left_most, right_most)
-        else: left = left_most
+        else: left = left_most # Need to be further considered ... 
         if left + self.width >= self.img_w: left = self.img_w - self.width
         
         # Get the upper lower position
@@ -132,9 +164,10 @@ class random_data_generator(object):
         properties = regionprops(label_mask)
         
         bbxs = []
+        min_def_w = int(self.min_def_w * self.width / self.resize_w)
         for prop in properties:
             y1, x1, y2, x2 = prop.bbox
-            bbxs.append([x1, y1, x2, y2])
+            if x2-x1 > min_def_w: bbxs.append([x1, y1, x2, y2])
             
         img, bbxs = self._resize_img_bbxs(img, bbxs)
         xml_tree = self.create_pascalvoc_xml_tree(img_file, bbxs)
@@ -145,6 +178,7 @@ class random_data_generator(object):
         aug = ImageRandomDistort()
         img = aug.random_brightness(img, lower=0.9, upper=1.1)
         img = aug.random_contrast(img, lower=0.9, upper=1.1)
+        #img, xml_tree = aug.random_flip(img, xml_tree, pos=0.7)
         
         return img, xml_tree
         
@@ -231,21 +265,23 @@ class random_data_generator(object):
             if def_h < self.min_def_h:
                 off_y = int((self.min_def_h-def_h)/2.0 + 0.5)
                 
-                if y2 > y1:
+                if y2 >= y1:
                     y1, y2 = y1-off_y, y2+off_y
                     if y1 < 0: y1, y2 = 0, self.min_def_h
                     elif y2 > self.height: y1, y2 = self.height-self.min_def_h, self.height
+                """
                 else: 
                     y2, y1 = y2-off_y, y1+off_y
                     if y2 < 0: y2, y1 = 0, self.min_def_h
                     elif y1 > self.height: y2, y1 = self.height-self.min_def_h, self.height
+                """
             rbbxs.append([x1, y1, x2, y2])
         
         return img, rbbxs
         
-    def _save(self, img, xml_tree, save_name, img_save_path, ann_save_path):
-        img_save_name = os.path.join(img_save_path, save_name+".png")
-        ann_save_name = os.path.join(ann_save_path, save_name+".xml")
+    def _save(self, img, xml_tree, save_name, img_save_path, ann_save_path, info=""):
+        img_save_name = os.path.join(img_save_path, save_name+"_"+info+".png")
+        ann_save_name = os.path.join(ann_save_path, save_name+"_"+info+".xml")
         img.save(img_save_name)
         xml_tree.write(ann_save_name, pretty_print=True, xml_declaration=False, encoding='utf-8')
         
@@ -278,24 +314,22 @@ if __name__ == "__main__":
     # plt.show()
         
     # 3. Split the train valid annotation files 
-    # ann_path = r"E:\Projects\Fabric_Defect_Detection\ThreeGun_1013\sampling_1013_40Hz_bright"
-    # train_save_path = r"E:\Projects\Fabric_Defect_Detection\model_proto\dataset\ThreeGun_YOLO\train_json"
-    # valid_save_path = r"E:\Projects\Fabric_Defect_Detection\model_proto\dataset\ThreeGun_YOLO\valid_json"
+    # ann_path = r"E:\Projects\Fabric_Defect_Detection\ThreeGun_1013\sampling_1013_40Hz_white"
+    # train_save_path = r"E:\Projects\Fabric_Defect_Detection\model_proto\ShuffleNetV2_YOLOv3\v1.1\dataset\train_json_white"
+    # valid_save_path = r"E:\Projects\Fabric_Defect_Detection\model_proto\ShuffleNetV2_YOLOv3\v1.1\dataset\valid_json_white"
     # random_split_train_valid(ann_path, train_save_path, valid_save_path)
     
     # 4. Create the training and validation set
-    # img_path = r"E:\Projects\Fabric_Defect_Detection\ThreeGun_1013\sampling_1013_40Hz_bright"
-    # ann_path = r"E:\Projects\Fabric_Defect_Detection\model_proto\dataset\ThreeGun_YOLO\valid_json"
-    # img_save_path = r"E:\Projects\Fabric_Defect_Detection\model_proto\dataset\ThreeGun_YOLO\valid"
-    # ann_save_path = r"E:\Projects\Fabric_Defect_Detection\model_proto\dataset\ThreeGun_YOLO\valid"
+    # img_path = r"E:\Projects\Fabric_Defect_Detection\ThreeGun_1013\sampling_1013_40Hz_white"
+    # ann_path = r"E:\Projects\Fabric_Defect_Detection\model_proto\ShuffleNetV2_YOLOv3\v1.1\dataset\train_json_white"
+    # img_save_path = r"E:\Projects\Fabric_Defect_Detection\model_proto\ShuffleNetV2_YOLOv3\v1.1\dataset\train"
+    # ann_save_path = r"E:\Projects\Fabric_Defect_Detection\model_proto\ShuffleNetV2_YOLOv3\v1.1\dataset\train"
     
-    # num = 1000
+    # num = 2500 # Number of samples will be generated
     # ann_list = gb.glob(ann_path + r"/*.json")
     # data_gen = random_data_generator()
 
     # index = 0
-    
-    
     # while True:
         # if index >= num: break
         
@@ -303,7 +337,7 @@ if __name__ == "__main__":
             # _, filename = os.path.split(ann_file)
             # fname, _ = os.path.splitext(filename)
             # img_file = os.path.join(img_path, fname+".bmp")
-            # save_name = "valid_" + str(index)
+            # save_name = "train_white_" + str(index)
             # data_gen.generate(save_name, img_file, img_save_path, ann_save_path, json_path=ann_path)
             # print("Finish generating image number:", index)
             # index += 1
@@ -312,9 +346,15 @@ if __name__ == "__main__":
             
     
     # 5. Create the training and validation txt file
-    ann_path = r"E:\Projects\Fabric_Defect_Detection\model_proto\dataset\ThreeGun_YOLO\valid"
-    save_path = r"C:\Users\shuai\Documents\GitHub\inspection_paddle\examples\fabric_defect_detection\YOLOv3"
-    write_into_txt(ann_path, save_path=save_path, save_name="valid")
+    img_head = r"ThreeGun_Fabric_1013\Images\valid"
+    ann_head = r"ThreeGun_Fabric_1013\Annotations\valid"
+    img_path = r"E:\Projects\Fabric_Defect_Detection\model_proto\ShuffleNetV2_YOLOv3\v1.1\dataset\valid"
+    ann_path = r"E:\Projects\Fabric_Defect_Detection\model_proto\ShuffleNetV2_YOLOv3\v1.1\dataset\valid"
+    save_path = r"E:\Projects\Fabric_Defect_Detection\model_proto\dataset\ThreeGun_Fabric_1013"
+    #save_path = r"C:\Users\shuai\Documents\GitHub\inspection_paddle\examples\fabric_defect_detection\ShuffleNetV2_YOLOv3"
+    #write_into_txt(ann_path, save_path=save_path, save_name="train")
+    
+    write_into_txt_PascalVOC(img_path, ann_path, img_head, ann_head, save_path=save_path, save_name="valid")
     
     
         
