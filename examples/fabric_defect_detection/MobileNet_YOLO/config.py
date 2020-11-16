@@ -16,7 +16,7 @@ train_parameters = {
     "label_dict": {},
     "num_dict": {},
     "image_count": -1,
-    "continue_train": False,     # 是否加载前一次的训练参数，接着训练
+    "continue_train": True,     # 是否加载前一次的训练参数，接着训练
     "pretrained": False,
     "pretrained_model_dir": r"E:\Projects\Fabric_Defect_Detection\model_proto\MobileNetV1_YOLOv3\Fast_YOLO\pretrained_model",
     "save_model_dir": r"E:\Projects\Fabric_Defect_Detection\model_proto\MobileNetV1_YOLOv3\Fast_YOLO\saved_model",

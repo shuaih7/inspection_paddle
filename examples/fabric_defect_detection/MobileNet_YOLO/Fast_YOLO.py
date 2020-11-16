@@ -182,7 +182,7 @@ class Fast_YOLO(object):
             moving_mean_name=bn_name + '_mean',
             moving_variance_name=bn_name + '_variance')
         if if_act:
-            return fluid.layers.relu6(bn)
+            return fluid.layers.relu(bn)
         else:
             return bn
 
@@ -246,7 +246,8 @@ class Fast_YOLO(object):
             act=None,
             name="block-out-" + str(i),
             param_attr=ParamAttr(initializer=fluid.initializer.Normal(0., 0.02)),
-            bias_attr=ParamAttr(initializer=fluid.initializer.Constant(0.0), regularizer=L2Decay(0.)))
+            bias_attr=False)
+            #bias_attr=ParamAttr(initializer=fluid.initializer.Constant(0.0), regularizer=L2Decay(0.)))
         self.outputs.append(block_out)
         
         return self.outputs

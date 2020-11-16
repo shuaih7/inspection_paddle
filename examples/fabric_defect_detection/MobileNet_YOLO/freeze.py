@@ -4,7 +4,7 @@
 """
 import paddle.fluid as fluid
 # from YOLOv3 import get_yolo
-from ShuffleNetV2_YOLOv3 import get_yolo
+from Fast_YOLO import get_yolo
 import config
 
 
