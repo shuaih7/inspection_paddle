@@ -7,18 +7,15 @@ from PIL import Image
 import cv2, os, sys
 import numpy as np
 
-filename = '/home/zwzhou/Code/img.png'
+filename = 'sample.png'
 max_batch_size = 1
-#onnx_model_path = "./lenet_opt10.onnx"
-onnx_model_path = "./mnist_model_pytorch.onnx"
-#onnx_model_path = "/home/nvidia/Documents/Projects/Fabric_defect_detection/ResNet18/resnet18_opt10.onnx"
+onnx_model_path = "./fast_yolo.onnx"
 
 TRT_LOGGER = trt.Logger()
     
 def get_img_np_nchw(filename): # -> read grayscale image
-    #image_cv = cv2.imread(filename, cv2.IMREAD_GRAYSCALE)
-    image_cv = np.zeros((28,28), dtype=np.float32)
-    img_np = np.array(image_cv, dtype=np.float)/255.
+    image_cv = cv2.imread(filename, cv2.IMREAD_COLOR).astype(np.float32)
+    img_np = np.array(image_cv-127.0, dtype=np.float)/255.
     img_np_nchw = np.expand_dims(np.expand_dims(np.squeeze(img_np), 0), 0)
     return img_np_nchw
 
@@ -101,15 +98,14 @@ def get_engine(onnx_file_path, engine_file_path=""):
             with open(engine_file_path, "wb") as f:
                 f.write(engine.serialize())
             return engine
-    """
+    
     if os.path.exists(engine_file_path):
         # If a serialized engine exists, use it instead of building an engine.
         print("Reading engine from file {}".format(engine_file_path))
         with open(engine_file_path, "rb") as f, trt.Runtime(TRT_LOGGER) as runtime:
             return runtime.deserialize_cuda_engine(f.read())
     else:
-    """
-    return build_engine()
+        return build_engine()
     
 
 def do_inference(context, bindings, inputs, outputs, stream, batch_size=1):
@@ -133,7 +129,7 @@ def postprocess_the_outputs(h_outputs, shape_of_output):
 
 img_np_nchw = get_img_np_nchw(filename).astype(np.float32)
 #These two modes are depend on hardwares
-trt_engine_path = "./model_fp16.trt"
+trt_engine_path = "./fast_yolo.trt"
 # Build an cudaEngine
 engine = get_engine(onnx_model_path, trt_engine_path)
 # 创建CudaEngine之后,需要将该引擎应用到不同的卡上配置执行环境
@@ -143,13 +139,16 @@ inputs, outputs, bindings, stream = allocate_buffers(engine) # input, output: ho
 # Do inference
 shape_of_output = (max_batch_size, 1000)
 # Load data to the buffer
-inputs[0].host = img_np_nchw.reshape(-1)
+inputs[0].host = img_np_nchw #.reshape(-1)
 
 # inputs[1].host = ... for multiple input
 t1 = time.time()
 trt_outputs = do_inference(context, bindings=bindings, inputs=inputs, outputs=outputs, stream=stream) # numpy data
 t2 = time.time()
-feat = postprocess_the_outputs(trt_outputs[0], shape_of_output)
+# feat = postprocess_the_outputs(trt_outputs[0], shape_of_output)
 
-print('TensorRT ok')
+print("The running time is", (t2-t1)*1000, "ms.")
+print("The output list length is", len(trt_outputs))
+print(type(trt_outputs))
+print(trt_outputs[0].shape)
 
