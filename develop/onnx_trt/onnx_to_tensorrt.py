@@ -113,7 +113,7 @@ def main():
     trt_outputs = [output.reshape(shape) for output, shape in zip(trt_outputs, output_shapes)]
 
     postprocessor_args = {"yolo_masks": [(0, 1, 2)],                    # A list of 3 three-dimensional tuples for the YOLO masks
-                          "yolo_anchors": [(188,15), (351,16), (351,30)]  # A list of 9 two-dimensional tuples for the YOLO anchors],
+                          "yolo_anchors": [(188,15), (351,16), (351,30)],  # A list of 9 two-dimensional tuples for the YOLO anchors],
                           "obj_threshold": 0.5,                                               # Threshold for object coverage, float value between 0 and 1
                           "nms_threshold": 0.2,                                               # Threshold for non-max suppression algorithm, float value between 0 and 1
                           "yolo_input_resolution": input_resolution_yolov3_HW}

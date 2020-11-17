@@ -1,4 +1,4 @@
-import math
+import math, sys, cv2
 from PIL import Image
 import numpy as np
 
@@ -7,12 +7,14 @@ import numpy as np
 # Lin, Tsung-Yi, et al. "Microsoft COCO: Common Objects in Context."
 # European Conference on Computer Vision. Springer, Cham, 2014.
 
+"""
 def load_label_categories(label_file_path):
     categories = [line.rstrip('\n') for line in open(label_file_path)]
     return categories
 
 LABEL_FILE_PATH = 'coco_labels.txt'
 ALL_CATEGORIES = load_label_categories(LABEL_FILE_PATH)
+"""
 ALL_CATEGORIES = ["defect"]
 
 # Let's make sure that there are 80 classes, as expected for the COCO data set:
@@ -52,7 +54,10 @@ class PreprocessYOLO(object):
         input_image_path -- string path of the image to be loaded
         """
 
-        image_raw = Image.open(input_image_path)
+        #image_raw = Image.open(input_image_path)
+        image_raw = cv2.imread(input_image_path, cv2.IMREAD_COLOR)
+        image_raw = Image.fromarray(image_raw)
+
         # Expecting yolo_input_resolution in (height, width) format, adjusting to PIL
         # convention (width, height) in PIL:
         new_resolution = (

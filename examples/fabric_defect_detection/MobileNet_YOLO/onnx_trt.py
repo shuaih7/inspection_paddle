@@ -3,7 +3,7 @@ import pycuda.autoinit
 import pycuda.driver as cuda
 import tensorrt as trt
 from PIL import Image
-import cv2, os, sys, time
+import cv2, os, sys, time, paddle
 import numpy as np
 from paddle import fluid
 import config
@@ -15,6 +15,7 @@ train_parameters = config.init_train_parameters()
 label_dict = train_parameters['num_dict']
 yolo_config = train_parameters['yolo_tiny_cfg'] if train_parameters["use_tiny"] else train_parameters["yolo_cfg"]
 TRT_LOGGER = trt.Logger()
+#paddle.enable_static()
 
 
 def draw_bbox_image(img, boxes, scores, gt=False):
@@ -186,21 +187,20 @@ def do_inference(context, bindings, inputs, outputs, stream, batch_size=1):
     #output = np.array(trt_outputs[0], dtype=np.float32)
     boxes = []
     scores = []
-    image_shape = fluid.layers.data(name="image_shape", shape=[2], dtype='int32')
-    downsample_ratio = 1
-    # feeder = fluid.DataFeeder(feed_list=[img, image_shape, gt_label, gt_box, difficult], place=place, program=main_prog)
-    # reader = create_eval_reader(train_parameters['eval_list'], train_parameters['data_dir'], yolo_config['input_size'], 'eval')
+    #image_shape = fluid.layers.data(name="image_shape", shape=[2], dtype='int32')
+    image_shape = np.expand_dims(np.array((352,352), dtype=np.int32),0)
+    downsample_ratio = 32
     for i, out in enumerate(trt_outputs):
-        out = np.array(out, dtype=np.float32)
+        out = np.array(out, dtype=np.float32).reshape((1,18,11,11))
+        out = fluid.dygraph.to_variable(out)
         
         box, score = fluid.layers.yolo_box(
             x=out,
-            img_size=image_shape,
-            anchors=model.get_yolo_anchors()[i],
-            class_num=model.get_class_num(),
+            img_size=fluid.dygraph.to_variable(image_shape),
+            anchors=yolo_config["anchors"],
+            class_num=1,
             conf_thresh=train_parameters['valid_thresh'],
-            downsample_ratio=downsample_ratio,
-            name="yolo_box_" + str(i))
+            downsample_ratio=32)
         boxes.append(box)
         scores.append(fluid.layers.transpose(score, perm=[0, 2, 1]))
         downsample_ratio //= 2
@@ -208,14 +208,13 @@ def do_inference(context, bindings, inputs, outputs, stream, batch_size=1):
     pred = fluid.layers.multiclass_nms(
         bboxes=fluid.layers.concat(boxes, axis=1),
         scores=fluid.layers.concat(scores, axis=2),
-        score_threshold=score_threshold,
+        score_threshold=0.5,
         nms_top_k=train_parameters['nms_top_k'],
         keep_top_k=train_parameters['nms_pos_k'],
         nms_threshold=train_parameters['nms_thresh'],
-        background_label=-1,
-        name="multiclass_nms")
+        background_label=-1)
 
-    return pred
+    return np.array(pred)
     
     
 def infer(image):
@@ -267,6 +266,8 @@ inputs, outputs, bindings, stream = allocate_buffers(engine) # input, output: ho
 shape_of_output = (max_batch_size, 1000)
 # Load data to the buffer
 inputs[0].host = tensor_img.reshape(-1)
+#print(tensor_img.shape)
+#sys.exit()
 
 # inputs[1].host = ... for multiple input
 t1 = time.time()
@@ -275,4 +276,5 @@ t2 = time.time()
 # feat = postprocess_the_outputs(trt_outputs[0], shape_of_output)
 
 print(type(pred))
-print()
+print(pred.shape)
+print(pred)
