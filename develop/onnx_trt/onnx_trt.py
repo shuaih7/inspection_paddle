@@ -2,16 +2,16 @@
 import pycuda.autoinit 
 import pycuda.driver as cuda
 import tensorrt as trt
-#import torch 
 import time 
 from PIL import Image
-import cv2,os
-#import torchvision 
+import cv2, os, sys
 import numpy as np
 
 filename = '/home/zwzhou/Code/img.png'
 max_batch_size = 1
-onnx_model_path = "./resnet18.onnx"
+#onnx_model_path = "./lenet_opt10.onnx"
+onnx_model_path = "./mnist_model_pytorch.onnx"
+#onnx_model_path = "/home/nvidia/Documents/Projects/Fabric_defect_detection/ResNet18/resnet18_opt10.onnx"
 
 TRT_LOGGER = trt.Logger()
     
@@ -78,6 +78,22 @@ def get_engine(onnx_file_path, engine_file_path=""):
             with open(onnx_file_path, 'rb') as model:
                 print('Beginning ONNX file parsing')
                 parser.parse(model.read())
+            #last_layer = network.get_layer(network.num_layers-1)
+            #network.mark_output(last_layer.get_output(0))
+
+            ### This part is for the network checking 
+            inp = network.get_input(0)
+            print(inp.shape)
+            #sys.exit()
+
+            for i in range(network.num_layers):
+                cur_layer = network.get_layer(i)
+                output = cur_layer.get_output(0)
+                print(output.shape)
+            #output = last_layer.get_output(0)
+            #print(output.shape)
+            #sys.exit()
+
             print('Completed parsing of ONNX file')
             print('Building an engine from file {}; this may take a while...'.format(onnx_file_path))
             engine = builder.build_cuda_engine(network)
@@ -85,76 +101,23 @@ def get_engine(onnx_file_path, engine_file_path=""):
             with open(engine_file_path, "wb") as f:
                 f.write(engine.serialize())
             return engine
-
+    """
     if os.path.exists(engine_file_path):
         # If a serialized engine exists, use it instead of building an engine.
         print("Reading engine from file {}".format(engine_file_path))
         with open(engine_file_path, "rb") as f, trt.Runtime(TRT_LOGGER) as runtime:
             return runtime.deserialize_cuda_engine(f.read())
     else:
-        return build_engine()
+    """
+    return build_engine()
     
-
-'''
-def get_engine(max_batch_size=1, onnx_file_path="", engine_file_path="",fp16_mode=False, save_engine=False):
-    """
-    params max_batch_size:      预先指定大小好分配显存
-    params onnx_file_path:      onnx文件路径
-    params engine_file_path:    待保存的序列化的引擎文件路径
-    params fp16_mode:           是否采用FP16
-    params save_engine:         是否保存引擎
-    returns:                    ICudaEngine
-    """
-    # 如果已经存在序列化之后的引擎，则直接反序列化得到cudaEngine
-    if os.path.exists(engine_file_path):
-        print("Reading engine from file: {}".format(engine_file_path))
-        with open(engine_file_path, 'rb') as f, \
-            trt.Runtime(TRT_LOGGER) as runtime:
-            return runtime.deserialize_cuda_engine(f.read())  # 反序列化
-    else:  # 由onnx创建cudaEngine
-        
-        # 使用logger创建一个builder 
-        # builder创建一个计算图 INetworkDefinition
-        explicit_batch = 1 << (int)(trt.NetworkDefinitionCreationFlag.EXPLICIT_BATCH)
-        # In TensorRT 7.0, the ONNX parser only supports full-dimensions mode, meaning that your network definition must be created with the explicitBatch flag set. For more information, see Working With Dynamic Shapes.
-
-        with trt.Builder(TRT_LOGGER) as builder, \
-            builder.create_network(explicit_batch) as network,  \
-            trt.OnnxParser(network, TRT_LOGGER) as parser: # 使用onnx的解析器绑定计算图，后续将通过解析填充计算图
-            builder.max_workspace_size = 1<<30  # 预先分配的工作空间大小,即ICudaEngine执行时GPU最大需要的空间
-            builder.max_batch_size = max_batch_size # 执行时最大可以使用的batchsize
-            builder.fp16_mode = fp16_mode
-
-            # 解析onnx文件，填充计算图
-            if not os.path.exists(onnx_file_path):
-                quit("ONNX file {} not found!".format(onnx_file_path))
-            print('loading onnx file from path {} ...'.format(onnx_file_path))
-            with open(onnx_file_path, 'rb') as model: # 二值化的网络结果和参数
-                print("Begining onnx file parsing")
-                parser.parse(model.read())  # 解析onnx文件
-            #parser.parse_from_file(onnx_file_path) # parser还有一个从文件解析onnx的方法
-
-            print("Completed parsing of onnx file")
-            # 填充计算图完成后，则使用builder从计算图中创建CudaEngine
-            print("Building an engine from file{}' this may take a while...".format(onnx_file_path))
-
-            #################
-            print(network.get_layer(network.num_layers-1).get_output(0).shape)
-            # network.mark_output(network.get_layer(network.num_layers -1).get_output(0))
-            engine=builder.build_cuda_engine(network)  # 注意，这里的network是INetworkDefinition类型，即填充后的计算图
-            print("Completed creating Engine")
-            if save_engine:  #保存engine供以后直接反序列化使用
-                with open(engine_file_path, 'wb') as f:
-                    f.write(engine.serialize())  # 序列化
-            return engine
-'''
 
 def do_inference(context, bindings, inputs, outputs, stream, batch_size=1):
     # Transfer data from CPU to the GPU.
     [cuda.memcpy_htod_async(inp.device, inp.host, stream) for inp in inputs]
     # htod： host to device 将数据由cpu复制到gpu device
     # Run inference.
-    context.execute_async_v2(bindings=bindings, stream_handle=stream.handle)
+    context.execute_async(bindings=bindings, stream_handle=stream.handle)
     # 当创建network时显式指定了batchsize， 则使用execute_async_v2, 否则使用execute_async
     # Transfer predictions back from the GPU.
     [cuda.memcpy_dtoh_async(out.host, out.device, stream) for out in outputs]
@@ -170,7 +133,7 @@ def postprocess_the_outputs(h_outputs, shape_of_output):
 
 img_np_nchw = get_img_np_nchw(filename).astype(np.float32)
 #These two modes are depend on hardwares
-trt_engine_path = "./model_fp16_{}.trt".format(fp16_mode)
+trt_engine_path = "./model_fp16.trt"
 # Build an cudaEngine
 engine = get_engine(onnx_model_path, trt_engine_path)
 # 创建CudaEngine之后,需要将该引擎应用到不同的卡上配置执行环境
@@ -190,18 +153,3 @@ feat = postprocess_the_outputs(trt_outputs[0], shape_of_output)
 
 print('TensorRT ok')
 
-# model = torchvision.models.resnet18(pretrained=True).cuda()
-# resnet_model = model.eval()
-# input_for_torch = torch.from_numpy(img_np_nchw).cuda()
-# t3 = time.time()
-# feat_2= resnet_model(input_for_torch)
-# t4 = time.time()
-# feat_2 = feat_2.cpu().data.numpy()
-# print('Pytorch ok!')
-
-# mse = np.mean((feat - feat_2)**2)
-# print("Inference time with the TensorRT engine: {}".format(t2-t1))
-# print("Inference time with the PyTorch model: {}".format(t4-t3))
-# print('MSE Error = {}'.format(mse))
-
-# print('All completed!')
