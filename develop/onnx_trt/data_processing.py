@@ -75,10 +75,11 @@ class PreprocessYOLO(object):
         Keyword arguments:
         image -- image as three-dimensional NumPy float array, in HWC format
         """
-        image /= 255.0
+        image -= 127.5
+        image *= 0.007843
         # HWC to CHW format:
         image = np.transpose(image, [2, 0, 1])
-        # CHW to NCHW format
+        # CHW to NCHW format:
         image = np.expand_dims(image, axis=0)
         # Convert the image to row-major order, also known as "C order":
         image = np.array(image, dtype=np.float32, order='C')
