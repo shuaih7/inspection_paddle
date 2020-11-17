@@ -55,7 +55,7 @@ if __name__ == "__main__":
     # num_defects = check_defects(ann_path)
     # print("The total number of defects is", num_defects)
     
-    model_dir = r"E:\Projects\Fabric_Defect_Detection\model_proto\MobileNetV1_YOLOv3\Fast_YOLO\pretrained_model"
-    save_dir = r"E:\Projects\Fabric_Defect_Detection\model_proto\MobileNetV1_YOLOv3\Fast_YOLO"
+    model_dir = r"E:\Projects\Fabric_Defect_Detection\model_proto\MobileNet_YOLO\Fast_YOLO\pretrained_model"
+    save_dir = r"E:\Projects\Fabric_Defect_Detection\model_proto\MobileNet_YOLO\Fast_YOLO"
     model_compress(model_dir, save_dir, save_name="fast_yolo.nb")
         
