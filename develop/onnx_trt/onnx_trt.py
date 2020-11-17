@@ -7,9 +7,9 @@ from PIL import Image
 import cv2, os, sys
 import numpy as np
 
-filename = 'sample.png'
+filename = '/home/nvidia/Documents/Projects/Fabric_defect_detection/YOLO/sample.png'
 max_batch_size = 1
-onnx_model_path = "./fast_yolo.onnx"
+onnx_model_path = "/home/nvidia/Documents/Projects/Fabric_defect_detection/YOLO/fast_yolo.onnx"
 
 TRT_LOGGER = trt.Logger()
     
@@ -151,4 +151,7 @@ print("The running time is", (t2-t1)*1000, "ms.")
 print("The output list length is", len(trt_outputs))
 print(type(trt_outputs))
 print(trt_outputs[0].shape)
+
+output = np.array(trt_outputs[0])
+print(output.shape)
 

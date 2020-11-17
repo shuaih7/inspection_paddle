@@ -8,9 +8,9 @@ import numpy as np
 from paddle import fluid
 import config
 
-filename = 'sample.png'
+filename = '/home/nvidia/Documents/Projects/Fabric_defect_detection/YOLO/sample.png'
 max_batch_size = 1
-onnx_model_path = "./fast_yolo.onnx"
+onnx_model_path = "/home/nvidia/Documents/Projects/Fabric_defect_detection/YOLO/fast_yolo.onnx"
 train_parameters = config.init_train_parameters()
 label_dict = train_parameters['num_dict']
 yolo_config = train_parameters['yolo_tiny_cfg'] if train_parameters["use_tiny"] else train_parameters["yolo_cfg"]
@@ -250,11 +250,13 @@ def infer(image):
     
     
     
+image = cv2.imread(filename, cv2.IMREAD_COLOR)
 
-image = Image.fromarray(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
+image = Image.fromarray(image)
 origin, tensor_img, resized_img = read_image(image)
+
 #These two modes are depend on hardwares
-trt_engine_path = "./fast_yolo.trt"
+trt_engine_path = '/home/nvidia/Documents/Projects/Fabric_defect_detection/YOLO/fast_yolo.trt'
 # Build an cudaEngine
 engine = get_engine(onnx_model_path, trt_engine_path)
 # 创建CudaEngine之后,需要将该引擎应用到不同的卡上配置执行环境
@@ -264,7 +266,7 @@ inputs, outputs, bindings, stream = allocate_buffers(engine) # input, output: ho
 # Do inference
 shape_of_output = (max_batch_size, 1000)
 # Load data to the buffer
-inputs[0].host = tensor_img #.reshape(-1)
+inputs[0].host = tensor_img.reshape(-1)
 
 # inputs[1].host = ... for multiple input
 t1 = time.time()
