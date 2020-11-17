@@ -128,5 +128,9 @@ def main():
     # obj_detected_img.save(output_image_path, 'PNG')
     # print('Saved image with bounding boxes of detected objects to {}.'.format(output_image_path))
 
+    return boxes, classes, scores
+
 if __name__ == '__main__':
-    main()
+    boxes, classes, scores = main()
+    print("The result boxes are", boxes)
+    print("THe corresponding confidence scores are", scores)
