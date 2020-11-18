@@ -133,6 +133,7 @@ def infer(image):
 if __name__ == '__main__':
     import sys
     import glob as gb
+    """
     image_path = r'E:\Projects\Fabric_Defect_Detection\model_proto\ShuffleNetV2_YOLOv3\v1.1\dataset\valid'
     label_path = r'E:\Projects\Fabric_Defect_Detection\model_proto\ShuffleNetV2_YOLOv3\v1.1\dataset\valid'
     save_path  = r"E:\Projects\Fabric_Defect_Detection\model_proto\MobileNet_YOLO\Fast_YOLO\valid_output"
@@ -165,3 +166,12 @@ if __name__ == '__main__':
     fps = int(1000/average_time)
     print("The avergae processing time for one image is", average_time)
     print("The fps is", fps)
+    """
+    
+    # Check the result of a single image
+    image_file = r"E:\Projects\Fabric_Defect_Detection\model_proto\ShuffleNetV2_YOLOv3\v1.1\dataset\valid\valid_gray_1_1600.png"
+    img = cv2.imread(image_file)
+    flag, box, label, scores, bboxes, period = infer(img)
+    print("The boxes are", box)
+    print("The scores are", scores)
+    
