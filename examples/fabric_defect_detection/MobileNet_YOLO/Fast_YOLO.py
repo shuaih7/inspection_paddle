@@ -21,7 +21,7 @@ class Fast_YOLO(object):
         :param scale:
         """
         self.outputs = []
-        self.downsample_ratio = 1
+        self.downsample_ratio = 32
         self.anchor_mask = anchor_mask
         self.anchors = anchors
         self.class_num = class_num
@@ -262,7 +262,7 @@ class YOLOv3Tiny(object):
         初始化模型的超参数
         """
         self.outputs = []
-        self.downsample_ratio = 1
+        self.downsample_ratio = 32
         self.anchor_mask = anchor_mask
         self.anchors = anchors
         self.class_num = class_num

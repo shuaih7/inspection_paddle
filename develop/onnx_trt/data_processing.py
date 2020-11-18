@@ -223,7 +223,7 @@ class PostprocessYOLO(object):
         grid_h, grid_w, _, _ = output_reshaped.shape
 
         anchors = [self.anchors[i] for i in mask]
-
+        
         # Reshape to N, height, width, num_anchors, box_params:
         anchors_tensor = np.reshape(anchors, [1, 1, len(anchors), 2])
         box_xy = sigmoid_v(output_reshaped[..., :2])
@@ -242,8 +242,8 @@ class PostprocessYOLO(object):
 
         box_xy += grid
         box_xy /= (grid_w, grid_h)
-        box_wh /= self.input_resolution_yolo
-        box_xy -= (box_wh / 2.)
+        box_xy *= self.input_resolution_yolo
+
         boxes = np.concatenate((box_xy, box_wh), axis=-1)
 
         # boxes: centroids, box_confidence: confidence level, box_class_probs:
@@ -268,6 +268,9 @@ class PostprocessYOLO(object):
         boxes = boxes[pos]
         classes = box_classes[pos]
         scores = box_class_scores[pos]
+
+        print(boxes)
+        sys.exit()
 
         return boxes, classes, scores
 
