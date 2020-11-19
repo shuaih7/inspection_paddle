@@ -174,7 +174,7 @@ def batch_infer(image_path, onnx_file_path, engine_file_path):
             total_time += time.time() - start
             
         ave_time = total_time / (i+1)
-        fps = a/ave_time
+        fps = 1.0/ave_time
         
     print("The averaged fps is", fps)
     
