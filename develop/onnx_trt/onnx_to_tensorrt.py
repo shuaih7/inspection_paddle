@@ -1,7 +1,8 @@
 #!/usr/bin/env python2
 
 from __future__ import print_function
-import time, glob
+import time
+import glob as gb
 import numpy as np
 import tensorrt as trt
 import pycuda.driver as cuda
