@@ -7,7 +7,7 @@ import numpy as np
 import tensorrt as trt
 import pycuda.driver as cuda
 import pycuda.autoinit
-from PIL import ImageDraw
+from PIL import Image, ImageDraw
 
 #from yolov3_to_onnx import download_file
 from data_processing import PreprocessYOLO, PostprocessYOLO, ALL_CATEGORIES
@@ -33,6 +33,8 @@ def draw_bboxes(image_raw, bboxes, confidences, categories, all_categories, bbox
     """
     draw = ImageDraw.Draw(image_raw)
     print(bboxes, confidences, categories)
+    if bboxes is None: return image_raw
+
     for box, score, category in zip(bboxes, confidences, categories):
         x_coord, y_coord, width, height = box
         left = max(0, np.floor(x_coord + 0.5).astype(int))
@@ -206,10 +208,10 @@ def batch_show(image_path, image_save_path, onnx_file_path, engine_file_path):
     with get_engine(onnx_file_path, engine_file_path) as engine, engine.create_execution_context() as context:
         inputs, outputs, bindings, stream = common.allocate_buffers(engine)
         # Do inference
-        print('Running inference on image {}...'.format(input_image_path))
+        # print('Running inference on image {}...'.format(input_image_path))
         # Set host input to the image. The common.do_inference function will copy the input to the GPU before executing.
         for i, img_file in enumerate(img_list):
-            image_raw, image = preprocessor.process(input_image_path)
+            image_raw, image = preprocessor.process(img_file)
             inputs[0].host = image
             trt_outputs = common.do_inference(context, bindings=bindings, inputs=inputs, outputs=outputs, stream=stream)
 
@@ -218,7 +220,7 @@ def batch_show(image_path, image_save_path, onnx_file_path, engine_file_path):
 
             # Run the post-processing algorithms on the TensorRT outputs and get the bounding box details of detected objects
             boxes, classes, scores = postprocessor.process(trt_outputs, (shape_orig_WH))
-            image_show = draw_bboxes(Image.fromarray(image_raw), boxes, scores, classes, ['defect'], bbox_color='green')
+            image_show = draw_bboxes(image_raw, boxes, scores, classes, ['defect'], bbox_color='yellow')
             
             # Save the marked image
             filename, suffix = os.path.split(img_file)
