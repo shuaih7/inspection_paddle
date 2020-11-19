@@ -131,13 +131,7 @@ def main():
     return boxes, classes, scores
     
 
-def batch_infer(image_path):
-    """Create a TensorRT engine for ONNX-based YOLOv3-608 and run inference."""
-
-    # Try to load a previously generated YOLOv3-608 network graph in ONNX format:
-    onnx_file_path = '/home/nvidia/Documents/Projects/Fabric_defect_detection/YOLO/fast_yolo.onnx'
-    engine_file_path = "/home/nvidia/Documents/Projects/Fabric_defect_detection/YOLO/fast_yolo.trt"
-    # Download a dog image and save it to the following file path:
+def batch_infer(image_path, onnx_file_path, engine_file_path):
     img_list = gb.glob(image_path + r"/*.png")
 
     # Two-dimensional tuple with the target network's (spatial) input resolution in HW ordered
@@ -169,9 +163,7 @@ def batch_infer(image_path):
             start = time.time()
             image_raw, image = preprocessor.process(input_image_path)
             inputs[0].host = image
-            #infer_start = time.time()
             trt_outputs = common.do_inference(context, bindings=bindings, inputs=inputs, outputs=outputs, stream=stream)
-            #print("Inference time: %.2f s" %(time.time()-infer_start))
 
             # Before doing post-processing, we need to reshape the outputs as the common.do_inference will give us flat arrays.
             trt_outputs = [output.reshape(shape) for output, shape in zip(trt_outputs, output_shapes)]
@@ -185,7 +177,63 @@ def batch_infer(image_path):
         fps = a/ave_time
         
     print("The averaged fps is", fps)
+    
+    
+def batch_show(image_path, image_save_path, onnx_file_path, engine_file_path):
+    img_list = gb.glob(image_path + r"/*.png")
+
+    # Two-dimensional tuple with the target network's (spatial) input resolution in HW ordered
+    input_resolution_yolov3_HW = (352, 352)
+    # Create a pre-processor object by specifying the required input resolution for YOLOv3
+    preprocessor = PreprocessYOLO(input_resolution_yolov3_HW)
+    # Create a post-processor object by specifying the required input resolution for YOLOv3
+    postprocessor_args = {"yolo_masks": [(0, 1, 2)],                    # A list of 3 three-dimensional tuples for the YOLO masks
+                          "yolo_anchors": [(188,15), (351,16), (351,30)],  # A list of 9 two-dimensional tuples for the YOLO anchors],
+                          "obj_threshold": 0.5,                                               # Threshold for object coverage, float value between 0 and 1
+                          "nms_threshold": 0.2,                                               # Threshold for non-max suppression algorithm, float value between 0 and 1
+                          "yolo_input_resolution": input_resolution_yolov3_HW}
+
+    postprocessor = PostprocessYOLO(**postprocessor_args)
+    
+    # Store the shape of the original input image in WH format, we will need it for later
+    shape_orig_WH = input_resolution_yolov3_HW
+
+    # Output shapes expected by the post-processor
+    output_shapes = [(1, 18, 11, 11)]
+    # Do inference with TensorRT
+    total_time, trt_outputs = 0, []
+    with get_engine(onnx_file_path, engine_file_path) as engine, engine.create_execution_context() as context:
+        inputs, outputs, bindings, stream = common.allocate_buffers(engine)
+        # Do inference
+        print('Running inference on image {}...'.format(input_image_path))
+        # Set host input to the image. The common.do_inference function will copy the input to the GPU before executing.
+        for i, img_file in enumerate(img_list):
+            image_raw, image = preprocessor.process(input_image_path)
+            inputs[0].host = image
+            trt_outputs = common.do_inference(context, bindings=bindings, inputs=inputs, outputs=outputs, stream=stream)
+
+            # Before doing post-processing, we need to reshape the outputs as the common.do_inference will give us flat arrays.
+            trt_outputs = [output.reshape(shape) for output, shape in zip(trt_outputs, output_shapes)]
+
+            # Run the post-processing algorithms on the TensorRT outputs and get the bounding box details of detected objects
+            boxes, classes, scores = postprocessor.process(trt_outputs, (shape_orig_WH))
+            image_show = draw_bboxes(Image.fromarray(image_raw), boxes, scores, classes, ['defect'], bbox_color='green')
+            
+            # Save the marked image
+            filename, suffix = os.path.split(img_file)
+            _, fname = os.path.splitext(filename)
+            save_name = os.path.join(image_save_path, fname+suffix)
+            image_show.save(save_name)
+            print("Image", save_name, "saved.")
+    
 
 if __name__ == '__main__':
     img_path = "/home/nvidia/Documents/Projects/Fabric_defect_detection/YOLO/valid"
-    batch_infer(img_path)
+    img_save_path = "/home/nvidia/Documents/Projects/Fabric_defect_detection/YOLO/valid_output"
+
+    # Try to load a previously generated YOLOv3-608 network graph in ONNX format:
+    onnx_file_path = '/home/nvidia/Documents/Projects/Fabric_defect_detection/YOLO/fast_yolo.onnx'
+    engine_file_path = "/home/nvidia/Documents/Projects/Fabric_defect_detection/YOLO/fast_yolo.trt"
+
+    #batch_infer(img_path, onnx_file_path, engine_file_path)
+    batch_show(img_path, img_save_path, onnx_file_path, engine_file_path)
