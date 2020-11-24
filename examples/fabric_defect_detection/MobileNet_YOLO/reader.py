@@ -14,6 +14,34 @@ import cv2
 train_parameters = config.init_train_parameters()
 
 
+"""
+Utility functions to rotate the gtboxes
+"""
+def rotate_gtboxes(gtboxes, w=1.0, h=1.0, d="+"): # + means counter-clockwise
+    nboxes = []
+    for gtbox in gtboxes:
+        x, y, w, h = gtbox
+        x, y = get_rot90_pos(x, y, w=w, h=h, d=d)
+        nboxes.append([x, y, h, w])
+    
+    return nboxes
+
+
+"""
+Utility functions to rotate the position
+"""
+def get_rot90_pos(x, y, w=1.0, h=1.0, d="+"): # + means counter-clockwise
+    if d == "+":
+        nx = y
+        ny = h - x
+        return nx, ny
+    elif d == "-":
+        nx = w - y
+        ny = x
+        return nx, ny
+    else: raise ValueError("Invalid d value.")
+
+
 def box_to_center_relative(box, img_height, img_width):
     """
     Convert COCO annotations box with format [x1, y1, w, h] to
@@ -295,7 +323,27 @@ def random_flip(img, gtboxes, thresh=0.5):
         
         gtboxes[:, 0] = 1.0 - gtboxes[:, 0]
     return img, gtboxes
-
+    
+    
+def random_rotate(img, gtboxes, thresh=0.5):
+    """
+    随机旋转
+    :param img:
+    :param gtboxes:
+    :param thresh:
+    :return:
+    """
+    if random.random() > thresh:
+        value = random.random()
+        
+        if value > 0.5: # Counter-clockwise rotation
+            img = img.rotate(90)
+            gtboxes = rotate_gtboxes(gtboxes, d="+")
+        else: # Clockwise rotation
+            img = img.rotate(-90)
+            gtboxes = rotate_gtboxes(gtboxes, d="-")
+            
+    return img, gtboxes       
 
 def random_interp(img, size, interp=None):
     """
@@ -360,6 +408,7 @@ def custom_preprocess(img, bbox_labels, input_size, mode):
         gtlabels = sample_labels[:, 0]  # Define the ground true labels
         
         img, gtboxes = random_flip(img, gtboxes, thresh=0.5)
+        img, gtboxes = random_rotate(img, gtboxes, thresh=0.5)
         gtboxes, gtlabels = shuffle_gtbox(gtboxes, gtlabels)
         
         sample_labels[:, 0] = gtlabels
