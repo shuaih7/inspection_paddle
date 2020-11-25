@@ -20,9 +20,9 @@ Utility functions to rotate the gtboxes
 def rotate_gtboxes(gtboxes, w=1.0, h=1.0, d="+"): # + means counter-clockwise
     nboxes = []
     for gtbox in gtboxes:
-        x, y, w, h = gtbox
+        x, y, width, height = gtbox
         x, y = get_rot90_pos(x, y, w=w, h=h, d=d)
-        nboxes.append([x, y, h, w])
+        nboxes.append([x, y, height, width])
     
     return nboxes
 
