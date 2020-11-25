@@ -348,13 +348,14 @@ if __name__ == "__main__":
     # 5. Create the training and validation txt file
     img_head = r"ThreeGun_Fabric_1013\Images\valid"
     ann_head = r"ThreeGun_Fabric_1013\Annotations\valid"
-    img_path = r"E:\Projects\Fabric_Defect_Detection\model_proto\ShuffleNetV2_YOLOv3\v1.1\dataset\valid"
-    ann_path = r"E:\Projects\Fabric_Defect_Detection\model_proto\ShuffleNetV2_YOLOv3\v1.1\dataset\valid"
-    save_path = r"E:\Projects\Fabric_Defect_Detection\model_proto\dataset\ThreeGun_Fabric_1013"
-    #save_path = r"C:\Users\shuai\Documents\GitHub\inspection_paddle\examples\fabric_defect_detection\ShuffleNetV2_YOLOv3"
-    #write_into_txt(ann_path, save_path=save_path, save_name="train")
     
-    write_into_txt_PascalVOC(img_path, ann_path, img_head, ann_head, save_path=save_path, save_name="valid")
+    img_path = r"E:\Projects\Fabric_Defect_Detection\model_proto\MobileNet_YOLO\Fast_YOLO\v1.1\valid"
+    ann_path = r"E:\Projects\Fabric_Defect_Detection\model_proto\MobileNet_YOLO\Fast_YOLO\v1.1\valid"
+    #save_path = r"E:\Projects\Fabric_Defect_Detection\model_proto\dataset\ThreeGun_Fabric_1013"
+    save_path = r"C:\Users\shuai\Documents\GitHub\inspection_paddle\examples\fabric_defect_detection\MobileNet_YOLO"
+    write_into_txt(ann_path, save_path=save_path, save_name="valid")
+    
+    #write_into_txt_PascalVOC(img_path, ann_path, img_head, ann_head, save_path=save_path, save_name="valid")
     
     
         
