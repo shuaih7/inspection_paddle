@@ -198,6 +198,7 @@ class Fast_YOLO(object):
         blocks = []
         scale = 1.0
         class_num = 20
+        """
         bottleneck_params_list = [
             (1, 16, 1, 1),
             (6, 24, 2, 2),
@@ -206,6 +207,16 @@ class Fast_YOLO(object):
             (6, 96, 3, 1),
             (6, 160, 3, 2),
             (6, 320, 1, 1),
+        ]
+        """
+        bottleneck_params_list = [
+            (1, 16, 1, 1),
+            (2, 24, 2, 2),
+            (2, 32, 3, 2),
+            (2, 64, 4, 2),
+            (2, 96, 3, 1),
+            (2, 160, 3, 2),
+            (2, 320, 1, 1),
         ]
         # MobileNet的第一个卷积层 
         input = self.conv_bn_layer(
@@ -236,7 +247,8 @@ class Fast_YOLO(object):
 
         # Attach the yolo head
         block = blocks[-1] # Get the last output as the Fast-YOLO input
-        route, tip = self.yolo_detection_block(block, num_filters=256, k=2,name='dect_'+str(i))
+        #route, tip = self.yolo_detection_block(block, num_filters=256, k=2,name='dect_'+str(i))
+        route, tip = self.yolo_detection_block(block, num_filters=256, k=1,name='dect_'+str(i))
         block_out = fluid.layers.conv2d(
             input=tip,
             num_filters=len(self.anchor_mask[0]) * (self.class_num + 5),  # 5 elements represent x|y|h|w|score
