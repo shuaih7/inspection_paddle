@@ -108,6 +108,47 @@ def draw_boxes(image, boxes=[], color=(255,0,0), thickness=2):
     return image
     
     
+def crop_and_resize(img_file, save_dir, target_size=(512,512)):
+    image = cv2.imread(img_file, cv2.IMREAD_COLOR)
+    h, w = image.shape[:2]
+    offh, offw = 0, 0
+    if h > w: offh = int((h-w)/2)
+    else: offw = int((w-h)/2)
+    
+    image = image[offh:h-offh, offw:w-offw, :]
+    
+    image = cv2.resize(image, target_size, interpolation=cv2.INTER_CUBIC)
+    
+    _, filename = os.path.split(img_file)
+    fname, _ = os.path.splitext(filename)
+    save_name = os.path.join(save_dir, fname+".png")
+    cv2.imwrite(save_name, image)
+    
+    print("Done")
+    
+    
+def crop_and_resize_pillow(img_file, save_dir, target_size=(352,352)):
+    image = Image.open(img_file)
+    w, h = image.size
+    if image.mode != 'RGB':
+        image = image.convert('RGB')
+                    
+    offh, offw = 0, 0
+    if h > w: offh = int((h-w)/2)
+    else: offw = int((w-h)/2)
+    
+    image = image.crop([offw, offh, w-offw, h-offh])
+    
+    image = image.resize(target_size, resample=Image.BILINEAR)
+    
+    _, filename = os.path.split(img_file)
+    fname, _ = os.path.splitext(filename)
+    save_name = os.path.join(save_dir, fname+".png")
+    image.save(save_name)
+    
+    print("Done")
+    
+    
 if __name__ == "__main__":
     # ann_path = r"E:\Projects\Fabric_Defect_Detection\model_proto\ShuffleNetV2_YOLOv3\v1.0.2\dataset\train"
     # num_defects = check_defects(ann_path)
@@ -117,7 +158,9 @@ if __name__ == "__main__":
     # save_dir = r"E:\Projects\Fabric_Defect_Detection\model_proto\MobileNet_YOLO\Fast_YOLO"
     # model_compress(model_dir, save_dir, save_name="fast_yolo.nb")
         
-    import random
+    img_dir = r"E:\Projects\Fabric_Defect_Detection\model_dev\ThreeGun_Visit_1130\original_2"
+    save_dir = r"E:\Projects\Fabric_Defect_Detection\model_dev\ThreeGun_Visit_1130\valid_2"
+    img_list = gb.glob(img_dir+r"/*.bmp")
     
-    while True:
-        print(random.random())
+    for img_file in img_list:
+        crop_and_resize_pillow(img_file, save_dir)

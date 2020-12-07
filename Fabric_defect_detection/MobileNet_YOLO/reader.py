@@ -345,6 +345,7 @@ def random_rotate(img, gtboxes, thresh=0.5):
             
     return img, gtboxes       
 
+
 def random_interp(img, size, interp=None):
     """
     随机差值
@@ -438,6 +439,7 @@ def preprocess(img, bbox_labels, input_size, mode):
         img, gtboxes = random_expand(img, sample_labels[:, 1:5])
         img, gtboxes, gtlabels = random_crop(img, gtboxes, sample_labels[:, 0])
         img, gtboxes = random_flip(img, gtboxes, thresh=0.5)
+        img, gtboxes = random_rotate(img, gtboxes, thresh=0.5)
         gtboxes, gtlabels = shuffle_gtbox(gtboxes, gtlabels)
         sample_labels[:, 0] = gtlabels
         sample_labels[:, 1:5] = gtboxes
@@ -496,8 +498,8 @@ def custom_reader(file_list, data_dir,input_size, mode):
                     bbox_labels.append(bbox_sample)
                 if len(bbox_labels) == 0:
                     continue
-                #img, sample_labels = preprocess(img, bbox_labels, input_size, mode)
-                img, sample_labels = custom_preprocess(img, bbox_labels, input_size, mode)
+                img, sample_labels = preprocess(img, bbox_labels, input_size, mode)
+                #img, sample_labels = custom_preprocess(img, bbox_labels, input_size, mode)
                 # sample_labels = np.array(sample_labels)
                 if len(sample_labels) == 0: continue
                 boxes = sample_labels[:, 1:5]

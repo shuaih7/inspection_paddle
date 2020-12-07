@@ -128,15 +128,15 @@ def infer(image):
     scores = bboxes[:, 1].astype('float32')
     boxes = bboxes[:, 2:].astype('float32')
     return True, boxes, labels, scores, bboxes, period
-
+   
 
 if __name__ == '__main__':
     import sys
     import glob as gb
     
-    image_path = r'E:\Projects\Fabric_Defect_Detection\model_proto\MobileNet_YOLO\Fast_YOLO\v1.1\valid'
-    label_path = r'E:\Projects\Fabric_Defect_Detection\model_proto\MobileNet_YOLO\Fast_YOLO\v1.1\valid'
-    save_path  = r"E:\Projects\Fabric_Defect_Detection\model_proto\MobileNet_YOLO\Fast_YOLO\v1.2\valid_output"
+    image_path = r'E:\Projects\Fabric_Defect_Detection\model_dev\ThreeGun_Visit_1130\valid_2'
+    #label_path = r'E:\Projects\Fabric_Defect_Detection\model_proto\MobileNet_YOLO\Fast_YOLO\v1.1\valid'
+    save_path  = r"E:\Projects\Fabric_Defect_Detection\model_dev\ThreeGun_Visit_1130\valid_output_2"
     image_list = gb.glob(image_path + r"/*.png")
     total_time = 0.
     
@@ -161,12 +161,13 @@ if __name__ == '__main__':
             print(image_path, "No defect detected.")
             shutil.copy(image_file, save_name)
         #print('infer one picture cost {} ms'.format(period))
-        
-    average_time = total_time / len(image_list)
-    fps = int(1000/average_time)
-    print("The avergae processing time for one image is", average_time)
-    print("The fps is", fps)
-    """
+    
+    if len(image_list) > 0:
+        average_time = total_time / len(image_list)
+        fps = int(1000/average_time)
+        print("The avergae processing time for one image is", average_time)
+        print("The fps is", fps)
+        """
     
     # Check the result of a single image
     image_file = r"E:\Projects\Fabric_Defect_Detection\model_proto\ShuffleNetV2_YOLOv3\v1.1\dataset\valid\valid_gray_1_1600.png"
