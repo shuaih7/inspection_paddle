@@ -15,34 +15,67 @@
 In the textile industry, long defects like the skipping stitch severely postpone the manufactory pipeline and cost lots of cloth waste. This project is aimed to build up an object detection algorithm which could perform a real-time fabric defect detection on a portable device (for example, the Jetson Nano). The algorithm would deliver a >99% recall rate with the false alarm rate less than 1%. Make sure to optimize the algorithm to be portable and compatible enough to fit the terminal's computiing power.
 
 ## Visuals
-Todo ...
+Below are the sample skipping stitch detection results for white and gray linen:
+<div align=center><img src="https://github.com/shuaih7/inspection_paddle/blob/master/Fabric_defect_detection/src/results.jpg"></div>
 
 ## Requirements
 - Ubuntu / macOS / Windows
 - Python3.5 / Python3.6 / Python3.7
 
 ## Installation
-Make sure install all of the dependencies before running the algorithm development tools. To install dependencies, run the following command in the virtual environment
+Install paddlepaddle-gpu v1.8.4 using pip:
+
+    pip install paddlepaddle-gpu==1.8.4
+    
+If the GPU is not available or not supported by paddle, then install the CPU version instand:
+
+    pip install paddlepaddle==1.8.4
+
+Install other dependencies before running the algorithm development tools. To install dependencies, run the following command in the virtual environment:
+
     pip install -r Requirements.txt
     
-If encountered the url error multiple times, try using the Tsinghua Pypi Source
-    pip install -i https://pypi.tuna.tsinghua.edu.cn/simple -r Requirements.txt
+If encountered the url error multiple times, try using the Tsinghua Pypi Source:
+
+    pip install -i https://pypi.tuna.tsinghua.edu.cn/simple some_pkgs
     
 ## Usage
 
+    data:  scripts for the dataset generation, pre and post-processing, and data augmentation modules
+    log:  folder containing the log file
+    config.py:  The model configuration matrix
+    Fast_YOLO.py:  YOLO model structure
+    infer.py:  Do the inference, where the model file should be freezed
+    freeze.py:  Freeze the trained paddle model
+    utils.py:  Utility functions
+    train.py: Script to start training
 
 ## Development
-
-
-## Support
-
+* Version 0.2.0 is developed based on YOLOv3 with the MobileNetV2 backbone
+* Model receives a 95.42% mAP on the dataset obtained on 10.13.2020
 
 ## Acknowledgement
+This project is supported by Shanghai Three Gun Group CO., Ltd. All of the image dataset are captured from its factory in Dafeng, Jiangsu Province. Persons contributing to this project are:
 
+    Jingping Zhao: zhaojingping@handaotech.com
+    Jay Han:       hanjie@handaotech.com
+    Shuai Hao:     haoshuai@handaotech.com
 
 ## License
 
+    Copyright (c) 2020 Fabric_defect_detection Authors. All Rights Reserved.
 
-## Log
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
 
 
