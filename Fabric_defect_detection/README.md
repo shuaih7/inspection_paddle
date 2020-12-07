@@ -12,16 +12,22 @@
 </div>
 
 ## Description
+In the textile industry, long defects like the skipping stitch severely postpone the manufactory pipeline and cost lots of cloth waste. This project is aimed to build up an object detection algorithm which could perform a real-time fabric defect detection on a portable device (for example, the Jetson Nano). The algorithm would deliver a >99% recall rate with the false alarm rate less than 1%. Make sure to optimize the algorithm to be portable and compatible enough to fit the terminal's computiing power.
 
 ## Visuals
-
+Todo ...
 
 ## Requirements
-
+- Ubuntu / macOS / Windows
+- Python3.5 / Python3.6 / Python3.7
 
 ## Installation
-
-
+Make sure install all of the dependencies before running the algorithm development tools. To install dependencies, run the following command in the virtual environment
+    pip install -r Requirements.txt
+    
+If encountered the url error multiple times, try using the Tsinghua Pypi Source
+    pip install -i https://pypi.tuna.tsinghua.edu.cn/simple -r Requirements.txt
+    
 ## Usage
 
 
