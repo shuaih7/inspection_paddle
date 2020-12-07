@@ -45,6 +45,7 @@ If encountered the url error multiple times, try using the Tsinghua Pypi Source:
     log:  folder containing the log file
     config.py:  The model configuration matrix
     Fast_YOLO.py:  YOLO model structure
+    reader.py: Create the data input pipeline
     infer.py:  Do the inference, where the model file should be freezed
     freeze.py:  Freeze the trained paddle model
     utils.py:  Utility functions
@@ -53,6 +54,16 @@ If encountered the url error multiple times, try using the Tsinghua Pypi Source:
 ## Development
 * Version 0.2.0 is developed based on YOLOv3 with the MobileNetV2 backbone
 * Model receives a 95.42% mAP on the dataset obtained on 10.13.2020
+
+## Jetson TX2 / Nano Deployment
+- Download Jetpack v4.2.0 and upgrade the Jetson device
+- Transfer the backbone and YOLO head into onnx file
+
+    paddle2onnx --model_dir "model_save_dir" --save_file onnx_file_name.onnx
+    
+ - Transfer the onnx model into tensorRT model and add the pre and post-processing methods, referring to this [repository](https://github.com/xuwanqi/yolov3-tensorrt)
+ - The computing speed on both TX2 and Nano are around 20fps
+ - Alternatively, you can compiling install paddlepaddle on Jetson, referring to this [blog](https://blog.csdn.net/weixin_45449540/article/details/107704028)
 
 ## Acknowledgement
 This project is supported by Shanghai Three Gun Group CO., Ltd. All of the image dataset are captured from its factory in Dafeng, Jiangsu Province. Persons contributing to this project are:
