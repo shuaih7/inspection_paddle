@@ -47,6 +47,8 @@ def create_pvoc_object(node_root, bbx, label,
 
 
 def create_pvoc(img_file, boxes, labels, origin):
+    if len(boxes) == 0: return None
+    
     img_path, filename = os.path.split(img_file)
     _, folder = os.path.split(img_path)
     img_w, img_h = origin.size[0], origin.size[1]
@@ -148,7 +150,7 @@ def infer(img_file):
 
     if bboxes.shape[1] != 6:
         # print("No object found")
-        return [], [], [], origin, resize_img
+        return [], [], [], origin, resized_img
     labels = bboxes[:, 0].astype('int32')
     scores = bboxes[:, 1].astype('float32')
     boxes = bboxes[:, 2:].astype('float32')
@@ -159,6 +161,7 @@ def labelfile(img_file, save_dir):
     boxes, labels, scores, origin, resized_img = infer(img_file)
     boxes = scale_boxes(boxes, origin, resized_img) # Scale the boxes into the original size
     xml_tree = create_pvoc(img_file, boxes, labels, origin)
+    if xml_tree is None: return # Only write into xml if there exits defect
     
     _, filename = os.path.split(img_file)
     fname, _ = os.path.splitext(filename)
@@ -176,8 +179,8 @@ def labeldir(img_dir, save_dir, suffix=".png"):
    
 
 if __name__ == '__main__': 
-    image_path = r'E:\Projects\Fabric_Defect_Detection\model_dev\ThreeGun_Visit_1130\label'
-    save_path  = r"E:\Projects\Fabric_Defect_Detection\model_dev\ThreeGun_Visit_1130\label"
-    suffix = ".bmp"
+    image_path = r'E:\Projects\Fabric_Defect_Detection\model_dev\autolabel_test'
+    save_path  = r"E:\Projects\Fabric_Defect_Detection\model_dev\autolabel_test"
+    suffix = ".png"
     
     labeldir(image_path, save_path, suffix)
