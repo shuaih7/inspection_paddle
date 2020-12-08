@@ -117,3 +117,10 @@ def init_log_config():
     logger.addHandler(sh)
     logger.addHandler(fh)
     return logger
+    
+
+if __name__ == "__main__":
+    config_matrix = init_train_parameters()
+    label_dict = config_matrix["label_dict"]
+    
+    print([elem for elem in label_dict.keys()])
