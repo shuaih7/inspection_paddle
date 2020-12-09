@@ -16,7 +16,7 @@ In the textile industry, long defects like the skipping stitch severely postpone
 
 ## Visuals
 Below are the sample skipping stitch detection results for white and gray linen:
-<div align=center><img src="https://github.com/shuaih7/inspection_paddle/blob/master/Fabric_defect_detection/src/results.jpg"></div>
+<div align=center><img src="https://github.com/shuaih7/inspection_paddle/blob/master/projects/Fabric_defect_detection/src/results.jpg"></div>
 
 ## Requirements
 - Ubuntu / macOS / Windows
