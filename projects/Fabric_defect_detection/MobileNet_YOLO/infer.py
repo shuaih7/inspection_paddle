@@ -134,10 +134,10 @@ if __name__ == '__main__':
     import sys
     import glob as gb
     
-    image_path = r'E:\Projects\Fabric_Defect_Detection\model_dev\ThreeGun_Visit_1130\valid_2'
+    image_path = r'E:\Projects\Fabric_Defect_Detection\model_dev\dataset_v1\valid'
     #label_path = r'E:\Projects\Fabric_Defect_Detection\model_proto\MobileNet_YOLO\Fast_YOLO\v1.1\valid'
-    save_path  = r"E:\Projects\Fabric_Defect_Detection\model_dev\ThreeGun_Visit_1130\valid_output_2"
-    image_list = gb.glob(image_path + r"/*.png")
+    save_path  = r"E:\Projects\Fabric_Defect_Detection\model_dev\v1.0.0\valid_output"
+    image_list = gb.glob(image_path + r"/*.bmp")
     total_time = 0.
     
     pvoc = PascalVocXmlParser()

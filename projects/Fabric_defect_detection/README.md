@@ -12,7 +12,7 @@
 </div>
 
 ## Description
-In the textile industry, long defects like the skipping stitch severely postpone the manufactory pipeline and cost lots of cloth waste. This project is aimed to build up an object detection algorithm which could perform a real-time fabric defect detection on a portable device (for example, the Jetson Nano). The algorithm would deliver a >99% recall rate with the false alarm rate less than 1%. Make sure to optimize the algorithm to be portable and compatible enough to fit the terminal's computiing power.
+In the textile industry, long defects like the skipping stitch severely postpone the manufactory pipeline and cost lots of cloth waste. This project is aimed to build up an object detection algorithm which could perform a real-time fabric defect detection on a portable device (for example, the Jetson Nano). The algorithm would deliver a >99% recall rate with the false alarm rate less than 1%. Make sure to optimize the algorithm to be portable and compatible enough to fit the terminal's computing power.
 
 ## Visuals
 Below are the sample skipping stitch detection results for white and gray linen:
@@ -66,7 +66,7 @@ If encountered the url error multiple times, try using the Tsinghua Pypi Source:
  - Alternatively, you can compiling install paddlepaddle on Jetson, referring to this [blog](https://blog.csdn.net/weixin_45449540/article/details/107704028)
 
 ## Acknowledgement
-This project is supported by Shanghai Three Gun Group CO., Ltd. All of the image dataset are captured from its factory in Dafeng, Jiangsu Province. Persons contributing to this project are:
+This project is supported by Shanghai Three Gun Group Co., Ltd. All of the image dataset are captured from its factory in Dafeng, Jiangsu Province. Persons contributing to this project are:
 
     Jingping Zhao: zhaojingping@handaotech.com
     Jay Han:       hanjie@handaotech.com

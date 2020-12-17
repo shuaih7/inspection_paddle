@@ -7,9 +7,10 @@ import config
 import random
 import paddle
 import os
-from PIL import Image, ImageEnhance
+from PIL import Image, ImageEnhance, ImageDraw
 import xml
 import cv2
+from matplotlib import pyplot as plt
 
 train_parameters = config.init_train_parameters()
 
@@ -439,7 +440,7 @@ def preprocess(img, bbox_labels, input_size, mode):
         img, gtboxes = random_expand(img, sample_labels[:, 1:5])
         img, gtboxes, gtlabels = random_crop(img, gtboxes, sample_labels[:, 0])
         img, gtboxes = random_flip(img, gtboxes, thresh=0.5)
-        img, gtboxes = random_rotate(img, gtboxes, thresh=0.5)
+        # img, gtboxes = random_rotate(img, gtboxes, thresh=0.5)
         gtboxes, gtlabels = shuffle_gtbox(gtboxes, gtlabels)
         sample_labels[:, 0] = gtlabels
         sample_labels[:, 1:5] = gtboxes
@@ -471,7 +472,7 @@ def custom_reader(file_list, data_dir,input_size, mode):
             if mode == 'train' or mode == 'eval':
                 
                 fname = line.replace("\n","")
-                image_path = os.path.join(data_dir, fname+".png")
+                image_path = os.path.join(data_dir, fname+".bmp")
                 label_path = os.path.join(data_dir, fname+".xml")
                 img = Image.open(image_path)
                 if img.mode != 'RGB':
@@ -558,3 +559,83 @@ def single_custom_reader(file_path, data_dir, input_size, mode):
     reader = paddle.reader.shuffle(reader, train_parameters['train_batch_size'])
     reader = paddle.batch(reader, train_parameters['train_batch_size'])
     return reader
+    
+    
+def draw_bbox_image(img, boxes, im_width, im_height, gt=False):
+    '''
+    给图片画上外接矩形框
+    :param img:
+    :param boxes:
+    :param save_name:
+    :param labels
+    :return:
+    '''
+    color = ['red', 'blue']
+    if gt:
+        c = color[1]
+    else:
+        c = color[0]
+        
+    draw = ImageDraw.Draw(img)
+    for box in boxes:
+        x, y, w, h = box[0], box[1], box[2], box[3]
+        xmin = max(0, int((x-w/2)*im_width))
+        xmax = min(im_width, int((x+w/2)*im_width))
+        ymin = max(0, int((y-h/2)*im_height))
+        ymax = min(im_height, int((y+h/2)*im_height))
+        draw.rectangle((xmin, ymin, xmax, ymax), None, c, width=3)
+    return img
+    
+    
+def preprocess_test(image_path):
+    data_dir, filename = os.path.split(image_path)
+    fname, _ = os.path.splitext(filename)
+    label_path = os.path.join(data_dir, fname+".xml")
+    if not os.path.isfile(image_path):
+        raise NameError("Could not find image file", image_path)
+    if not os.path.isfile(label_path):
+        raise NameError("Could not find label file", label_path)
+    
+    img = Image.open(image_path)    
+    if img.mode != 'RGB':
+        img = img.convert('RGB')
+    im_width, im_height = img.size # Input image size (720x540)
+    
+    bbox_labels = []
+    root = xml.etree.ElementTree.parse(label_path).getroot()
+    for object in root.findall('object'):
+        bbox_sample = []
+        # start from 1
+        bbox_sample.append(float(train_parameters['label_dict'][object.find('name').text]))
+        bbox = object.find('bndbox')
+        box = [float(bbox.find('xmin').text), float(bbox.find('ymin').text), float(bbox.find('xmax').text) - float(bbox.find('xmin').text), float(bbox.find('ymax').text)-float(bbox.find('ymin').text)]
+        # print(box, img.size)
+        difficult = float(object.find('difficult').text)
+        bbox = box_to_center_relative(box, im_height, im_width)
+        # print(bbox)
+        bbox_sample.append(float(bbox[0]))
+        bbox_sample.append(float(bbox[1]))
+        bbox_sample.append(float(bbox[2]))
+        bbox_sample.append(float(bbox[3]))
+        bbox_sample.append(difficult)
+        bbox_labels.append(bbox_sample)
+    if len(bbox_labels) == 0:
+        pass # Do something ...
+        
+    # Code from function "preprocess"
+    sample_labels = np.array(bbox_labels)
+    #if train_parameters['apply_distort']:
+    #    img = distort_image(img)
+    img, gtboxes = random_expand(img, sample_labels[:, 1:5])
+    # img, gtboxes, gtlabels = random_crop(img, gtboxes, sample_labels[:, 0])
+    
+    draw_img = draw_bbox_image(img, gtboxes, img.size[0], img.size[1])
+    plt.imshow(draw_img)
+    plt.show()
+
+if __name__ == "__main__":
+    image_path = r"E:\Projects\Fabric_Defect_Detection\model_proto\ShuffleNetV2_YOLOv3\v1.1\dataset\train\train_gray_0_1600.png"
+    preprocess_test(image_path)
+    
+    
+    

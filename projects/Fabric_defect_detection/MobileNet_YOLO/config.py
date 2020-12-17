@@ -7,8 +7,8 @@ import logging
 import codecs
 
 train_parameters = {
-    "data_dir": r"E:\Projects\Fabric_Defect_Detection\model_proto\ShuffleNetV2_YOLOv3\v1.1\dataset\train",
-    "val_dir": r"E:\Projects\Fabric_Defect_Detection\model_proto\MobileNet_YOLO\Fast_YOLO\v1.1\valid",
+    "data_dir": r"E:\Projects\Fabric_Defect_Detection\model_dev\dataset_v1\train",
+    "val_dir": r"E:\Projects\Fabric_Defect_Detection\model_dev\dataset_v1\valid",
     "train_list": "train.txt",
     "eval_list": "valid.txt",
     "use_filter": False,
@@ -18,19 +18,19 @@ train_parameters = {
     "image_count": -1,
     "continue_train": True,     # 是否加载前一次的训练参数，接着训练
     "pretrained": False,
-    "pretrained_model_dir": r"E:\Projects\Fabric_Defect_Detection\model_proto\MobileNet_YOLO\Fast_YOLO\v1.2\pretrained_model",
-    "save_model_dir": r"E:\Projects\Fabric_Defect_Detection\model_proto\MobileNet_YOLO\Fast_YOLO\v1.2\saved_model",
+    "pretrained_model_dir": r"E:\Projects\Fabric_Defect_Detection\model_dev\v1.0.0\pretrained_model",
+    "save_model_dir": r"E:\Projects\Fabric_Defect_Detection\model_dev\v1.0.0\saved_model",
     "model_prefix": "yolo-v3",
-    "freeze_dir": r"E:\Projects\Fabric_Defect_Detection\model_proto\MobileNet_YOLO\Fast_YOLO\v1.2\freeze_model",
+    "freeze_dir": r"E:\Projects\Fabric_Defect_Detection\model_dev\v1.0.0\freeze_model",
     "use_tiny": False,          # 是否使用 裁剪 tiny 模型
-    "max_box_num": 5,          # 一幅图上最多有多少个目标
+    "max_box_num": 10,          # 一幅图上最多有多少个目标
     "num_epochs": 101,
     "train_batch_size": 16,      # 对于完整 yolov3，每一批的训练样本不能太多，内存会炸掉
     "use_gpu": True,
     "yolo_cfg": {
         "input_size": [3, 352, 352],    # 原版的边长大小为608，为了提高训练速度和预测速度，此处压缩为448
         # "anchors": [10, 13, 16, 30, 33, 23, 30, 61, 62, 45, 59, 119, 116, 90, 156, 198, 373, 326], #416
-        "anchors": [351, 16, 15, 188, 16, 351],#384
+        "anchors": [17, 187, 19, 332, 30, 537],#384
         # "anchors": [8, 10, 12, 23, 25, 18, 23, 47, 48, 35, 45, 92, 89, 69, 120, 152, 287, 251],#320
         "anchor_mask": [[0, 1, 2]]
     },
@@ -44,21 +44,21 @@ train_parameters = {
     "mode": "train",
     "multi_data_reader_count": 4,
     "apply_distort": True,
-    "nms_top_k": 6,
-    "nms_pos_k": 6,
+    "nms_top_k": 10,
+    "nms_pos_k": 10,
     "valid_thresh": 0.005,
     "nms_thresh": 0.1,
     "image_distort_strategy": {
         "expand_prob": 0.5,
-        "expand_max_ratio": 4,
+        "expand_max_ratio": 2,
         "hue_prob": 0.5,
         "hue_delta": 18,
         "contrast_prob": 0.5,
-        "contrast_delta": 0.5,
+        "contrast_delta": 0.2,
         "saturation_prob": 0.5,
         "saturation_delta": 0.5,
         "brightness_prob": 0.5,
-        "brightness_delta": 0.5
+        "brightness_delta": 0.2
     },
     "sgd_strategy": {
         "learning_rate": 0.002,

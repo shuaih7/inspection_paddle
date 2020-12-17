@@ -8,7 +8,7 @@ import time
 import config
 import cv2
 import numpy as np
-from Fast_YOLO import get_yolo
+from FastYOLO import get_yolo
 import paddle.fluid as fluid
 from reader import single_custom_reader
 from PIL import Image
@@ -35,7 +35,7 @@ with open(test_file_path, 'r') as f:
     lines = f.readlines()
     for sample in range(len(lines)):
         fname = lines[sample].replace("\n","")
-        image_path = os.path.join(val_dir, fname+".png")
+        image_path = os.path.join(val_dir, fname+".bmp")
         label_path = os.path.join(val_dir, fname+".xml")
         
         img = Image.open(image_path)
@@ -142,8 +142,8 @@ def eval(program, fetch_list, eval_program, eval_fetch_list, eval_feeder):
         
     for data in val_data:
 
-        temp_image = data[0]
-        temp_image_shape = data[1]
+        temp_image = data[0]       # Resized image into with the input shape
+        temp_image_shape = data[1] # Original image shape before the reshaping
         temp_gt_label = data[2]
         temp_gt_boxes = data[3]
         temp_difficult = data[4]

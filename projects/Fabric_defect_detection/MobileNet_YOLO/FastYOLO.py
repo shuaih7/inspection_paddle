@@ -8,7 +8,7 @@ from paddle.fluid.regularizer import L2Decay
 from paddle.fluid.initializer import MSRA
 
 
-class Fast_YOLO(object):
+class FastYOLO(object):
     """
     定义模型
     """
@@ -21,7 +21,7 @@ class Fast_YOLO(object):
         :param scale:
         """
         self.outputs = []
-        self.downsample_ratio = 32
+        self.downsample_ratio = 16
         self.anchor_mask = anchor_mask
         self.anchors = anchors
         self.class_num = class_num
@@ -215,8 +215,7 @@ class Fast_YOLO(object):
             (2, 32, 3, 2),
             (2, 64, 4, 2),
             (2, 96, 3, 1),
-            (2, 160, 3, 2),
-            (2, 320, 1, 1),
+            (6, 160, 3, 1),
         ]
         # MobileNet的第一个卷积层 
         input = self.conv_bn_layer(
@@ -462,4 +461,4 @@ def get_yolo(is_tiny, class_num, anchors, anchor_mask):
     if is_tiny:
         return YOLOv3Tiny(class_num, anchors, anchor_mask)
     else:
-        return Fast_YOLO(class_num, anchors, anchor_mask)
+        return FastYOLO(class_num, anchors, anchor_mask)

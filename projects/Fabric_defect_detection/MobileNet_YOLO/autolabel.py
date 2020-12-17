@@ -1,7 +1,5 @@
 # -*- coding: UTF-8 -*-
-"""
-模型推理
-"""
+
 import os, sys
 import config
 import numpy as np
@@ -179,8 +177,8 @@ def labeldir(img_dir, save_dir, suffix=".png"):
    
 
 if __name__ == '__main__': 
-    image_path = r'E:\Projects\Fabric_Defect_Detection\model_dev\autolabel_test'
-    save_path  = r"E:\Projects\Fabric_Defect_Detection\model_dev\autolabel_test"
-    suffix = ".png"
+    image_path = r'E:\Projects\Fabric_Defect_Detection\model_dev\dataset_skip_stitch\valid'
+    save_path  = r"E:\Projects\Fabric_Defect_Detection\model_dev\dataset_skip_stitch\valid"
+    suffix = ".bmp"
     
     labeldir(image_path, save_path, suffix)
