@@ -2,6 +2,7 @@
 
 import os, sys
 import config
+import shutil
 import numpy as np
 import glob as gb
 import paddle.fluid as fluid
@@ -18,6 +19,21 @@ place = fluid.CUDAPlace(0) if train_parameters['use_gpu'] else fluid.CPUPlace()
 exe = fluid.Executor(place)
 path = train_parameters['freeze_dir']  # 'model/freeze_model'
 [inference_program, feed_target_names, fetch_targets] = fluid.io.load_inference_model(dirname=path, executor=exe, model_filename='__model__', params_filename='params')
+
+
+def fetch_labels(img_path, label_path, suffix=".png"):
+    img_list = gb.glob(img_path + r"/*"+suffix)
+    
+    for img_file in img_list:
+        prefix, _ = os.path.splitext(img_file)
+        if not os.path.isfile(prefix + ".xml"):
+            _, fname = os.path.split(prefix)
+            label_file = os.path.join(label_path, fname+".xml")
+            save_name = os.path.join(img_path, fname+".xml")
+            if os.path.isfile(label_file):
+                print("Copying file", label_file, "...")
+                shutil.copy(label_file, save_name)
+    print("Done")
 
 
 def create_pvoc_object(node_root, bbx, label,
@@ -177,8 +193,17 @@ def labeldir(img_dir, save_dir, suffix=".png"):
    
 
 if __name__ == '__main__': 
-    image_path = r'E:\Projects\Fabric_Defect_Detection\model_dev\dataset_skip_stitch\valid'
-    save_path  = r"E:\Projects\Fabric_Defect_Detection\model_dev\dataset_skip_stitch\valid"
+    """
+    # Autolabeling ...
+    image_path = r'E:\Projects\Fabric_Defect_Detection\model_dev\v1.1.0\dataset\white'
+    save_path  = r"E:\Projects\Fabric_Defect_Detection\model_dev\v1.1.0\dataset\white"
     suffix = ".bmp"
     
     labeldir(image_path, save_path, suffix)
+    """
+    
+    # Fetch labels ...
+    img_path = r"E:\Projects\Fabric_Defect_Detection\model_dev\v1.1.0\dataset\darkgray"
+    label_path = r"E:\Projects\Fabric_Defect_Detection\model_dev\v1.0.0\dataset\valid"
+    fetch_labels(img_path, label_path, suffix=".bmp")
+    

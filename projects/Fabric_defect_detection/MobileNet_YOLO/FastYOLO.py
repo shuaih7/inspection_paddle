@@ -198,7 +198,7 @@ class FastYOLO(object):
         blocks = []
         scale = 1.0
         class_num = 20
-        """
+        
         bottleneck_params_list = [
             (1, 16, 1, 1),
             (6, 24, 2, 2),
@@ -217,6 +217,7 @@ class FastYOLO(object):
             (2, 96, 3, 1),
             (6, 160, 3, 1),
         ]
+        """
         # MobileNet的第一个卷积层 
         input = self.conv_bn_layer(
             input,

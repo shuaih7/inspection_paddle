@@ -47,7 +47,7 @@ def draw_bbox_image(img, boxes, labels, gt=False):
 """
 
 
-def draw_bbox_image(img, boxes, scores, gt=False):
+def draw_bbox_image(img, boxes, labels, scores, gt=False):
     '''
     给图片画上外接矩形框
     :param img:
@@ -56,15 +56,15 @@ def draw_bbox_image(img, boxes, scores, gt=False):
     :param labels
     :return:
     '''
-    color = ['red', 'blue']
-    if gt:
-        c = color[1]
-    else:
-        c = color[0]
+    color = ['red', 'orange']
+    
     img = Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
     draw = ImageDraw.Draw(img)
-    for box, score in zip(boxes, scores):
+    for box, label, score in zip(boxes, labels, scores):
         xmin, ymin, xmax, ymax = box[0], box[1], box[2], box[3]
+        if label == 0: 
+            c = color[0]
+        else: c = color[1]
         draw.rectangle((xmin, ymin, xmax, ymax), None, c, width=3)
         draw.text((xmin, ymin), str(score), (255, 255, 0))
     return img
@@ -134,9 +134,9 @@ if __name__ == '__main__':
     import sys
     import glob as gb
     
-    image_path = r'E:\Projects\Fabric_Defect_Detection\model_dev\dataset_v1\valid'
+    image_path = r'E:\Projects\Fabric_Defect_Detection\model_dev\v1.1.0\dataset\valid'
     #label_path = r'E:\Projects\Fabric_Defect_Detection\model_proto\MobileNet_YOLO\Fast_YOLO\v1.1\valid'
-    save_path  = r"E:\Projects\Fabric_Defect_Detection\model_dev\v1.0.0\valid_output"
+    save_path  = r"E:\Projects\Fabric_Defect_Detection\model_dev\v1.1.0\valid_output"
     image_list = gb.glob(image_path + r"/*.bmp")
     total_time = 0.
     
@@ -153,7 +153,7 @@ if __name__ == '__main__':
         total_time += period
         
         if flag:
-            img = draw_bbox_image(img, box, scores)
+            img = draw_bbox_image(img, box, label, scores)
             img = cv2.cvtColor(np.asarray(img), cv2.COLOR_RGB2BGR)
             print('Defect detected at image', image_file)
             cv2.imwrite(save_name, img)

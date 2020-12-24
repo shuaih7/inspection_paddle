@@ -17,14 +17,14 @@ def show_histogram(path):
     plt.subplot(1,2,2), plt.hist(heights), plt.title("Heights Distribution")
     plt.show()
 
-def cluster_anchors(path, k=6):
-    dataset = encode_dataset(path)
+def cluster_anchors(path, k=6, label=None):
+    dataset = encode_dataset(path, label=label)
     km = KMeans(n_clusters=k, random_state=9).fit(dataset)
     ac = np.array(km.cluster_centers_, dtype=np.int32)
     
     return ac
 
-def encode_dataset(path):
+def encode_dataset(path, label=None):
     dataset = [] # dataset that x_length larger than x_thres
     for xml_file in gb.glob(path + r"/*.xml"): 
         tree = ET.parse(xml_file)
@@ -37,13 +37,15 @@ def encode_dataset(path):
             ymin = int(obj.findtext("bndbox/ymin"))
             xmax = int(obj.findtext("bndbox/xmax"))
             ymax = int(obj.findtext("bndbox/ymax"))
+            name = obj.findtext("name")
      
-            xmin = np.float64(xmin)
-            ymin = np.float64(ymin)
-            xmax = np.float64(xmax)
-            ymax = np.float64(ymax)
-            if xmax == xmin or ymax == ymin: print("Warning: xmin = xmax or ymin = ymax occurs at", xml_file)
-            dataset.append([xmax - xmin, ymax - ymin])
+            if label is None or name == label:
+                xmin = np.float64(xmin)
+                ymin = np.float64(ymin)
+                xmax = np.float64(xmax)
+                ymax = np.float64(ymax)
+                if xmax == xmin or ymax == ymin: print("Warning: xmin = xmax or ymin = ymax occurs at", xml_file)
+                dataset.append([xmax - xmin, ymax - ymin])
     return np.array(dataset)
 
 """
@@ -82,9 +84,10 @@ def encode_dataset(path, x_thres=300):
 """   
     
 if __name__ == "__main__":
-    path = r"E:\Projects\Fabric_Defect_Detection\model_dev\dataset_v1\train"
+    path = r"E:\Projects\Fabric_Defect_Detection\model_dev\v1.1.0\dataset\white"
     #show_histogram(path)
-    ac = cluster_anchors(path, k=3)
+    label = "striation"
+    ac = cluster_anchors(path, k=3, label=label)
     print(ac)
     
     #ac0, ac1 = cluster_anchors(path, k0=3, k1=3)

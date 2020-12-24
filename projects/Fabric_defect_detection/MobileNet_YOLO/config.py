@@ -7,8 +7,8 @@ import logging
 import codecs
 
 train_parameters = {
-    "data_dir": r"E:\Projects\Fabric_Defect_Detection\model_dev\dataset_v1\train",
-    "val_dir": r"E:\Projects\Fabric_Defect_Detection\model_dev\dataset_v1\valid",
+    "data_dir": r"E:\Projects\Fabric_Defect_Detection\model_dev\v1.1.0\dataset\white",
+    "val_dir": r"E:\Projects\Fabric_Defect_Detection\model_dev\v1.1.0\dataset\valid",
     "train_list": "train.txt",
     "eval_list": "valid.txt",
     "use_filter": False,
@@ -18,10 +18,10 @@ train_parameters = {
     "image_count": -1,
     "continue_train": True,     # 是否加载前一次的训练参数，接着训练
     "pretrained": False,
-    "pretrained_model_dir": r"E:\Projects\Fabric_Defect_Detection\model_dev\v1.0.0\pretrained_model",
-    "save_model_dir": r"E:\Projects\Fabric_Defect_Detection\model_dev\v1.0.0\saved_model",
+    "pretrained_model_dir": r"E:\Projects\Fabric_Defect_Detection\model_dev\v1.1.0\pretrained_model",
+    "save_model_dir": r"E:\Projects\Fabric_Defect_Detection\model_dev\v1.1.0\saved_model",
     "model_prefix": "yolo-v3",
-    "freeze_dir": r"E:\Projects\Fabric_Defect_Detection\model_dev\v1.0.0\freeze_model",
+    "freeze_dir": r"E:\Projects\Fabric_Defect_Detection\model_dev\v1.1.0\freeze_model",
     "use_tiny": False,          # 是否使用 裁剪 tiny 模型
     "max_box_num": 10,          # 一幅图上最多有多少个目标
     "num_epochs": 101,
@@ -30,7 +30,7 @@ train_parameters = {
     "yolo_cfg": {
         "input_size": [3, 352, 352],    # 原版的边长大小为608，为了提高训练速度和预测速度，此处压缩为448
         # "anchors": [10, 13, 16, 30, 33, 23, 30, 61, 62, 45, 59, 119, 116, 90, 156, 198, 373, 326], #416
-        "anchors": [17, 187, 19, 332, 30, 537],#384
+        "anchors": [706, 31, 482, 25, 30, 537],#384
         # "anchors": [8, 10, 12, 23, 25, 18, 23, 47, 48, 35, 45, 92, 89, 69, 120, 152, 287, 251],#320
         "anchor_mask": [[0, 1, 2]]
     },

@@ -410,7 +410,7 @@ def custom_preprocess(img, bbox_labels, input_size, mode):
         gtlabels = sample_labels[:, 0]  # Define the ground true labels
         
         img, gtboxes = random_flip(img, gtboxes, thresh=0.5)
-        img, gtboxes = random_rotate(img, gtboxes, thresh=0.5)
+        # img, gtboxes = random_rotate(img, gtboxes, thresh=0.5)
         gtboxes, gtlabels = shuffle_gtbox(gtboxes, gtlabels)
         
         sample_labels[:, 0] = gtlabels

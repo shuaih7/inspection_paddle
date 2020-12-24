@@ -58,7 +58,7 @@ class DatasetGenerator(object):
         
         
 if __name__ == "__main__":
-    file_path = r"E:\Projects\Fabric_Defect_Detection\model_dev\dataset_v1\valid"
+    file_path = r"E:\Projects\Fabric_Defect_Detection\model_dev\v1.1.0\dataset\valid"
     save_path = r"C:\Users\shuai\Documents\GitHub\inspection_paddle\projects\Fabric_defect_detection\MobileNet_YOLO"
     
     write_into_txt(file_path, save_path=save_path, save_name="valid")
