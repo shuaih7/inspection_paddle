@@ -10,7 +10,7 @@ import json, cv2
 from PIL import Image
 from PIL import ImageDraw
 from data import PascalVocXmlParser
-from lxml.etree import Element, SubElement, tostring, ElementTree
+from lxml.etree import Element, SubElement, tostring, ElementTree, XMLParser, parse
 
 train_parameters = config.init_train_parameters()
 label_dict = train_parameters['num_dict']
@@ -93,11 +93,23 @@ def create_pvoc(img_file, boxes, labels, origin):
     node_segmented = SubElement(node_root, 'segmented')
     node_segmented.text = "0"
      
-    for box, label in zip(boxes, labels): create_pvoc_object(node_root, box, label)
+    for box, label in zip(boxes, labels): 
+        create_pvoc_object(node_root, box, label)
     xml_tree = ElementTree(node_root)
     
     return xml_tree
-
+    
+    
+def insert_pvoc(label_file, boxes, labels, names=[]):
+    node_root = parse(label_file, XMLParser(remove_blank_text=True)).getroot()
+    
+    for box, label in zip(boxes, labels):
+        if label_dict[label] in names:
+            create_pvoc_object(node_root, box, label)
+    xml_tree = ElementTree(node_root)
+    
+    return xml_tree
+        
 
 def resize_img(img, target_size):
     """
@@ -183,6 +195,27 @@ def labelfile(img_file, save_dir):
     
     xml_tree.write(save_name, pretty_print=True, xml_declaration=False, encoding='utf-8')
     
+
+def labelfile_insert(img_file, label_dir=None, save_dir=None, names=[]):
+    boxes, labels, scores, origin, resized_img = infer(img_file)
+    boxes = scale_boxes(boxes, origin, resized_img) # Scale the boxes into the original size
+    
+    img_dir, filename = os.path.split(img_file)
+    if label_dir is None: label_dir=img_dir
+    if save_dir is None: save_dir = label_dir
+    
+    fname, _ = os.path.splitext(filename)
+    label_file = os.path.join(label_dir, fname+".xml")
+    save_name = os.path.join(save_dir, fname+".xml")
+    
+    if not os.path.isfile(label_file):
+        xml_tree = create_pvoc(img_file, boxes, labels, origin)
+    else:
+        xml_tree = insert_pvoc(label_file, boxes, labels, names)
+    
+    if xml_tree is None: return # Only write into xml if there exits defect
+    xml_tree.write(save_name, pretty_print=True, xml_declaration=False, encoding='utf-8')
+    
     
 def labeldir(img_dir, save_dir, suffix=".png"):
     img_list = gb.glob(img_dir + r"/*"+suffix)
@@ -190,20 +223,29 @@ def labeldir(img_dir, save_dir, suffix=".png"):
     for img_file in img_list:
         print("Labeling image file", img_file, "...")
         labelfile(img_file, save_dir)
+        
+        
+def labeldir_insert(img_dir, label_dir=None, save_dir=None, names=[], suffix=".png"):
+    img_list = gb.glob(img_dir + r"/*"+suffix)
+    
+    for img_file in img_list:
+        print("Labeling image file", img_file, "...")
+        labelfile_insert(img_file, label_dir, save_dir, names)
    
 
 if __name__ == '__main__': 
-    """
+    
     # Autolabeling ...
-    image_path = r'E:\Projects\Fabric_Defect_Detection\model_dev\v1.1.0\dataset\white'
-    save_path  = r"E:\Projects\Fabric_Defect_Detection\model_dev\v1.1.0\dataset\white"
+    image_path = r'E:\Projects\Fabric_Defect_Detection\model_dev\autolabel_test'
+    save_path  = r"E:\Projects\Fabric_Defect_Detection\model_dev\autolabel_test"
     suffix = ".bmp"
     
-    labeldir(image_path, save_path, suffix)
-    """
+    #labeldir(image_path, save_path, suffix)
+    labeldir_insert(image_path, names=["striation"], suffix=suffix)
+    
     
     # Fetch labels ...
-    img_path = r"E:\Projects\Fabric_Defect_Detection\model_dev\v1.1.0\dataset\darkgray"
-    label_path = r"E:\Projects\Fabric_Defect_Detection\model_dev\v1.0.0\dataset\valid"
-    fetch_labels(img_path, label_path, suffix=".bmp")
+    # img_path = r"E:\Projects\Fabric_Defect_Detection\model_dev\v1.1.0\dataset\darkgray"
+    # label_path = r"E:\Projects\Fabric_Defect_Detection\model_dev\v1.0.0\dataset\valid"
+    # fetch_labels(img_path, label_path, suffix=".bmp")
     
