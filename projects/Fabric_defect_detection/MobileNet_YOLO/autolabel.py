@@ -236,8 +236,8 @@ def labeldir_insert(img_dir, label_dir=None, save_dir=None, names=[], suffix=".p
 if __name__ == '__main__': 
     
     # Autolabeling ...
-    image_path = r'E:\Projects\Fabric_Defect_Detection\model_dev\autolabel_test'
-    save_path  = r"E:\Projects\Fabric_Defect_Detection\model_dev\autolabel_test"
+    image_path = r'E:\Projects\Fabric_Defect_Detection\model_dev\v1.1.0\dataset\darkgray'
+    save_path  = r"E:\Projects\Fabric_Defect_Detection\model_dev\v1.1.0\dataset\darkgray"
     suffix = ".bmp"
     
     #labeldir(image_path, save_path, suffix)
