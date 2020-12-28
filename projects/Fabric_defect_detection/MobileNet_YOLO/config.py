@@ -54,11 +54,11 @@ train_parameters = {
         "hue_prob": 0.5,
         "hue_delta": 18,
         "contrast_prob": 0.5,
-        "contrast_delta": 0.5,
+        "contrast_delta": 0.3,
         "saturation_prob": 0.5,
         "saturation_delta": 0.5,
         "brightness_prob": 0.5,
-        "brightness_delta": 0.3
+        "brightness_delta": 0.6
     },
     "sgd_strategy": {
         "learning_rate": 0.002,
