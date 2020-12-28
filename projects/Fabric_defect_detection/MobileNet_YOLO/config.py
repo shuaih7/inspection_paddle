@@ -50,7 +50,7 @@ train_parameters = {
     "nms_thresh": 0.1,
     "image_distort_strategy": {
         "expand_prob": 0.5,
-        "expand_max_ratio": 2,
+        "expand_max_ratio": 1.2,
         "hue_prob": 0.5,
         "hue_delta": 18,
         "contrast_prob": 0.5,

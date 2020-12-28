@@ -292,6 +292,9 @@ def random_expand(img, gtboxes, keep_ratio=True):
         ratio_y = ratio_x
     else:
         ratio_y = random.uniform(1, max_ratio)
+        
+    print("ratio x =", ratio_x, "ratio y =", ratio_y)
+        
     oh = int(h * ratio_y)
     ow = int(w * ratio_x)
     off_x = random.randint(0, ow -w)
@@ -310,7 +313,7 @@ def random_expand(img, gtboxes, keep_ratio=True):
     return Image.fromarray(out_img), gtboxes
 
 
-def random_flip(img, gtboxes, thresh=0.5):
+def random_flip_left_right(img, gtboxes, thresh=0.5):
     """
     随机翻转
     :param img:
@@ -323,6 +326,22 @@ def random_flip(img, gtboxes, thresh=0.5):
         img = img.transpose(Image.FLIP_LEFT_RIGHT)
         
         gtboxes[:, 0] = 1.0 - gtboxes[:, 0]
+    return img, gtboxes
+    
+    
+def random_flip_top_bottom(img, gtboxes, thresh=0.5):
+    """
+    随机翻转
+    :param img:
+    :param gtboxes:
+    :param thresh:
+    :return:
+    """
+    if random.random() > thresh:
+        # img = img[:, ::-1, :]
+        img = img.transpose(Image.FLIP_TOP_BOTTOM)
+        
+        gtboxes[:, 1] = 1.0 - gtboxes[:, 1]
     return img, gtboxes
     
     
@@ -439,7 +458,8 @@ def preprocess(img, bbox_labels, input_size, mode):
             img = distort_image(img)
         img, gtboxes = random_expand(img, sample_labels[:, 1:5])
         img, gtboxes, gtlabels = random_crop(img, gtboxes, sample_labels[:, 0])
-        img, gtboxes = random_flip(img, gtboxes, thresh=0.5)
+        img, gtboxes = random_flip_left_right(img, gtboxes, thresh=0.5)
+        img, gtboxes = random_flip_top_bottom(img, gtboxes, thresh=0.5)
         # img, gtboxes = random_rotate(img, gtboxes, thresh=0.5)
         gtboxes, gtlabels = shuffle_gtbox(gtboxes, gtlabels)
         sample_labels[:, 0] = gtlabels
@@ -627,10 +647,14 @@ def preprocess_test(image_path):
     #if train_parameters['apply_distort']:
     #    img = distort_image(img)
     img, gtboxes = random_expand(img, sample_labels[:, 1:5])
-    # img, gtboxes, gtlabels = random_crop(img, gtboxes, sample_labels[:, 0])
+    img0 = img.copy()
+    gtboxes0 = gtboxes.copy()
+    img0, gtboxes0, gtlabels = random_crop(img0, gtboxes0, sample_labels[:, 0])
     
     draw_img = draw_bbox_image(img, gtboxes, img.size[0], img.size[1])
-    plt.imshow(draw_img)
+    draw_img0 = draw_bbox_image(img0, gtboxes0, img.size[0], img.size[1])
+    plt.subplot(1,2,1), plt.imshow(draw_img)
+    plt.subplot(1,2,2), plt.imshow(draw_img0)
     plt.show()
 
 if __name__ == "__main__":
