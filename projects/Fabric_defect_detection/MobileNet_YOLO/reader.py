@@ -213,7 +213,7 @@ def distort_image(img):
     return img
 
 
-def random_crop(img, boxes, labels, scales=[0.3, 1.0], max_ratio=2.0, constraints=None, max_trial=50):
+def random_crop(img, boxes, labels, scales=[0.8, 1.0], max_ratio=1.25, constraints=None, max_trial=50):
     """
     随机裁剪
     :param img:
@@ -292,8 +292,6 @@ def random_expand(img, gtboxes, keep_ratio=True):
         ratio_y = ratio_x
     else:
         ratio_y = random.uniform(1, max_ratio)
-        
-    print("ratio x =", ratio_x, "ratio y =", ratio_y)
         
     oh = int(h * ratio_y)
     ow = int(w * ratio_x)
@@ -650,6 +648,7 @@ def preprocess_test(image_path):
     img0 = img.copy()
     gtboxes0 = gtboxes.copy()
     img0, gtboxes0, gtlabels = random_crop(img0, gtboxes0, sample_labels[:, 0])
+    img0, gtboxes0 = random_flip_top_bottom(img0, gtboxes0, thresh=0.5)
     
     draw_img = draw_bbox_image(img, gtboxes, img.size[0], img.size[1])
     draw_img0 = draw_bbox_image(img0, gtboxes0, img.size[0], img.size[1])
@@ -658,7 +657,7 @@ def preprocess_test(image_path):
     plt.show()
 
 if __name__ == "__main__":
-    image_path = r"E:\Projects\Fabric_Defect_Detection\model_proto\ShuffleNetV2_YOLOv3\v1.1\dataset\train\train_gray_0_1600.png"
+    image_path = r"E:\Projects\Fabric_Defect_Detection\model_dev\v1.1.0\dataset\darkgray\MER2-041-436U3M(FDL17100010)_2020-12-03_13_16_15_843-11.bmp"
     preprocess_test(image_path)
     
     

@@ -198,7 +198,7 @@ class FastYOLO(object):
         blocks = []
         scale = 1.0
         class_num = 20
-        
+        """
         bottleneck_params_list = [
             (1, 16, 1, 1),
             (6, 24, 2, 2),
@@ -211,13 +211,13 @@ class FastYOLO(object):
         """
         bottleneck_params_list = [
             (1, 16, 1, 1),
-            (2, 24, 2, 2),
-            (2, 32, 3, 2),
-            (2, 64, 4, 2),
-            (2, 96, 3, 1),
+            (6, 24, 2, 2),
+            (6, 32, 3, 2),
+            (6, 64, 4, 2),
+            (6, 96, 3, 1),
             (6, 160, 3, 1),
         ]
-        """
+        
         # MobileNet的第一个卷积层 
         input = self.conv_bn_layer(
             input,
@@ -244,38 +244,7 @@ class FastYOLO(object):
                 name='conv' + str(i))
             in_c = int(c * scale)
             blocks.append(input)
-            
-        #2种不同尺寸的特征
-        blocks = [blocks[-1], blocks[-3]]
-        print('blocks[0]:',blocks[0].shape)
-        print('blocks[1]:',blocks[1].shape)
-        # yolo detector
-        for i, block in enumerate(blocks):
-            # yolo 中跨视域链接
-            if i > 0:
-                print('route:',route.shape)
-                print('block:',block.shape)
-                block = fluid.layers.concat(input=[route, block], axis=1)
-                # print(block.shape)
-            
-            route, tip = self.yolo_detection_block(block, num_filters=256 // (2 ** i), k=2,name='dect_'+str(i))
-            block_out = fluid.layers.conv2d(
-                input=tip,
-                num_filters=len(self.anchor_mask[i]) * (self.class_num + 5),  # 5 elements represent x|y|h|w|score
-                filter_size=1,
-                stride=1,
-                padding=0,
-                act=None,
-                name="block-out-" + str(i),
-                param_attr=ParamAttr(initializer=fluid.initializer.Normal(0., 0.02)),
-                bias_attr=ParamAttr(initializer=fluid.initializer.Constant(0.0), regularizer=L2Decay(0.)))
-            self.outputs.append(block_out)
-            # 为了跨视域链接，差值方式提升特征图尺寸
-            if i < len(blocks) - 1:
-                route = self.conv_bn_layer(route, 128 // (2 ** i), filter_size=1, stride=1, padding=0,name='route'+str(i))
-                route = self.upsample(route)
 
-        """
         # Attach the yolo head
         block = blocks[-1] # Get the last output as the Fast-YOLO input
         #route, tip = self.yolo_detection_block(block, num_filters=256, k=2,name='dect_'+str(i))
@@ -292,7 +261,7 @@ class FastYOLO(object):
             bias_attr=False)
             #bias_attr=ParamAttr(initializer=fluid.initializer.Constant(0.0), regularizer=L2Decay(0.)))
         self.outputs.append(block_out)
-        """
+        
         return self.outputs
 
 

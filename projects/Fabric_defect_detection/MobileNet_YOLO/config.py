@@ -7,7 +7,7 @@ import logging
 import codecs
 
 train_parameters = {
-    "data_dir": r"E:\Projects\Fabric_Defect_Detection\model_dev\v1.1.0\dataset\white",
+    "data_dir": r"E:\Projects\Fabric_Defect_Detection\model_dev\v1.1.0\dataset\train",
     "val_dir": r"E:\Projects\Fabric_Defect_Detection\model_dev\v1.1.0\dataset\valid",
     "train_list": "train.txt",
     "eval_list": "valid.txt",
@@ -24,13 +24,13 @@ train_parameters = {
     "freeze_dir": r"E:\Projects\Fabric_Defect_Detection\model_dev\v1.1.0\freeze_model",
     "use_tiny": False,          # 是否使用 裁剪 tiny 模型
     "max_box_num": 10,          # 一幅图上最多有多少个目标
-    "num_epochs": 101,
+    "num_epochs": 100,
     "train_batch_size": 16,      # 对于完整 yolov3，每一批的训练样本不能太多，内存会炸掉
     "use_gpu": True,
     "yolo_cfg": {
         "input_size": [3, 352, 352],    # 原版的边长大小为608，为了提高训练速度和预测速度，此处压缩为448
         # "anchors": [10, 13, 16, 30, 33, 23, 30, 61, 62, 45, 59, 119, 116, 90, 156, 198, 373, 326], #416
-        "anchors": [706, 31, 482, 25, 30, 537],#384
+        "anchors": [483, 25, 707, 30, 30, 537],#384
         # "anchors": [8, 10, 12, 23, 25, 18, 23, 47, 48, 35, 45, 92, 89, 69, 120, 152, 287, 251],#320
         "anchor_mask": [[0, 1, 2]]
     },
@@ -50,15 +50,15 @@ train_parameters = {
     "nms_thresh": 0.1,
     "image_distort_strategy": {
         "expand_prob": 0.5,
-        "expand_max_ratio": 1.2,
+        "expand_max_ratio": 1.25,
         "hue_prob": 0.5,
         "hue_delta": 18,
         "contrast_prob": 0.5,
-        "contrast_delta": 0.2,
+        "contrast_delta": 0.5,
         "saturation_prob": 0.5,
         "saturation_delta": 0.5,
         "brightness_prob": 0.5,
-        "brightness_delta": 0.2
+        "brightness_delta": 0.3
     },
     "sgd_strategy": {
         "learning_rate": 0.002,

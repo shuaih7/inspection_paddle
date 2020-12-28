@@ -84,10 +84,10 @@ def encode_dataset(path, x_thres=300):
 """   
     
 if __name__ == "__main__":
-    path = r"E:\Projects\Fabric_Defect_Detection\model_dev\v1.1.0\dataset\white"
+    path = r"E:\Projects\Fabric_Defect_Detection\model_dev\v1.1.0\dataset\train"
     #show_histogram(path)
     label = "striation"
-    ac = cluster_anchors(path, k=3, label=label)
+    ac = cluster_anchors(path, k=2, label=label)
     print(ac)
     
     #ac0, ac1 = cluster_anchors(path, k0=3, k1=3)

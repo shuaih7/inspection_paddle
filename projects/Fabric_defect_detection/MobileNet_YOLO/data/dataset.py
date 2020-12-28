@@ -218,11 +218,12 @@ def random_crop(ann_file,
 
         
 if __name__ == "__main__":
-    # file_path = r"E:\Projects\Fabric_Defect_Detection\model_dev\v1.1.0\dataset\valid"
-    # save_path = r"C:\Users\shuai\Documents\GitHub\inspection_paddle\projects\Fabric_defect_detection\MobileNet_YOLO"
+    file_path = r"E:\Projects\Fabric_Defect_Detection\model_dev\v1.1.0\dataset\valid"
+    save_path = r"C:\Users\shuai\Documents\GitHub\inspection_paddle\projects\Fabric_defect_detection\MobileNet_YOLO"
     
-    # write_into_txt(file_path, save_path=save_path, save_name="valid")
+    write_into_txt(file_path, save_path=save_path, save_name="valid")
 
+    """
     num_file = 3000
     ann_dir_white = r"E:\Projects\Fabric_Defect_Detection\model_dev\v1.1.0\dataset\white"
     ann_dir_light = r"E:\Projects\Fabric_Defect_Detection\model_dev\v1.1.0\dataset\lightgray"
@@ -236,4 +237,5 @@ if __name__ == "__main__":
             boxes += random_crop(ann_file, max_ver_offset=70, max_hor_offset=70)
             file_index += 1
     show_histogram(boxes)
+    """
     
