@@ -24,3 +24,4 @@
 [2021/01/10 15:39:12] root INFO: Initialize indexs of datasets:['E:\\Projects\\Part_Number\\baidu\\icdar2015\\text_localization\\test_icdar2015_label.txt']
 [2021/01/10 15:40:30] root INFO: Initialize indexs of datasets:['E:\\Projects\\Part_Number\\baidu\\icdar2015\\text_localization\\test_icdar2015_label.txt']
 [2021/01/10 15:41:26] root INFO: Initialize indexs of datasets:['E:\\Projects\\Part_Number\\baidu\\icdar2015\\text_localization\\test_icdar2015_label.txt']
+[2021/01/10 23:33:50] root INFO: Initialize indexs of datasets:['E:\\Projects\\Part_Number\\baidu\\icdar2015\\text_localization\\train_icdar2015_label.txt']

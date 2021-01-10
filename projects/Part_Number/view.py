@@ -124,7 +124,7 @@ CONFIG = {
     
     "Train": {
         "dataset": {
-            "label_file_list": [r"E:\Projects\Part_Number\baidu\icdar2015\text_localization\test_icdar2015_label.txt"],
+            "label_file_list": [r"E:\Projects\Part_Number\baidu\icdar2015\text_localization\train_icdar2015_label.txt"],
             "ratio_list": [1.0],
             "data_dir": r"E:\Projects\Part_Number\baidu\icdar2015\text_localization",
             "transforms": [{"DecodeImage":{"img_mode": "BGR", "channel_first": False}},
@@ -138,7 +138,6 @@ CONFIG = {
     
     
 if __name__ == "__main__":
-    label_file = r"E:\Projects\Part_Number\baidu\icdar2015\text_localization\test_icdar2015_label.txt"
     logger = get_logger(name='root', log_file="./log.txt")
     dataset = SimpleDataset(CONFIG, "Train", logger)
     outs = dataset.display(10)
