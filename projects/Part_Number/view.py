@@ -7,9 +7,11 @@ sys.path.append(os.path.join(__dir__, 'PaddleOCR-release-2.0-rc1-0'))
 
 import random
 import numpy as np
+from matplotlib import pyplot as plt
 from paddle.io import Dataset
 from ppocr.utils.logging import get_logger
 from ppocr.data.imaug import transform, create_operators
+from utils import draw_polylines
 
 """
 Pipeline for decoding the labels
@@ -90,8 +92,32 @@ class SimpleDataset(Dataset):
 
     def __len__(self):
         return len(self.data_idx_order_list)
-
         
+    def display(self, top=100):
+        if top is None: dsp_list = self.data_lines
+        else: dsp_list = self.data_lines[:top]
+        
+        for data_line in dsp_list:
+            data_line = data_line.decode('utf-8')
+            substr = data_line.strip("\n").split(self.delimiter)
+            file_name = substr[0]
+            label = substr[1]
+            img_path = os.path.join(self.data_dir, file_name)
+            data = {'img_path': img_path, 'label': label}
+            if not os.path.exists(img_path):
+                raise Exception("{} does not exist!".format(img_path))
+            with open(data['img_path'], 'rb') as f:
+                img = f.read()
+                data['image'] = img
+            outs = transform(data, self.ops)
+            
+            #try:
+            image = draw_polylines(outs['image'], outs['polys'], texts=outs['texts'])
+            plt.imshow(image), plt.show()
+            #except Exception as expt:
+            #    print(expt)
+        
+
 CONFIG = {
     "Global": {
     },
@@ -115,7 +141,6 @@ if __name__ == "__main__":
     label_file = r"E:\Projects\Part_Number\baidu\icdar2015\text_localization\test_icdar2015_label.txt"
     logger = get_logger(name='root', log_file="./log.txt")
     dataset = SimpleDataset(CONFIG, "Train", logger)
-    outs = dataset.__getitem__(0)
-    print(type(outs['polys']))
+    outs = dataset.display(10)
     
     
