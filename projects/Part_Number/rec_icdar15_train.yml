@@ -5,6 +5,7 @@ Global:
   print_batch_step: 10
   save_model_dir: E:\Projects\Part_Number\model\saved_model
   save_epoch_step: 3
+  distributed: False
   # evaluation is run every 2000 iterations
   eval_batch_step: [0, 2000]
   # if pretrained_model is saved in static mode, load_static_weights must set to True
