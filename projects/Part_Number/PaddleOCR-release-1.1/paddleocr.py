@@ -171,6 +171,7 @@ def parse_args():
     parser.add_argument("--det", type=str2bool, default=True)
     parser.add_argument("--rec", type=str2bool, default=True)
     parser.add_argument("--cls", type=str2bool, default=False)
+    parser.add_argument("--use_pdserving", type=str2bool, default=False)
     return parser.parse_args()
 
 

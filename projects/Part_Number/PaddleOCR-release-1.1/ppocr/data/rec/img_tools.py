@@ -16,10 +16,15 @@ import math
 import cv2
 import numpy as np
 import random
+
+#import sys
+#sys.path.append(r"C:\Users\shuai\Documents\GitHub\inspection_paddle\projects\Part_Number\PaddleOCR-release-1.1")
+
 from ppocr.utils.utility import initial_logger
 logger = initial_logger()
 
 from .text_image_aug.augment import tia_distort, tia_stretch, tia_perspective
+#from text_image_aug.augment import tia_distort, tia_stretch, tia_perspective
 
 
 def get_bounding_box_rect(pos):
@@ -480,3 +485,85 @@ def process_image_srn(img,
                     % loss_type
     return (norm_img, encoder_word_pos, gsrm_word_pos, gsrm_slf_attn_bias1,
             gsrm_slf_attn_bias2)
+            
+            
+# Self defined functions for the augment result displayment
+def warp_show(img, 
+              ang,
+              is_distort=False,
+              is_stretch=False,
+              is_perspective=False,
+              is_crop=False,
+              is_blur=False,
+              is_color=False,
+              is_jitter=False,
+              is_noise=False,
+              is_reverse=False):
+    """
+    warp
+    """
+    h, w, _ = img.shape
+    config = Config()
+    config.make(w, h, ang)
+    new_img = img.copy()
+    title = "Warps:"
+
+    if is_distort:
+        img_height, img_width = img.shape[0:2]
+        if img_height >= 20 and img_width >= 20:
+            new_img = tia_distort(new_img, random.randint(3, 6))
+            title += " distort"
+
+    if is_stretch:
+        img_height, img_width = img.shape[0:2]
+        if img_height >= 20 and img_width >= 20:
+            new_img = tia_stretch(new_img, random.randint(3, 6))
+            title += " stretch"
+
+    if is_perspective:
+        new_img = tia_perspective(new_img)
+        title += " perspective"
+
+    if is_crop:
+        img_height, img_width = img.shape[0:2]
+        if img_height >= 20 and img_width >= 20:
+            new_img = get_crop(new_img)
+            title += " crop"
+
+    if is_blur:
+        new_img = blur(new_img)
+        title += " blur"
+        
+    if is_color:
+        new_img = cvtColor(new_img)
+        title += " color"
+            
+    if is_jitter:
+        new_img = jitter(new_img)
+        title += " jitter"
+        
+    if is_noise:
+        new_img = add_gasuss_noise(new_img)
+        title += " noise"
+            
+    if is_reverse:
+        new_img = 255 - new_img
+        title += " reverse"
+    
+    plt.subplot(1,2,1), plt.imshow(img), plt.title("Original image")
+    plt.subplot(1,2,2), plt.imshow(new_img), plt.title(title)
+    plt.show()
+            
+    return new_img
+    
+
+if __name__ == "__main__":
+    from matplotlib import pyplot as plt
+    import glob as gb
+    
+    img_dir = r"E:\Projects\Part_Number\baidu\icdar2015\rec\icdar_train"
+    img_list = gb.glob(img_dir + r"/*.jpg")
+    
+    for img_file in img_list:
+        img = cv2.imread(img_file, cv2.IMREAD_COLOR)
+        new_img = warp_show(img, ang=10, is_noise=True)
