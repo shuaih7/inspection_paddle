@@ -95,7 +95,8 @@ def load_label_infor(label_file_path, do_ignore=False):
         lines = fin.readlines()
         for line in lines:
             substr = line.decode().strip("\n").split("\t")
-            bbox_infor = json.loads(substr[1])
+            #bbox_infor = json.loads(substr[1])
+            bbox_infor = eval(substr[1])
             bbox_num = len(bbox_infor)
             for bno in range(bbox_num):
                 text = bbox_infor[bno]['transcription']

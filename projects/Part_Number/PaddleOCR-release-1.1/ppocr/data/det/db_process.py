@@ -12,6 +12,7 @@
 #See the License for the specific language governing permissions and
 #limitations under the License.
 
+import os
 import math
 import cv2
 import numpy as np
@@ -94,8 +95,9 @@ class DBProcessTrain(object):
         label_infor = label_infor.decode()
         label_infor = label_infor.encode('utf-8').decode('utf-8-sig')
         substr = label_infor.strip("\n").split("\t")
-        img_path = self.img_set_dir + substr[0]
-        label = json.loads(substr[1])
+        img_path = os.path.join(self.img_set_dir, substr[0])
+        #label = json.loads(substr[1])
+        label = eval(substr[1])
         return img_path, label
 
     def __call__(self, label_infor):
@@ -117,6 +119,31 @@ class DBProcessTrain(object):
         data = self.FilterKeys(data)
         return data['image'], data['shrink_map'], data['shrink_mask'], data[
             'threshold_map'], data['threshold_mask']
+            
+    def get_data(self, 
+                 label_infor,
+                 is_aug=False,
+                 is_crop=False,
+                 is_shrink=False,
+                 is_border=False):
+        img_path, gt_label = self.convert_label_infor(label_infor)
+        imgvalue, flag = check_and_read_gif(img_path)
+        if not flag:
+            imgvalue = cv2.imread(img_path)
+        if imgvalue is None:
+            logger.info("{} does not exist!".format(img_path))
+            return None
+        if len(list(imgvalue.shape)) == 2 or imgvalue.shape[2] == 1:
+            imgvalue = cv2.cvtColor(imgvalue, cv2.COLOR_GRAY2BGR)
+        data = self.make_data_dict(imgvalue, gt_label)
+        if is_aug: data = AugmentData(data)
+        if is_crop: data = RandomCropData(data, self.image_shape[1:])
+        if is_shrink: data = MakeShrinkMap(data)
+        if is_border: data = MakeBorderMap(data)
+        # data = self.NormalizeImage(data)
+        # data = self.FilterKeys(data)
+        
+        return data
 
 
 class DBProcessTest(object):
@@ -214,3 +241,4 @@ class DBProcessTest(object):
         im = self.normalize(im)
         im = im[np.newaxis, :]
         return [im, (ratio_h, ratio_w)]
+     
