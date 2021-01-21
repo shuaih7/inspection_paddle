@@ -13,6 +13,15 @@ from utils import draw_polylines
 from matplotlib import pyplot as plt
 
 
+TOP = 500
+BOTTOM = 900
+LEFT = 550
+RIGHT = 550
+
+WIDTH = LEFT + RIGHT
+HEIGHT = TOP + BOTTOM
+
+
 def parse_labels(labels):
     texts, points = [], []
     
@@ -37,18 +46,21 @@ def get_centers(points):
     return centers
     
     
-def pair_labels(points, centers, _pairs=None):
+def pair_labels(points, texts, centers, _pairs=None, _texts=None):
     if len(points)%2 > 0:
         raise ValueError("The input data length must be even.")
-    elif len(points) != len(centers):
-        raise ValueError("Points length and center length do not match.")
+    elif len(points) != len(centers) or len(points) != len(texts):
+        raise ValueError("Points length and center length or texts length do not match.")
     elif len(points) == 0:
         raise ValueError("Empty input array.")
       
-    if _pairs is None: _pairs = []     
+    if _pairs is None: _pairs = []    
+    if _texts is None: _texts = []    
+    
     if len(points) == 2:
         _pairs.append([points[0], points[1]])
-        return _pairs.copy()
+        _texts.append([texts[0], texts[1]])
+        return _pairs, _texts
     else:
         anchor = centers[0]
         index, dist = 0, 999999
@@ -61,11 +73,14 @@ def pair_labels(points, centers, _pairs=None):
                 dist = cur_dist
         
         _pairs.append([points[0], points[index]])
+        _texts.append([texts[0], texts[index]])
         points.pop(index)
         points.pop(0)
+        texts.pop(index)
+        texts.pop(0)
         centers.pop(index)
         centers.pop(0)
-        return pair_labels(points, centers, _pairs)
+        return pair_labels(points, texts, centers, _pairs, _texts)
         
    
 def get_label_rois(pairs):
@@ -89,30 +104,64 @@ def get_label_rois(pairs):
     return rois
     
 
-def random_crop_pairs(data_dir, label_file):
-    with open(label_file, "rb") as fin:
-        data_lines = fin.readlines()
-        
-        for data_line in data_lines:
-            substr = data_line.decode('utf-8').strip("\n").split("\t")
+def random_crop_pairs(data_dir, label_file, save_path=""):
+    new_label_file = os.path.join(save_path, "label.txt")
+    
+    with open(new_label_file, "w") as fout:
+        with open(label_file, "rb") as fin:
+            data_lines = fin.readlines()
             
-            img_path = os.path.join(data_dir, substr[0])
-            # if img_path != r"E:\Projects\Part_Number\dataset\train\20210113/2021-01-13_12_54_46_257.png": continue
-            image = cv2.imread(img_path, -1)
-            labels = eval(substr[1].replace("false", "False"))   
-            
-            points, texts = parse_labels(labels)
-            centers = get_centers(points)
-            pairs = pair_labels(points, centers)
-            
-            rois = get_label_rois(pairs)
-            image = draw_polylines(image, rois, color=255)
-            plt.imshow(image, cmap="gray"), plt.show()
-            
-        fin.close()
+            for data_line in data_lines:
+                substr = data_line.decode('utf-8').strip("\n").split("\t")
+                
+                img_path = os.path.join(data_dir, substr[0])
+                print("Processing image file", img_path, "...")
+                _, filename = os.path.split(img_path)
+                fname, suffix = os.path.splitext(filename)
+                image = cv2.imread(img_path, -1)
+                labels = eval(substr[1].replace("false", "False"))   
+                
+                points, texts = parse_labels(labels)
+                centers = get_centers(points)
+                pairs, texts = pair_labels(points, texts, centers)
+                rois = get_label_rois(pairs)
+                
+                save_id = 0
+                img_h, img_w = image.shape[:2]
+                for pair, text_pair, roi in zip(pairs, texts, rois):
+                    center_x = int((roi[0][0]+roi[1][0])/2)
+                    center_y = int((roi[0][1]+roi[2][1])/2)
+                    
+                    xmin = max(0, center_x - LEFT)
+                    xmax = min(img_w, center_x + RIGHT)
+                    ymin = max(0, center_y - TOP)
+                    ymax = min(img_h, center_y + BOTTOM)
+                    
+                    label = []
+                    img = image[ymin:ymax, xmin:xmax]
+                    for points, txt in zip(pair, text_pair):
+                        for pt in points:
+                            pt[0] -= xmin
+                            pt[1] -= ymin
+                        label.append({"transcription": txt, "points": points})
+                     
+                    _, prefix = os.path.split(save_path)
+                    img_name = fname+"_"+str(save_id)+suffix
+                    img_save_name = os.path.join(save_path, img_name)
+                    item = os.path.join(prefix, img_name) + "\t" + str(label) + "\n"
+                    #cv2.imwrite(img_save_name, img)
+                    fout.write(item)
+                            
+                    # img = draw_polylines(img, pair, text_pair, color=255, size=1.5)
+                    # plt.imshow(img, cmap="gray"), plt.show()
+                    save_id += 1
+                
+            fin.close()
+        fout.close()
         
        
 if __name__ == "__main__":
-    data_dir = r"E:\Projects\Part_Number\dataset\train"
-    label_file = r"E:\Projects\Part_Number\dataset\train\20210113\Label.txt"
-    random_crop_pairs(data_dir, label_file)
+    data_dir = r"E:\Projects\Part_Number\dataset"
+    label_file = r"E:\Projects\Part_Number\dataset\20210113\Label.txt"
+    save_path = r"E:\Projects\Part_Number\dataset\train\20210113"
+    random_crop_pairs(data_dir, label_file, save_path)

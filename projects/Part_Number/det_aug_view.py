@@ -36,9 +36,9 @@ def show_det_augment(img_set_dir,
         label_infor = label_infor.encode('utf-8').decode('utf-8-sig')
         substr = label_infor.strip("\n").split("\t")
         img_file = os.path.join(params['img_set_dir'], substr[0])
-        ori_img = cv2.imread(img_file, -1)
+        ori_img = cv2.imread(img_file, cv2.IMREAD_COLOR)
         #labels = json.loads(substr[1])
-        labels = eval(substr[1])
+        labels = eval(substr[1].replace("false", "False"))
         boxes = []
         for label in labels:
             boxes.append(label['points'])
@@ -50,8 +50,7 @@ def show_det_augment(img_set_dir,
         
      
 if __name__ == "__main__":
-    img_set_dir = r"E:\Projects\Part_Number\dataset"
+    img_set_dir = r"E:\Projects\Part_Number\dataset\train"
     image_shape = [3, 640, 640]
-    label_file = r"E:\Projects\Part_Number\dataset\20210112\train.txt"
-    show_det_augment(img_set_dir, image_shape, label_file, 
-                     is_crop=True)
+    label_file = r"E:\Projects\Part_Number\dataset\train\20210113\label.txt"
+    show_det_augment(img_set_dir, image_shape, label_file, is_crop=True)

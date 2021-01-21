@@ -97,7 +97,7 @@ class DBProcessTrain(object):
         substr = label_infor.strip("\n").split("\t")
         img_path = os.path.join(self.img_set_dir, substr[0])
         #label = json.loads(substr[1])
-        label = eval(substr[1])
+        label = eval(substr[1].replace("false", "False"))
         return img_path, label
 
     def __call__(self, label_infor):
