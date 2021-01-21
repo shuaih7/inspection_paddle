@@ -27,13 +27,56 @@ def draw_initial_point(image, polylines, radius=3, color=(0,0,255), thickness=5)
     return image
     
     
+def get_rotate_crop_image(img, points):
+    '''
+    img_height, img_width = img.shape[0:2]
+    left = int(np.min(points[:, 0]))
+    right = int(np.max(points[:, 0]))
+    top = int(np.min(points[:, 1]))
+    bottom = int(np.max(points[:, 1]))
+    img_crop = img[top:bottom, left:right, :].copy()
+    points[:, 0] = points[:, 0] - left
+    points[:, 1] = points[:, 1] - top
+    '''
+    img_crop_width = int(
+        max(
+            np.linalg.norm(points[0] - points[1]),
+            np.linalg.norm(points[2] - points[3])))
+    img_crop_height = int(
+        max(
+            np.linalg.norm(points[0] - points[3]),
+            np.linalg.norm(points[1] - points[2])))
+    pts_std = np.float32([[0, 0], [img_crop_width, 0],
+                          [img_crop_width, img_crop_height],
+                          [0, img_crop_height]])
+    M = cv2.getPerspectiveTransform(points, pts_std)
+    dst_img = cv2.warpPerspective(
+        img,
+        M, (img_crop_width, img_crop_height),
+        borderMode=cv2.BORDER_REPLICATE,
+        flags=cv2.INTER_CUBIC)
+    dst_img_height, dst_img_width = dst_img.shape[0:2]
+    if dst_img_height * 1.0 / dst_img_width >= 1.5:
+        dst_img = np.rot90(dst_img)
+    return dst_img
+    
+    
+def flip_image_left_right(image):
+    flip_image = cv2.flip(image, 1)
+    return flip_image
+    
+    
 def flip_image_top_bottom(image):
-    #flip_image = cv2.flip(image, 0)
+    flip_image = cv2.flip(image, 0)
+    return flip_image
+
+    
+def flip_image_180(image):
     flip_image = cv2.flip(image, -1)
     return flip_image
     
     
-def flip_label_top_bottom(labels, image_shape):
+def flip_label_180(labels, image_shape):
     img_h, img_w = image_shape
     
     flip_labels = []
@@ -72,14 +115,14 @@ def extend_data_by_flip(data_dir, label_file, new_label_file=None):
             # Flip the input image
             image = cv2.imread(img_path, -1)
             image_shape = image.shape[:2]
-            flip_image = flip_image_top_bottom(image)
+            flip_image = flip_image_180(image)
             prefix, filename = os.path.split(substr[0])
             fname, suffix = os.path.splitext(filename)
             img_label = os.path.join(prefix, fname + "_flip" + suffix)
             save_name = os.path.join(os.path.join(data_dir, prefix), fname + "_flip" + suffix)
             cv2.imwrite(save_name, flip_image)
             
-            flip_labels = flip_label_top_bottom(labels, image_shape)
+            flip_labels = flip_label_180(labels, image_shape)
             ori_label_item = os.path.join(prefix, filename) + "\t" + str(labels)
             new_label_item = img_label + "\t" + str(flip_labels)
             label_ext_list.append(ori_label_item.replace("'","\""))
