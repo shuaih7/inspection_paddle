@@ -3,13 +3,20 @@ import sys
 sys.path.append(r"C:\Users\shuai\Documents\GitHub\inspection_paddle\projects\Part_Number\PaddleOCR-release-1.1")
 
 import cv2
+import glob as gb
 import numpy as np
 from paddleocr import PaddleOCR
 from utils import *
 from matplotlib import pyplot as plt
 
 
-ocr = PaddleOCR(use_angle_cls=True, lang="en")
+def image_loader(img_dir):
+    suffixs = [".bmp", ".png", ".jpg", ".tif"]
+    img_list = []
+    
+    for suf in suffixs:
+        img_list += gb.glob(img_dir + r"/*"+suf)
+    return img_list
 
 
 def parse_labels(labels):
@@ -37,35 +44,28 @@ def load_data(data_dir, label_infor):
             
     return image, points, texts
     
+    
+def infer_det(img_dir, ocr, label_file=None):
+    img_list = image_loader(img_dir)
+    
+    for img_file in img_list:
+        image = cv2.imread(img_file, cv2.IMREAD_COLOR)
+        result = ocr.ocr(image, rec=False, det=True, cls=False)
+        print(result)
+        sys.exit()
 
-def infer_rec(data_dir, label_file):
-    with open(label_file, "rb") as fin:
-        label_infor_list = fin.readlines()
-            
-        for label_infor in label_infor_list:
-            image, points, texts = load_data(data_dir, label_infor)
-            
-            for pt, txt in zip(points, texts):
-                dst_img = get_rotate_crop_image(image, np.array(pt, dtype=np.float32))
-                if txt == "O":  
-                    dst_img = flip_image_left_right(dst_img)
-                elif txt == "A":
-                    dst_img = flip_image_top_bottom(dst_img)
-                    
-                result = ocr.ocr(dst_img, rec=True, det=False, cls=False) # List of ["result", confidence]
-                
-                img_show = image.copy()
-                img_show = draw_polylines(img_show, [pt])
-                plt.subplot(1,2,1), plt.imshow(img_show), plt.title("Input image")
-                plt.subplot(1,2,2), plt.imshow(dst_img), plt.title(result[0][0]+" - "+str(round(result[0][1], 3)))
-                plt.show()
-                img_show = None
-        
-        fin.close()
 
 if __name__ == "__main__":
-    data_dir = r"E:\Projects\Part_Number\dataset\20210113"
-    label_file = r"E:\Projects\Part_Number\dataset\20210113\machining_shank\Label.txt"
+    params = {
+        "use_angle_cls": True,
+        "lang": "en",
+        "cls_model_dir": None,
+        "det_model_dir": r"E:\Projects\Part_Number\model\det\saved_model\best_accuracy",
+        "rec_model_dir": None
+    }
+    ocr = PaddleOCR(**params)
     
-    infer_rec(data_dir, label_file)
+    img_dir = r"E:\Projects\Part_Number\dataset\valid\20210113"
+    infer_det(img_dir, ocr)
+    
     

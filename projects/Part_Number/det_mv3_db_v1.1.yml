@@ -5,15 +5,15 @@ Global:
   log_smooth_window: 20
   print_batch_step: 2
   save_model_dir: E:\Projects\Part_Number\model\det\saved_model
-  save_epoch_step: 50
+  save_epoch_step: 2
   # evaluation is run every 5000 iterations after the 4000th iteration
-  eval_batch_step: [50, 100]
+  eval_batch_step: [20, 100]
   train_batch_size_per_card: 8
   test_batch_size_per_card: 2
   image_shape: [3, 640, 640]
   reader_yml: C:\Users\shuai\Documents\GitHub\inspection_paddle\projects\Part_Number\det_db_icdar15_reader.yml
   pretrain_weights: E:\Projects\Part_Number\model\det\pretrained_model\best_accuracy
-  checkpoints:
+  checkpoints: E:\Projects\Part_Number\model\det\saved_model\best_accuracy
   save_res_path: E:\Projects\Part_Number\model\det\result.txt
   save_inference_dir: E:\Projects\Part_Number\model\det\inference_model
   
@@ -57,3 +57,12 @@ PostProcess:
   box_thresh: 0.6
   max_candidates: 1000
   unclip_ratio: 1.5
+
+TestReader:
+  reader_function: ppocr.data.det.dataset_traversal,EvalTestReader
+  process_function: ppocr.data.det.db_process,DBProcessTest
+  infer_img: E:\Projects\Part_Number\dataset\valid\20210113
+  img_set_dir: E:\Projects\Part_Number\dataset\valid
+  label_file_path: E:\Projects\Part_Number\dataset\valid\20210113\label.txt
+  test_image_shape: [1344,1056]
+  do_eval: True

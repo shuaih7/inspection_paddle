@@ -3,7 +3,7 @@ import cv2
 import sys
 import glob as gb
 from PIL import Image
-#sys.path.append(r"C:\Users\shuai\Documents\GitHub\inspection_paddle\projects\Part_Number\PaddleOCR-release-1.1")
+sys.path.append(r"C:\Users\shuai\Documents\GitHub\inspection_paddle\projects\Part_Number\PaddleOCR-release-1.1")
 #sys.path.append(r"C:\Users\shuai\Documents\PaddleOCR-release-2.0-rc1-0")
 from paddleocr import PaddleOCR
 from utils import draw_polylines, draw_initial_point
@@ -40,9 +40,9 @@ params = {
     "use_gpu": True,
     "gpu_mem": 2048,
     "lang": "ch",
-    "cls_model_dir": r"C:\Users\shuai\.paddleocr\2.0_mobile\cls",
-    "det_model_dir": r"C:\Users\shuai\.paddleocr\2.0_mobile\det",
-    "rec_model_dir": r"C:\Users\shuai\.paddleocr\2.0_mobile\rec\ch"
+    "cls_model_dir": r"C:\Users\shuai\.paddleocr\1.1\cls",
+    "det_model_dir": r"C:\Users\shuai\.paddleocr\1.1\det",
+    "rec_model_dir": r"C:\Users\shuai\.paddleocr\1.1\rec\ch"
 }
 
 
