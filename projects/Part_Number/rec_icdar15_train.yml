@@ -4,9 +4,9 @@ Global:
   epoch_num: 1000
   log_smooth_window: 20
   print_batch_step: 10
-  save_model_dir: E:\Projects\Part_Number\model\saved_model
-  save_epoch_step: 300
-  eval_batch_step: 500
+  save_model_dir: E:\Projects\Part_Number\model\rec\saved_model
+  save_epoch_step: 5
+  eval_batch_step: 100
   train_batch_size_per_card: 128
   test_batch_size_per_card: 16
   image_shape: [3, 32, 100]
@@ -16,9 +16,9 @@ Global:
   distort: false
   debug: false
   reader_yml: C:\Users\shuai\Documents\GitHub\inspection_paddle\projects\Part_Number\rec_icdar15_reader.yml
-  pretrain_weights:
+  pretrain_weights: E:\Projects\Part_Number\model\rec\pretrained_model\best_accuracy
   checkpoints:
-  save_inference_dir:
+  save_inference_dir: E:\Projects\Part_Number\model\rec\inference_model
   infer_img:
 
 Architecture:

@@ -64,5 +64,5 @@ TestReader:
   infer_img: E:\Projects\Part_Number\dataset\valid\20210113
   img_set_dir: E:\Projects\Part_Number\dataset\valid
   label_file_path: E:\Projects\Part_Number\dataset\valid\20210113\label.txt
-  test_image_shape: [1248,992]
+  test_image_shape: [640,640]
   do_eval: True

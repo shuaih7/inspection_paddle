@@ -151,3 +151,27 @@ def RandomCropData(data, size):
     data['ignore_tags'] = ignore_tags_crop
     data['texts'] = texts_crop
     return data
+    
+    
+def ResizeData(data, size):
+    im = data['image']
+    text_polys = data['polys']
+    
+    dh, dw = size
+    im_h, im_w = im.shape[:2]
+    ratio_h, ratio_w = dh/im_h, dw/im_w
+    
+    new_text_polys = []
+    for poly in text_polys:
+        new_poly = []
+        
+        for pt in poly:
+            new_pt = [pt[0]*ratio_w, pt[1]*ratio_h]
+            new_poly.append(new_pt)
+        new_text_polys.append(new_poly)
+    
+    img = cv2.resize(im, (dw, dh))
+    data['image'] = img
+    data['polys'] = np.array(new_text_polys)
+    
+    return data

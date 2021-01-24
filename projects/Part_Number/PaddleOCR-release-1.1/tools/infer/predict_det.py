@@ -42,7 +42,7 @@ class TextDetector(object):
     def __init__(self, args):
         max_side_len = args.det_max_side_len
         self.det_algorithm = args.det_algorithm
-        preprocess_params = {'max_side_len': max_side_len}
+        preprocess_params = {'test_image_shape': [640, 640], 'max_side_len': max_side_len}
         postprocess_params = {}
         if self.det_algorithm == "DB":
             self.preprocess_op = DBProcessTest(preprocess_params)

@@ -14,6 +14,7 @@ def show_det_augment(img_set_dir,
                      label_file,
                      is_aug=False,
                      is_crop=False,
+                     is_resize=False,
                      is_shrink=False,
                      is_border=False):
     params = {}
@@ -26,7 +27,7 @@ def show_det_augment(img_set_dir,
     
     dataset = DBProcessTrain(params)
     for label_infor in label_infor_list:
-        data = dataset.get_data(label_infor, is_aug, is_crop, is_shrink, is_border)
+        data = dataset.get_data(label_infor, is_aug, is_crop, is_resize, is_shrink, is_border)
         image = data['image']
         polys = data['polys']
         #texts = data['texts']
@@ -50,7 +51,7 @@ def show_det_augment(img_set_dir,
         
      
 if __name__ == "__main__":
-    img_set_dir = r"E:\Projects\Part_Number\dataset\train"
+    img_set_dir = r"E:\Projects\Part_Number\dataset\det_train"
     image_shape = [3, 640, 640]
-    label_file = r"E:\Projects\Part_Number\dataset\train\20210113\label.txt"
-    show_det_augment(img_set_dir, image_shape, label_file, is_crop=True)
+    label_file = r"E:\Projects\Part_Number\dataset\det_train\20210113\label.txt"
+    show_det_augment(img_set_dir, image_shape, label_file, is_resize=True)

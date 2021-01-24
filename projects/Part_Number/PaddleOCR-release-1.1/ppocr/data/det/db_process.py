@@ -22,7 +22,7 @@ from ppocr.utils.utility import initial_logger, check_and_read_gif
 logger = initial_logger()
 
 from .data_augment import AugmentData
-from .random_crop_data import RandomCropData
+from .random_crop_data import RandomCropData, ResizeData
 from .make_shrink_map import MakeShrinkMap
 from .make_border_map import MakeBorderMap
 
@@ -112,7 +112,8 @@ class DBProcessTrain(object):
             imgvalue = cv2.cvtColor(imgvalue, cv2.COLOR_GRAY2BGR)
         data = self.make_data_dict(imgvalue, gt_label)
         data = AugmentData(data)
-        data = RandomCropData(data, self.image_shape[1:])
+        # data = RandomCropData(data, self.image_shape[1:])
+        data = ResizeData(data, self.image_shape[1:])
         data = MakeShrinkMap(data)
         data = MakeBorderMap(data)
         data = self.NormalizeImage(data)
@@ -124,6 +125,7 @@ class DBProcessTrain(object):
                  label_infor,
                  is_aug=False,
                  is_crop=False,
+                 is_resize=False,
                  is_shrink=False,
                  is_border=False):
         img_path, gt_label = self.convert_label_infor(label_infor)
@@ -138,6 +140,7 @@ class DBProcessTrain(object):
         data = self.make_data_dict(imgvalue, gt_label)
         if is_aug: data = AugmentData(data)
         if is_crop: data = RandomCropData(data, self.image_shape[1:])
+        if is_resize: data = ResizeData(data, self.image_shape[1:])
         if is_shrink: data = MakeShrinkMap(data)
         if is_border: data = MakeBorderMap(data)
         # data = self.NormalizeImage(data)

@@ -13,13 +13,16 @@ from utils import draw_polylines
 from matplotlib import pyplot as plt
 
 
-TOP = 500
-BOTTOM = 750
-LEFT = 500
-RIGHT = 500
+TOP = 400
+OFFY = 45
 
-WIDTH = LEFT + RIGHT
-HEIGHT = TOP + BOTTOM
+LEFT = 342
+OFFX = 35
+
+WIDTH = 683
+HEIGHT = 905
+OFFW = 50
+OFFH = 75
 
 
 def parse_labels(labels):
@@ -104,7 +107,12 @@ def get_label_rois(pairs):
     return rois
     
 
-def random_crop_pairs(data_dir, label_file, train_save_path="", valid_save_path="", ratio=0.8):
+def random_crop_pairs(data_dir, 
+                      label_file, 
+                      train_save_path="", 
+                      valid_save_path="", 
+                      ratio=0.8):
+                      
     train_label_file = os.path.join(train_save_path, "label.txt")
     valid_label_file = os.path.join(valid_save_path, "label.txt")
     
@@ -135,10 +143,15 @@ def random_crop_pairs(data_dir, label_file, train_save_path="", valid_save_path=
                 center_x = int((roi[0][0]+roi[1][0])/2)
                 center_y = int((roi[0][1]+roi[2][1])/2)
                 
-                xmin = max(0, center_x - LEFT)
-                xmax = min(img_w, center_x + RIGHT)
-                ymin = max(0, center_y - TOP)
-                ymax = min(img_h, center_y + BOTTOM)
+                offx = np.random.randint(-OFFX, OFFX)
+                offy = np.random.randint(-OFFY, OFFY)
+                offw = np.random.randint(-OFFW, OFFW)
+                offh = np.random.randint(-OFFH, OFFH)
+                
+                xmin = min(int(roi[0][0]), max(0, center_x - LEFT + offx))
+                xmax = max(int(roi[1][0]), min(img_w, xmin + WIDTH + offw))
+                ymin = min(int(roi[0][1]), max(0, center_y - TOP + offy))
+                ymax = max(int(roi[2][1]), min(img_h, ymin + HEIGHT + offh))
                 
                 label = []
                 img = image[ymin:ymax, xmin:xmax]
@@ -147,7 +160,7 @@ def random_crop_pairs(data_dir, label_file, train_save_path="", valid_save_path=
                         pt[0] -= xmin
                         pt[1] -= ymin
                     label.append({"transcription": txt, "points": points})
-                
+            
                 img_name = fname+"_"+str(save_id)+suffix
                 if np.random.rand() < ratio:
                     _, prefix = os.path.split(train_save_path)
@@ -179,7 +192,7 @@ def random_crop_pairs(data_dir, label_file, train_save_path="", valid_save_path=
 if __name__ == "__main__":
     ratio = 0.85
     data_dir = r"E:\Projects\Part_Number\dataset"
-    label_file = r"E:\Projects\Part_Number\dataset\20210113\Label.txt"
-    train_save_path = r"E:\Projects\Part_Number\dataset\train\20210113"
-    valid_save_path = r"E:\Projects\Part_Number\dataset\valid\20210113"
-    random_crop_pairs(data_dir, label_file, train_save_path, valid_save_path, ratio)
+    label_file = r"E:\Projects\Part_Number\dataset\20210122\label.txt"
+    train_save_path = r"E:\Projects\Part_Number\dataset\det_train\20210122"
+    valid_save_path = r"E:\Projects\Part_Number\dataset\det_valid\20210122"
+    random_crop_pairs(data_dir, label_file, train_save_path, valid_save_path, ratio=ratio)

@@ -1,15 +1,15 @@
 TrainReader:
   reader_function: ppocr.data.rec.dataset_traversal,SimpleReader
   num_workers: 1
-  img_set_dir: E:\Projects\Part_Number\dataset\train
-  label_file_path: E:\Projects\Part_Number\dataset\train\20210113\label.txt
+  img_set_dir: E:\Projects\Part_Number\dataset\rec_train
+  label_file_path: E:\Projects\Part_Number\dataset\rec_train\label.txt
 
 EvalReader:
   reader_function: ppocr.data.rec.dataset_traversal,SimpleReader
-  img_set_dir: E:\Projects\Part_Number\dataset\valid
-  label_file_path: E:\Projects\Part_Number\dataset\valid\20210113\label.txt
+  img_set_dir: E:\Projects\Part_Number\dataset\rec_valid
+  label_file_path: E:\Projects\Part_Number\dataset\rec_valid\label.txt
 
 TestReader:
   reader_function: ppocr.data.rec.dataset_traversal,SimpleReader
-  img_set_dir: E:\Projects\Part_Number\dataset\valid
-  label_file_path: E:\Projects\Part_Number\dataset\valid\20210113\label.txt
+  img_set_dir: E:\Projects\Part_Number\dataset\rec_valid
+  label_file_path: E:\Projects\Part_Number\dataset\rec_valid\label.txt

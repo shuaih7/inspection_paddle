@@ -19,8 +19,8 @@ def AugmentData(data):
     shape = img.shape
 
     aug = iaa.Sequential(
-        [iaa.Fliplr(0.5), iaa.Affine(rotate=(-10, 10)), iaa.Resize(
-            (0.5, 3))]).to_deterministic()
+        [iaa.Fliplr(0.0), iaa.Affine(rotate=(-10, 10)), iaa.Resize(
+            (1.0, 1.0))]).to_deterministic()
 
     def may_augment_annotation(aug, data, shape):
         if aug is None:
