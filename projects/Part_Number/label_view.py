@@ -34,6 +34,6 @@ def viewer(data_dir, label_file, top=None):
             
  
 if __name__ == "__main__":
-    data_dir = r"E:\Projects\Part_Number\dataset"
-    label_file = r"E:\Projects\Part_Number\dataset\20210112_valid\valid.txt"
-    viewer(data_dir, label_file, top=10)
+    data_dir = r"E:\Projects\Part_Number\dataset\train"
+    label_file = r"E:\Projects\Part_Number\dataset\train\label.txt"
+    viewer(data_dir, label_file, top=100)

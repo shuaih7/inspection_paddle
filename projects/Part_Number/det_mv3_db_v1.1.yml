@@ -13,7 +13,7 @@ Global:
   image_shape: [3, 640, 640]
   reader_yml: C:\Users\shuai\Documents\GitHub\inspection_paddle\projects\Part_Number\det_db_icdar15_reader.yml
   pretrain_weights: E:\Projects\Part_Number\model\det\pretrained_model\best_accuracy
-  checkpoints: E:\Projects\Part_Number\model\det\saved_model\best_accuracy
+  checkpoints: 
   save_res_path: E:\Projects\Part_Number\model\det\result.txt
   save_inference_dir: E:\Projects\Part_Number\model\det\inference_model
   
@@ -64,5 +64,5 @@ TestReader:
   infer_img: E:\Projects\Part_Number\dataset\valid\20210113
   img_set_dir: E:\Projects\Part_Number\dataset\valid
   label_file_path: E:\Projects\Part_Number\dataset\valid\20210113\label.txt
-  test_image_shape: [1344,1056]
+  test_image_shape: [1248,992]
   do_eval: True

@@ -14,9 +14,9 @@ from matplotlib import pyplot as plt
 
 
 TOP = 500
-BOTTOM = 900
-LEFT = 550
-RIGHT = 550
+BOTTOM = 750
+LEFT = 500
+RIGHT = 500
 
 WIDTH = LEFT + RIGHT
 HEIGHT = TOP + BOTTOM
@@ -104,64 +104,82 @@ def get_label_rois(pairs):
     return rois
     
 
-def random_crop_pairs(data_dir, label_file, save_path=""):
-    new_label_file = os.path.join(save_path, "label.txt")
+def random_crop_pairs(data_dir, label_file, train_save_path="", valid_save_path="", ratio=0.8):
+    train_label_file = os.path.join(train_save_path, "label.txt")
+    valid_label_file = os.path.join(valid_save_path, "label.txt")
     
-    with open(new_label_file, "w") as fout:
-        with open(label_file, "rb") as fin:
-            data_lines = fin.readlines()
+    with open(label_file, "rb") as fin:
+        data_lines = fin.readlines()
+        
+        train_labels = []
+        valid_labels = []
+        
+        for data_line in data_lines:
+            substr = data_line.decode('utf-8').strip("\n").split("\t")
             
-            for data_line in data_lines:
-                substr = data_line.decode('utf-8').strip("\n").split("\t")
+            img_path = os.path.join(data_dir, substr[0])
+            print("Processing image file", img_path, "...")
+            _, filename = os.path.split(img_path)
+            fname, suffix = os.path.splitext(filename)
+            image = cv2.imread(img_path, -1)
+            labels = eval(substr[1].replace("false", "False"))   
+            
+            points, texts = parse_labels(labels)
+            centers = get_centers(points)
+            pairs, texts = pair_labels(points, texts, centers)
+            rois = get_label_rois(pairs)
+            
+            save_id = 0
+            img_h, img_w = image.shape[:2]
+            for pair, text_pair, roi in zip(pairs, texts, rois):
+                center_x = int((roi[0][0]+roi[1][0])/2)
+                center_y = int((roi[0][1]+roi[2][1])/2)
                 
-                img_path = os.path.join(data_dir, substr[0])
-                print("Processing image file", img_path, "...")
-                _, filename = os.path.split(img_path)
-                fname, suffix = os.path.splitext(filename)
-                image = cv2.imread(img_path, -1)
-                labels = eval(substr[1].replace("false", "False"))   
+                xmin = max(0, center_x - LEFT)
+                xmax = min(img_w, center_x + RIGHT)
+                ymin = max(0, center_y - TOP)
+                ymax = min(img_h, center_y + BOTTOM)
                 
-                points, texts = parse_labels(labels)
-                centers = get_centers(points)
-                pairs, texts = pair_labels(points, texts, centers)
-                rois = get_label_rois(pairs)
+                label = []
+                img = image[ymin:ymax, xmin:xmax]
+                for points, txt in zip(pair, text_pair):
+                    for pt in points:
+                        pt[0] -= xmin
+                        pt[1] -= ymin
+                    label.append({"transcription": txt, "points": points})
                 
-                save_id = 0
-                img_h, img_w = image.shape[:2]
-                for pair, text_pair, roi in zip(pairs, texts, rois):
-                    center_x = int((roi[0][0]+roi[1][0])/2)
-                    center_y = int((roi[0][1]+roi[2][1])/2)
-                    
-                    xmin = max(0, center_x - LEFT)
-                    xmax = min(img_w, center_x + RIGHT)
-                    ymin = max(0, center_y - TOP)
-                    ymax = min(img_h, center_y + BOTTOM)
-                    
-                    label = []
-                    img = image[ymin:ymax, xmin:xmax]
-                    for points, txt in zip(pair, text_pair):
-                        for pt in points:
-                            pt[0] -= xmin
-                            pt[1] -= ymin
-                        label.append({"transcription": txt, "points": points})
-                     
-                    _, prefix = os.path.split(save_path)
-                    img_name = fname+"_"+str(save_id)+suffix
-                    img_save_name = os.path.join(save_path, img_name)
+                img_name = fname+"_"+str(save_id)+suffix
+                if np.random.rand() < ratio:
+                    _, prefix = os.path.split(train_save_path)
+                    img_save_name = os.path.join(train_save_path, img_name)
                     item = os.path.join(prefix, img_name) + "\t" + str(label) + "\n"
-                    #cv2.imwrite(img_save_name, img)
-                    fout.write(item)
-                            
-                    # img = draw_polylines(img, pair, text_pair, color=255, size=1.5)
-                    # plt.imshow(img, cmap="gray"), plt.show()
-                    save_id += 1
-                
-            fin.close()
-        fout.close()
+                    train_labels.append(item.replace("False", "false"))
+                else:
+                    _, prefix = os.path.split(valid_save_path)
+                    img_save_name = os.path.join(valid_save_path, img_name)
+                    item = os.path.join(prefix, img_name) + "\t" + str(label) + "\n"
+                    valid_labels.append(item.replace("False", "false"))
+                    
+                cv2.imwrite(img_save_name, img)     
+                save_id += 1
+            
+        fin.close()
+        
+        with open(train_label_file, "w") as fout:
+            for item in train_labels:
+                fout.write(item)
+            fout.close()
+            
+        with open(valid_label_file, "w") as fout:
+            for item in valid_labels:
+                fout.write(item)
+            fout.close()
         
        
 if __name__ == "__main__":
+    ratio = 0.85
     data_dir = r"E:\Projects\Part_Number\dataset"
     label_file = r"E:\Projects\Part_Number\dataset\20210113\Label.txt"
-    save_path = r"E:\Projects\Part_Number\dataset\train\20210113"
-    random_crop_pairs(data_dir, label_file, save_path)
+    train_save_path = r"E:\Projects\Part_Number\dataset\train\20210113"
+    valid_save_path = r"E:\Projects\Part_Number\dataset\valid\20210113"
+    random_crop_pairs(data_dir, label_file, train_save_path, valid_save_path, ratio)
