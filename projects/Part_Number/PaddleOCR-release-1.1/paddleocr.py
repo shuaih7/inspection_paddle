@@ -128,7 +128,7 @@ def parse_args():
     parser.add_argument("--use_gpu", type=str2bool, default=True)
     parser.add_argument("--ir_optim", type=str2bool, default=True)
     parser.add_argument("--use_tensorrt", type=str2bool, default=False)
-    parser.add_argument("--gpu_mem", type=int, default=8000)
+    parser.add_argument("--gpu_mem", type=int, default=2000)
 
     # params for text detector
     parser.add_argument("--image_dir", type=str)
@@ -138,8 +138,8 @@ def parse_args():
 
     # DB parmas
     parser.add_argument("--det_db_thresh", type=float, default=0.3)
-    parser.add_argument("--det_db_box_thresh", type=float, default=0.5)
-    parser.add_argument("--det_db_unclip_ratio", type=float, default=2.0)
+    parser.add_argument("--det_db_box_thresh", type=float, default=0.6)
+    parser.add_argument("--det_db_unclip_ratio", type=float, default=1.5)
 
     # EAST parmas
     parser.add_argument("--det_east_score_thresh", type=float, default=0.8)
@@ -149,12 +149,12 @@ def parse_args():
     # params for text recognizer
     parser.add_argument("--rec_algorithm", type=str, default='CRNN')
     parser.add_argument("--rec_model_dir", type=str, default=None)
-    parser.add_argument("--rec_image_shape", type=str, default="3, 32, 320")
-    parser.add_argument("--rec_char_type", type=str, default='ch')
+    parser.add_argument("--rec_image_shape", type=str, default="3, 32, 100")
+    parser.add_argument("--rec_char_type", type=str, default='en')
     parser.add_argument("--rec_batch_num", type=int, default=30)
     parser.add_argument("--max_text_length", type=int, default=25)
     parser.add_argument("--rec_char_dict_path", type=str, default=None)
-    parser.add_argument("--use_space_char", type=bool, default=True)
+    parser.add_argument("--use_space_char", type=bool, default=False)
 
     # params for text classifier
     parser.add_argument("--use_angle_cls", type=str2bool, default=False)

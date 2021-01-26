@@ -160,7 +160,7 @@ def get_crop(image):
     """
     h, w, _ = image.shape
     top_min = 1
-    top_max = 8
+    top_max = 5
     top_crop = int(random.randint(top_min, top_max))
     top_crop = min(top_crop, h - 1)
     crop_img = image.copy()
@@ -208,11 +208,11 @@ class Config:
 
         self.crop = True
         self.affine = False
-        self.reverse = True
+        self.reverse = False
         self.noise = True
         self.jitter = True
         self.blur = True
-        self.color = True
+        self.color = False
 
 
 def rad(x):
@@ -550,8 +550,8 @@ def warp_show(img,
         new_img = 255 - new_img
         title += " reverse"
     
-    plt.subplot(1,2,1), plt.imshow(img), plt.title("Original image")
-    plt.subplot(1,2,2), plt.imshow(new_img), plt.title(title)
+    plt.subplot(2,1,1), plt.imshow(img), plt.title("Original image")
+    plt.subplot(2,1,2), plt.imshow(new_img), plt.title(title)
     plt.show()
             
     return new_img
@@ -561,9 +561,13 @@ if __name__ == "__main__":
     from matplotlib import pyplot as plt
     import glob as gb
     
-    img_dir = r"E:\Projects\Part_Number\baidu\icdar2015\rec\icdar_train"
-    img_list = gb.glob(img_dir + r"/*.jpg")
+    SUFFIX = [".bmp", ".png", ".jpg", ".tif"]
+    img_list = []
+    
+    img_dir = r"E:\Projects\Part_Number\dataset\rec_valid\20210122"
+    for suffix in SUFFIX:
+        img_list += gb.glob(img_dir + r"/*"+suffix)
     
     for img_file in img_list:
         img = cv2.imread(img_file, cv2.IMREAD_COLOR)
-        new_img = warp_show(img, ang=10, is_noise=True)
+        new_img = warp_show(img, ang=10, is_crop=True, is_perspective=True)

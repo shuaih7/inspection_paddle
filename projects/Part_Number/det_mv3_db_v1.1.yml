@@ -43,7 +43,7 @@ Loss:
 
 Optimizer:
   function: ppocr.optimizer,AdamDecay
-  base_lr: 0.0005
+  base_lr: 0.00005
   beta1: 0.9
   beta2: 0.999
   decay:                                                                                                                         

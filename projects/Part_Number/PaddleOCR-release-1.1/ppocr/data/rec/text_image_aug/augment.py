@@ -49,7 +49,7 @@ def tia_distort(src, segment=4):
     return dst
 
 
-def tia_stretch(src, segment=4):
+def tia_stretch(src, segment=6):
     img_h, img_w = src.shape[:2]
 
     cut = img_w // segment

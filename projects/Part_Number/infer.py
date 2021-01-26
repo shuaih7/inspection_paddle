@@ -45,27 +45,33 @@ def load_data(data_dir, label_infor):
     return image, points, texts
     
     
-def infer_det(img_dir, ocr, label_file=None):
+def infer_rec(img_dir, ocr, label_file=None):
     img_list = image_loader(img_dir)
     
     for img_file in img_list:
         image = cv2.imread(img_file, cv2.IMREAD_COLOR)
-        result = ocr.ocr(image, rec=False, det=True, cls=False)
-        print(result)
-        sys.exit()
+        result = ocr.ocr(image, rec=True, det=False, cls=False)
+        text = result[0][0].upper()
+        conf = str(round(result[0][1], 3))
+        
+        title = text + " - " + conf
+        plt.imshow(image, cmap="gray"), plt.title(title)
+        plt.show()
 
 
 if __name__ == "__main__":
     params = {
+        "use_gpu": True,
+        "gpu_mem": 2000,
         "use_angle_cls": True,
         "lang": "en",
-        "cls_model_dir": None,
-        "det_model_dir": r"E:\Projects\Part_Number\model\det\saved_model\best_accuracy",
-        "rec_model_dir": None
+        "cls_model_dir": r"E:\Projects\Part_Number\model\demo\cls",
+        "det_model_dir": r"E:\Projects\Part_Number\model\demo\det",
+        "rec_model_dir": r"E:\Projects\Part_Number\model\demo\rec\en"
     }
     ocr = PaddleOCR(**params)
     
-    img_dir = r"E:\Projects\Part_Number\dataset\valid\20210113"
-    infer_det(img_dir, ocr)
+    img_dir = r"E:\Projects\Part_Number\dataset\rec_valid\20210122"
+    infer_rec(img_dir, ocr)
     
     

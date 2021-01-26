@@ -154,6 +154,9 @@ def main():
         logger.info("\t index: {}".format(preds))
         logger.info("\t word : {}".format(preds_text))
         logger.info("\t score: {}".format(score))
+        
+        #title = preds_text.upper() + ' - ' + str(round(score,3))
+        #plt.imshow(img[0,0,:,:], cmap="gray"), plt.title(title), plt.show()
 
     # save for inference model
     target_var = []
@@ -171,6 +174,8 @@ def main():
 
 
 if __name__ == '__main__':
+    from matplotlib import pyplot as plt
+    
     parser = program.ArgsParser()
     FLAGS = parser.parse_args()
     main()
