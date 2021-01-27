@@ -8,7 +8,7 @@ from matplotlib import pyplot as plt
 from utils import draw_polylines
 
 
-def viewer(data_dir, label_file, top=None):
+def viewer(data_dir, label_file, mode="det", top=None):
     with open(label_file, "rb") as fin:
         label_infor_list = fin.readlines()
         if top is None or top<=0: top = len(label_infor_list)
@@ -22,18 +22,20 @@ def viewer(data_dir, label_file, top=None):
             #labels = json.loads(substr[1])
             labels = eval(substr[1])
             
-            polys, txts = [], []
+            polys, txts, title = [], [], ""
             for label in labels:
                 polys.append(label['points'])
                 txts.append(label['transcription'])
+                title += label['transcription'] + "\n"
+            title = title[:-1]
             
-            image = cv2.imread(img_path, -1)
+            image = cv2.imread(img_path, cv2.IMREAD_COLOR)
             image = draw_polylines(image, polys, txts)
             print("Showing image", img_path, "...")
-            plt.imshow(image), plt.title("Labeled image"), plt.show()
+            plt.imshow(image, cmap="gray"), plt.title(title), plt.show()
             
  
 if __name__ == "__main__":
-    data_dir = r"E:\Projects\Part_Number\dataset\train"
-    label_file = r"E:\Projects\Part_Number\dataset\train\label.txt"
-    viewer(data_dir, label_file, top=100)
+    data_dir = r"E:\Projects\Part_Number\dataset\det_train"
+    label_file = r"E:\Projects\Part_Number\dataset\det_train\label.txt"
+    viewer(data_dir, label_file)

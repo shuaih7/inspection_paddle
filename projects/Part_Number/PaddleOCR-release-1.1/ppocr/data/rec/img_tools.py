@@ -202,9 +202,9 @@ class Config:
         self.w = w
         self.h = h
 
-        self.perspective = True
-        self.stretch = True
-        self.distort = True
+        self.perspective = False
+        self.stretch = False
+        self.distort = False
 
         self.crop = True
         self.affine = False
@@ -570,4 +570,4 @@ if __name__ == "__main__":
     
     for img_file in img_list:
         img = cv2.imread(img_file, cv2.IMREAD_COLOR)
-        new_img = warp_show(img, ang=10, is_crop=True, is_perspective=True)
+        new_img = warp_show(img, ang=10, is_distort=True)
