@@ -187,7 +187,7 @@ def labelfile(img_file, save_dir):
     boxes, labels, scores, origin, resized_img = infer(img_file)
     boxes = scale_boxes(boxes, origin, resized_img) # Scale the boxes into the original size
     xml_tree = create_pvoc(img_file, boxes, labels, origin)
-    if xml_tree is None: return # Only write into xml if there exits defect
+    if xml_tree is None: return # Only write into xml if there exists defect
     
     _, filename = os.path.split(img_file)
     fname, _ = os.path.splitext(filename)
@@ -236,12 +236,12 @@ def labeldir_insert(img_dir, label_dir=None, save_dir=None, names=[], suffix=".p
 if __name__ == '__main__': 
     
     # Autolabeling ...
-    image_path = r'E:\Projects\Fabric_Defect_Detection\model_dev\v1.1.0\valid'
-    save_path  = r"E:\Projects\Fabric_Defect_Detection\model_dev\v1.1.0\valid"
+    image_path = r'E:\Projects\Fabric_Defect_Detection\model_dev\v1.2.0\dataset\valid\white-300mus-14gain-horizontal_type2+vertical'
+    save_path  = r'E:\Projects\Fabric_Defect_Detection\model_dev\v1.2.0\dataset\valid\white-300mus-14gain-horizontal_type2+vertical'
     suffix = ".bmp"
     
-    #labeldir(image_path, save_path, suffix)
-    labeldir_insert(image_path, names=["striation"], suffix=suffix)
+    labeldir(image_path, save_path, suffix)
+    #labeldir_insert(image_path, names=["striation"], suffix=suffix)
     
     
     # Fetch labels ...

@@ -9,6 +9,7 @@ from PascalVocParser import PascalVocXmlParser
 
 pvoc = PascalVocXmlParser()
 
+
 def show_histogram(path):
     dataset = encode_dataset(path)
     widths = dataset[:,0]
@@ -16,17 +17,32 @@ def show_histogram(path):
     plt.subplot(1,2,1), plt.hist(widths), plt.title("Width Distribution")
     plt.subplot(1,2,2), plt.hist(heights), plt.title("Heights Distribution")
     plt.show()
+    
+    
+def get_xml_list(data_path, txt_file):
+    f = open(txt_file, "r")
+    lines = f.readlines()
+    xml_list = []
+    
+    for item in lines:
+        item = item.replace('\n', '') + '.xml'
+        xml_list.append(os.path.join(data_path, item))
+        
+    return xml_list
+    
 
-def cluster_anchors(path, k=6, label=None):
-    dataset = encode_dataset(path, label=label)
+def cluster_anchors(data_path, txt_file, k=6, label=None):
+    xml_list = get_xml_list(data_path, txt_file)
+    dataset = encode_dataset(xml_list, label=label)
     km = KMeans(n_clusters=k, random_state=9).fit(dataset)
     ac = np.array(km.cluster_centers_, dtype=np.int32)
     
     return ac
 
-def encode_dataset(path, label=None):
+
+def encode_dataset(xml_list, label=None):
     dataset = [] # dataset that x_length larger than x_thres
-    for xml_file in gb.glob(path + r"/*.xml"): 
+    for xml_file in xml_list: 
         tree = ET.parse(xml_file)
  
         height = int(tree.findtext("./size/height"))
@@ -84,10 +100,11 @@ def encode_dataset(path, x_thres=300):
 """   
     
 if __name__ == "__main__":
-    path = r"E:\Projects\Fabric_Defect_Detection\model_dev\v1.1.0\dataset\train"
+    data_path = r"E:\Projects\Fabric_Defect_Detection\model_dev\v1.2.0\dataset\train"
+    txt_file = r'C:\Users\shuai\Documents\GitHub\inspection_paddle\projects\Fabric_defect_detection\MobileNet_YOLO\train.txt'
     #show_histogram(path)
-    label = "striation"
-    ac = cluster_anchors(path, k=2, label=label)
+    label = "defect"
+    ac = cluster_anchors(data_path, txt_file, k=1, label=label)
     print(ac)
     
     #ac0, ac1 = cluster_anchors(path, k0=3, k1=3)

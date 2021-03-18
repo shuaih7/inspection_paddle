@@ -35,6 +35,46 @@ def write_into_txt(file_path, suffix=".xml", save_path=None, save_name="List", i
     print("Done")
     
     
+def random_select_list(file_list, file_path, ratio=1.0):
+    new_file_list = []
+    file_list = shuffle(file_list)
+    slc_len = int(ratio*len(file_list))
+    file_list = file_list[:slc_len]
+    
+    for file in file_list:
+        _, filename = os.path.split(file)
+        fname, _ = os.path.splitext(filename)
+        item = os.path.join(file_path, fname)
+        new_file_list.append(item)
+
+    return new_file_list
+    
+    
+def create_txt_file(path_dict, save_path=None, save_name='List', is_shuffle=True):
+    data_path = path_dict['data_path']
+    file_paths = path_dict['file_paths']
+    # suffixes = path_dict['suffixes']
+    
+    full_path_list = []
+    for path_info in file_paths:
+        file_path = path_info[0]
+        ratio = min(1, max(0, path_info[1]))
+        full_path = os.path.join(data_path, file_path)
+        file_list = gb.glob(full_path + r'/*.xml')
+        file_list = random_select_list(file_list, file_path, ratio)
+        full_path_list += file_list
+    
+    if is_shuffle: full_path_list = shuffle(full_path_list)
+    txt_name = os.path.join(save_path, save_name+".txt")
+    with open(txt_name, "w") as f:
+        for fname in full_path_list:
+            f.write(fname)
+            f.write("\n")
+        f.close()
+    
+    print('Done')
+    
+    
 def show_histogram(boxes):
     heights = list()
     for box in boxes:
@@ -152,10 +192,6 @@ def rearrange_boxes(roi, boxes, aspect_ratio=None):
     return nboxes
     
     
-def crop_image(image_file, box):
-    pass
-    
-    
 def random_crop(ann_file, 
                 pos=0.2, 
                 img_dir=None, 
@@ -221,7 +257,29 @@ if __name__ == "__main__":
     file_path = r"E:\Projects\Fabric_Defect_Detection\model_dev\v1.1.0\dataset\valid"
     save_path = r"C:\Users\shuai\Documents\GitHub\inspection_paddle\projects\Fabric_defect_detection\MobileNet_YOLO"
     
-    write_into_txt(file_path, save_path=save_path, save_name="valid")
+    train_path_dict = {
+        'data_path': r'E:\Projects\Fabric_Defect_Detection\model_dev\v1.2.0\dataset\train',
+        'file_paths': [
+            [r'darkgray-300mus-12gain-horizontal_type2+vertical', 1.0],
+            [r'white-300mus-12gain-horizontal_type2+vertical', 1.0],
+            [r'train_v1.1.0', 0.5]
+        ]
+    }
+    
+    valid_path_dict = {
+        'data_path': r'E:\Projects\Fabric_Defect_Detection\model_dev\v1.2.0\dataset\valid',
+        'file_paths': [
+            [r'darkgray-300mus-8gain-horizontal_type2+vertical', 1.0],
+            [r'darkgray-300mus-12gain-vertical', 1.0],
+            [r'darkgray-300mus-14gain-horizontal_type2+vertical', 1.0],
+            [r'white-300mus-8gain-horizontal_type2+vertical', 1.0],
+            [r'white-300mus-12gain-vertical', 1.0],
+            [r'white-300mus-14gain-horizontal_type2+vertical', 1.0]
+        ]
+    }
+    
+    create_txt_file(valid_path_dict, save_path, save_name='valid')
+    # write_into_txt(file_path, save_path=save_path, save_name="valid")
 
     """
     num_file = 3000

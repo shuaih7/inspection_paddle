@@ -8,4 +8,4 @@
 
 - Command line: 
   1). cd to the folder where you want to save the onnx model
-  2). paddle2onnx --model_dir "E:\Projects\Fabric_Defect_Detection\model_proto\ResNet18\saved_model" --save_file onnx_file_name
+  2). paddle2onnx --model_dir "./inference_model" --save_file onnx_file_name
