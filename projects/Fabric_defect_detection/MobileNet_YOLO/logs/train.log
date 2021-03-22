@@ -80,3 +80,9 @@
 2021-03-18 11:31:07,640 - train.py[line:500] - INFO: 22 epoch current pass map is 0.94005286693573, accum_map is 0.9260848760604858
 2021-03-18 11:31:07,642 - train.py[line:512] - INFO: best pass 18 current best pass MAP is 0.9468363523483276
 2021-03-18 11:31:07,642 - train.py[line:477] - INFO: current pass: 23, start read image
+2021-03-18 11:32:29,017 - train.py[line:494] - INFO: pass 23 train result, current pass mean loss: 8.545573962103461
+2021-03-18 11:32:29,019 - train.py[line:477] - INFO: current pass: 24, start read image
+2021-03-18 11:33:49,374 - train.py[line:494] - INFO: pass 24 train result, current pass mean loss: 8.512523095632337
+2021-03-18 11:34:00,780 - train.py[line:500] - INFO: 24 epoch current pass map is 0.9367407560348511, accum_map is 0.9266021847724915
+2021-03-18 11:34:00,782 - train.py[line:512] - INFO: best pass 18 current best pass MAP is 0.9468363523483276
+2021-03-18 11:34:00,782 - train.py[line:477] - INFO: current pass: 25, start read image

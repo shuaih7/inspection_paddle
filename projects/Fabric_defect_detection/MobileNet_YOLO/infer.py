@@ -134,9 +134,9 @@ if __name__ == '__main__':
     import sys
     import glob as gb
     
-    image_path = r'E:\Projects\Fabric_Defect_Detection\model_dev\v1.1.0\dataset\valid'
+    image_path = r'E:\Projects\Fabric_Defect_Detection\model_dev\v1.2.0\dataset\valid\white-300mus-8gain-horizontal+vertical'
     #label_path = r'E:\Projects\Fabric_Defect_Detection\model_proto\MobileNet_YOLO\Fast_YOLO\v1.1\valid'
-    save_path  = r"E:\Projects\Fabric_Defect_Detection\model_dev\v1.1.0\dataset\valid_output"
+    save_path  = r"E:\Projects\Fabric_Defect_Detection\model_dev\v1.2.0\dataset\valid_output\white-300mus-8gain-horizontal+vertical"
     image_list = gb.glob(image_path + r"/*.bmp")
     total_time = 0.
     
