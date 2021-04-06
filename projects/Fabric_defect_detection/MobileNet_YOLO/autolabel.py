@@ -236,8 +236,8 @@ def labeldir_insert(img_dir, label_dir=None, save_dir=None, names=[], suffix=".p
 if __name__ == '__main__': 
     
     # Autolabeling ...
-    image_path = r'E:\Projects\Fabric_Defect_Detection\model_dev\v1.2.0\dataset\valid\white-300mus-14gain-horizontal_type2+vertical'
-    save_path  = r'E:\Projects\Fabric_Defect_Detection\model_dev\v1.2.0\dataset\valid\white-300mus-14gain-horizontal_type2+vertical'
+    image_path = r'G:\threeguns_data\20210322-20210326_data_collection\double\white\double_white_out_vertical_10gain_300mus_18.1rpm'
+    save_path  = r'G:\threeguns_data\20210322-20210326_data_collection\double\white\double_white_out_vertical_10gain_300mus_18.1rpm'
     suffix = ".bmp"
     
     labeldir(image_path, save_path, suffix)
