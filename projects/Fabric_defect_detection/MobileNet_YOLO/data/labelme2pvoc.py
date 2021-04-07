@@ -37,7 +37,7 @@ class LabelmePascalVOC(object):
                 save_name = os.path.join(json_dir, fname+".xml")
             else:
                 save_name = os.path.join(self.params['save_dir'], fname+".xml")
-            xml_tree.write(save_name, pretty_print=True, xml_declaration=False, encoding='utf-8')
+            self._save(xml_tree, save_name)
             
             f.close()
         
@@ -83,6 +83,12 @@ class LabelmePascalVOC(object):
             labels.append(elem['label'])
         
         return img_info, boxes, labels
+        
+    def _labelShift(self, label):
+        if label not in self.params['label_shift']: 
+            return label
+        else:
+            return self.params['label_shift'][label]
         
     def _createBox(self, points, img_info):
         img_h = img_info['img_h']
@@ -165,7 +171,7 @@ class LabelmePascalVOC(object):
                            difficult="0"):
         node_object = SubElement(node_root, 'object')
         node_name = SubElement(node_object, 'name')
-        node_name.text = label
+        node_name.text = self._shiftlabel(label)
         node_pose = SubElement(node_object, 'pose')
         node_pose.text = pose
         node_truncated = SubElement(node_object, 'truncated')
@@ -181,12 +187,19 @@ class LabelmePascalVOC(object):
         node_xmax.text = str(int(bbx[2]))
         node_ymax = SubElement(node_bndbox, 'ymax')
         node_ymax.text = str(int(bbx[3]))
+        
+    def _save(self, xml_tree, save_name):
+        xml_tree.write(save_name, pretty_print=True, xml_declaration=False, encoding='utf-8')
             
 
 if __name__ == "__main__":
     params = {
         'kind': 'det',
         'save_dir': None,
+        'label_shift': {
+            's': 'striation',
+            'defect': 'defect'
+        },
         'det': {
             'min_h': 20,
             'min_w': 20
