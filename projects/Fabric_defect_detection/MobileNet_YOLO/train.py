@@ -506,7 +506,7 @@ def train():
                                                                                                 current_best_map))
                 fluid.io.save_persistables(dirname=train_parameters['save_model_dir'],
                                            main_program=train_program, executor=exe)
-                fluid.io.save_inference_model(dirname=train_parameters['pretrained_model_dir'],
+                fluid.io.save_inference_model(dirname=train_parameters['inference_model_dir'],
                                               feeded_var_names=['img'], target_vars=outputs[0], executor=exe, main_program=train_program)
                                           
             logger.info("best pass {} current best pass MAP is {}".format(current_best_pass_, current_best_map))

@@ -18,10 +18,11 @@ train_parameters = {
     "image_count": -1,
     "continue_train": True,     # 是否加载前一次的训练参数，接着训练
     "pretrained": False,
-    "pretrained_model_dir": r"E:\Projects\Fabric_Defect_Detection\model_dev\v1.2.0\pretrained_model",
-    "save_model_dir": r"E:\Projects\Fabric_Defect_Detection\model_dev\v1.2.0\saved_model",
+    "pretrained_model_dir": r"E:\Projects\Fabric_Defect_Detection\model_dev\v1.3.0-double\pretrained_model",
+    "inference_model_dir": r"E:\Projects\Fabric_Defect_Detection\model_dev\v1.3.0-double\inference_model",
+    "save_model_dir": r"E:\Projects\Fabric_Defect_Detection\model_dev\v1.3.0-double\saved_model",
     "model_prefix": "yolo-v3",
-    "freeze_dir": r"E:\Projects\Fabric_Defect_Detection\model_dev\v1.2.0\freeze_model",
+    "freeze_dir": r"E:\Projects\Fabric_Defect_Detection\model_dev\v1.3.0-double\freeze_model",
     "use_tiny": False,          # 是否使用 裁剪 tiny 模型
     "max_box_num": 10,          # 一幅图上最多有多少个目标
     "num_epochs": 100,

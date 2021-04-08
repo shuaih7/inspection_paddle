@@ -3,7 +3,7 @@
 
 '''
 Created on 04.07.2020
-Updated on 04.07.2021
+Updated on 04.08.2021
 
 Author: haoshuai@handaotech.com
 '''
@@ -67,10 +67,10 @@ class ModPVOC(object):
         print('Processing file', xml_file, '...')
         
     def __call__(self, input):
-        if os.path.exists(input):
-            self.modifyPath(input)
-        elif os.path.isfile(input):
+        if os.path.isfile(input):
             self.modifyFile(input)
+        elif os.path.exists(input):
+            self.modifyPath(input)
         else:
             raise ValueError('Invalid input.')
             
