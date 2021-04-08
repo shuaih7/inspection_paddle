@@ -16,6 +16,13 @@ from xml.etree import ElementTree as ET
 
 
 class ModPVOC(object):
+    """ Modify the existing PascalVOClabels
+    
+    Attributes:
+        params: Parameters
+        kind: Type of the labeling, detection or segmentation
+    
+    """
     def __init__(self, params):
         self.updateParams(params)
         

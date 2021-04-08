@@ -8,7 +8,7 @@ import time
 import config
 import cv2
 import numpy as np
-from FastYOLO import get_yolo
+from model.mobilev2 import get_yolo
 import paddle.fluid as fluid
 from reader import single_custom_reader
 from PIL import Image

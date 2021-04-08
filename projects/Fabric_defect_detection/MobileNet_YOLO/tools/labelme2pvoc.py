@@ -17,6 +17,15 @@ from lxml.etree import Element, SubElement, tostring, ElementTree, XMLParser, pa
 
 
 class LabelmePascalVOC(object):
+    """ Transferring the labelme polygon labeling to PascalVOC format
+    
+    Attributes:
+        params: Parameters
+        det_params: Parameters for detection
+        seg_params: Parameters for segmentation
+        kind: Type of labeling, detection or segmentation
+    
+    """
     def __init__(self, params):
         self.kind = params['kind']
         self.det_params = params['det']
