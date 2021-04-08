@@ -19,6 +19,13 @@ from matplotlib import pyplot as plt
 
 class CheckDefectVariation(object):
     def __init__(self, params):
+        """ Load the labelme polygon labelings and check the 
+            variance between the defect region and its neighboring regions
+            
+        Attributes:
+            params: Parameters
+        
+        """
         self.updateParams(params)
         
     def updateParams(self, params):
@@ -58,8 +65,8 @@ class CheckDefectVariation(object):
         mask = self._drawMask(mask, top_points, self.neighbor_id)
         mask = self._drawMask(mask, bottom_points, self.neighbor_id)
         
-        var = self._calVariation(image, mask, self.center_id)
-        ref_var = self._calVariation(image, mask, self.neighbor_id)
+        var = self._calVariance(image, mask, self.center_id)
+        ref_var = self._calVariance(image, mask, self.neighbor_id)
         
         print('Variation =', var)
         print('Reference variation =', ref_var)
@@ -69,7 +76,7 @@ class CheckDefectVariation(object):
         plt.subplot(1,2,2), plt.imshow(mask), plt.title('Mask')
         plt.show()
         
-    def _calVariation(self, image, mask, id):
+    def _calVariance(self, image, mask, id):
         roi = image[mask==id]
         average = sum(roi) / len(roi)
         

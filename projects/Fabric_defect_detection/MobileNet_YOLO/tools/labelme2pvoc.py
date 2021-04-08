@@ -64,15 +64,15 @@ class LabelmePascalVOC(object):
             self.transferSegFile(file)
         
     def __call__(self, input):
-        if os.path.exists(input):
+        if os.path.isfile(input):
+            self.transferFile(input)
+        elif os.path.exists(input):
             if self.kind == 'det':
                 self.transferDetPath(input)
             elif self.kind == 'seg':
                 self.transferSegPath(input)
             else:
                 raise ValueError('Invalid kind.')
-        elif os.path.isfile(input):
-            self.transferFile(input)
         else:
             raise ValueError('Invalid input.')
             
