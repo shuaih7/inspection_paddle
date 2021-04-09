@@ -115,15 +115,6 @@ def custom_reader(file_list, data_dir,input_size, mode):
 
 
 def single_custom_reader(file_path, data_dir, input_size, mode):
-    """
-    单线程数据读取
-    :param file_path:
-    :param data_dir:
-    :param input_size:
-    :param mode:
-    :return:
-    """
-    #file_path = os.path.join(data_dir, file_path)
     images = [line.strip() for line in open(file_path)]
     reader = custom_reader(images, data_dir, input_size, mode)
     reader = paddle.reader.shuffle(reader, train_parameters['train_batch_size'])

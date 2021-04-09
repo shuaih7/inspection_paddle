@@ -12,7 +12,7 @@ import os
 import xml
 import json
 import numpy as np
-from .utils import box_to_center_relative
+from .utils import box_to_center_relative, create_box_from_polygon
 
 
 class LabelmeParser(object):
@@ -36,7 +36,9 @@ class LabelmeParser(object):
                 difficult = 0.0
                 bbox_sample = []
                 bbox_sample.append(float(self.train_parameters['label_dict'][elem['label']]))
-                bbox = self._create_box(elem['points'], img_h, img_w)
+                xmin, ymin, xmax, ymax = create_box_from_polygon(elem['points'], 
+                    img_h, img_w, self.min_h, self.min_w)
+                bbox = box_to_center_relative([xmin, ymin, xmax-xmin, ymax-ymin], img_h, img_w)
                 bbox_sample.append(float(bbox[0]))
                 bbox_sample.append(float(bbox[1]))
                 bbox_sample.append(float(bbox[2]))
@@ -47,43 +49,7 @@ class LabelmeParser(object):
             f.close()
         
         return bbox_labels
-        
-    def _create_box(self, points, img_h, img_w):
-        min_h = self.min_h
-        min_w = self.min_w
-        points = np.array(points, dtype=np.float32)
-        
-        xmin = min(points[:,0])
-        xmax = max(points[:,0])
-        ymin = min(points[:,1])
-        ymax = max(points[:,1])
-        
-        if xmax - xmin < min_w:
-            off_x = min_w / 2
-            center_x = (xmin+xmax) / 2
-            
-            if center_x - off_x < 0:
-                xmin, xmax = 0, min_w
-            elif center_x + off_x >= img_w:
-                xmin, xmax = img_w - min_w, img_w
-            else:
-                xmin, xmax = center_x - off_x, center_x + off_x
-                
-        if ymax - ymin < min_h:
-            off_y = min_h / 2
-            center_y = (ymin+ymax) / 2
-            
-            if center_y - off_y < 0:
-                ymin, ymax = 0, min_h
-            elif center_y + off_y >= img_h:
-                ymin, ymax = img_h - min_h, img_h
-            else:
-                ymin, ymax = center_y - off_y, center_y + off_y
-                
-        bbox = box_to_center_relative([xmin, ymin, xmax-xmin, ymax-ymin], img_h, img_w)
-        
-        return bbox
-
+    
 
 class PascalVocParser(object):
     def __init__(self, train_parameters):
