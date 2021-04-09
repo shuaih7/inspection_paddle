@@ -1,2 +1,2 @@
 from .augment import Augment
-from .parser import PascalVocParser
+from .parser import PascalVocParser, LabelmeParser

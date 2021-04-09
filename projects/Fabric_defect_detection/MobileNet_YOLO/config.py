@@ -9,6 +9,7 @@ import codecs
 train_parameters = {
     "data_dir": r"E:\Projects\Fabric_Defect_Detection\model_dev\v1.2.0\dataset\train",
     "val_dir": r"E:\Projects\Fabric_Defect_Detection\model_dev\v1.2.0\dataset\valid",
+    "label_format": 'labelme',
     "train_list": "train.txt",
     "eval_list": "valid.txt",
     "use_filter": False,
@@ -52,6 +53,10 @@ train_parameters = {
     "image_distort_strategy": {
         "expand_prob": 0.5,
         "expand_max_ratio": 1.25,
+        "flip_lr_prob": 0.5,
+        "flip_tb_prob": 0.5,
+        "rotate_prob": 0.5,
+        "rotate_delta": 1.5,
         "hue_prob": 0.5,
         "hue_delta": 18,
         "contrast_prob": 0.5,

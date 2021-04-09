@@ -10,9 +10,11 @@ Author: haoshuai@handaotech.com
 
 import os
 import cv2
+import math
 import random
 import numpy as np
 from PIL import Image, ImageEnhance
+from .utils import box_to_center_relative
 
 
 class Augment(object):
@@ -74,7 +76,7 @@ class Augment(object):
         return img
         
     def random_expand(self, img, gtboxes, keep_ratio=True):
-        if np.random.uniform(0, 1) < self.train_parameters['image_distort_strategy']['expand_prob']:
+        if np.random.uniform(0, 1) > self.train_parameters['image_distort_strategy']['expand_prob']:
             return img, gtboxes
 
         max_ratio = self.train_parameters['image_distort_strategy']['expand_max_ratio']
@@ -103,21 +105,23 @@ class Augment(object):
 
         return Image.fromarray(out_img), gtboxes
         
-    def random_flip_left_right(self, img, gtboxes, thresh=0.5):
-        if random.random() > thresh:
-            # img = img[:, ::-1, :]
-            img = img.transpose(Image.FLIP_LEFT_RIGHT)
-            
-            gtboxes[:, 0] = 1.0 - gtboxes[:, 0]
+    def random_flip_left_right(self, img, gtboxes):
+        if np.random.uniform(0, 1) > self.train_parameters['image_distort_strategy']['flip_lr_prob']:
+            return img, gtboxes
+
+        img = img.transpose(Image.FLIP_LEFT_RIGHT)
+        gtboxes[:, 0] = 1.0 - gtboxes[:, 0]
+        
         return img, gtboxes
         
         
-    def random_flip_top_bottom(self, img, gtboxes, thresh=0.5):
-        if random.random() > thresh:
-            # img = img[:, ::-1, :]
-            img = img.transpose(Image.FLIP_TOP_BOTTOM)
+    def random_flip_top_bottom(self, img, gtboxes):
+        if np.random.uniform(0, 1) > self.train_parameters['image_distort_strategy']['flip_lr_prob']:
+            return img, gtboxes
             
-            gtboxes[:, 1] = 1.0 - gtboxes[:, 1]
+        img = img.transpose(Image.FLIP_TOP_BOTTOM)
+        gtboxes[:, 1] = 1.0 - gtboxes[:, 1]
+            
         return img, gtboxes
         
     def random_interp(self, img, size, interp=None):
@@ -139,7 +143,6 @@ class Augment(object):
         img = Image.fromarray(img)
         return img
 
-
     def shuffle_gtbox(self, gtbox, gtlabel):
         gt = np.concatenate(
             [gtbox, gtlabel[:, np.newaxis]], axis=1)
@@ -149,6 +152,19 @@ class Augment(object):
         gt = gt[idx, :]
 
         return gt[:, :4], gt[:, 4]
+        
+    def random_rotate(self, img, boxes):
+        if np.random.uniform(0, 1) > self.train_parameters['image_distort_strategy']['rotate_prob']:
+            return img, boxes
+            
+        angle_delta = min(self.train_parameters['image_distort_strategy']['rotate_delta'], 8)
+        angle = np.random.uniform(-1*angle_delta, angle_delta)
+        
+        img_w, img_h = img.size
+        img = img.rotate(angle, fillcolor=(127,127,127))
+        boxes = self._rotate_boxes(boxes, img_h, img_w, angle)
+        
+        return img, boxes
         
     def random_crop(self, img, boxes, labels, 
                     scales=[0.8, 1.0], 
@@ -252,5 +268,51 @@ class Augment(object):
         b2_area = (b2_x2 - b2_x1 + 1) * (b2_y2 - b2_y1 + 1)
 
         return inter_area / (b1_area + b2_area - inter_area)
+        
+    def _rotate_boxes(self, boxes, img_h, img_w, angle):
+        ''' Rotate the normalizd boxes '''
+        rot_boxes = []
+        for box in boxes:
+            x, y, w, h = box
+            # Map back the bounding box
+            xmin = max(0, int((x-w/2)*img_w))
+            xmax = min(img_w, int((x+w/2)*img_w))
+            ymin = max(0, int((y-h/2)*img_h))
+            ymax = min(img_h, int((y+h/2)*img_h))
+            
+            # Initialize the points
+            xs, ys, pts_list = list(), list(), list()
+            pts_list.append([xmin, ymin])
+            pts_list.append([xmax, ymin])
+            pts_list.append([xmax, ymax])
+            pts_list.append([xmin, ymax])
+            
+            # Mapping the points
+            for pt in pts_list:
+                xr, yr = self._rotate_point(pt, img_h, img_w, angle)
+                xs.append(xr)
+                ys.append(yr)
+            xmin = max(0, min(xs))
+            xmax = min(img_w, max(xs))
+            ymin = max(0, min(ys))
+            ymax = min(img_h, max(ys))
+            
+            rot_box = box_to_center_relative([xmin, ymin, xmax-xmin, ymax-ymin], img_h, img_w)
+            rot_boxes.append(rot_box)
+        
+        return rot_boxes
+        
+    def _rotate_point(self, point, img_h, img_w, angle):
+        x1 = point[0] - img_w / 2
+        y1 = img_h / 2 - point[1]
+        angle = angle / 180 * math.pi
+        x2 = x1*math.cos(angle) - y1*math.sin(angle)
+        y2 = x1*math.sin(angle) + y1*math.cos(angle)
+        
+        rot_point = [x2+img_w/2, img_h/2-y2]
+        
+        return rot_point
+        
+        
 
 
