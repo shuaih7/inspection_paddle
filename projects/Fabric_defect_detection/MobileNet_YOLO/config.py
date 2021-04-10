@@ -55,6 +55,8 @@ train_parameters = {
         "expand_max_ratio": 1.25,
         "flip_lr_prob": 0.5,
         "flip_tb_prob": 0.5,
+        "mask_prob": 0.5,
+        "max_mask_num": 2,
         "rotate_prob": 0.5,
         "rotate_delta": 1.5,
         "hue_prob": 0.5,

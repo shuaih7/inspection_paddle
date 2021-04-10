@@ -29,6 +29,7 @@ class Augment(object):
         
     def update(self, train_parameters):
         self.train_parameters = train_parameters
+        self.mask_color = (127,127,127)
         
     def distort_image(self, img):
         ''' 
@@ -153,7 +154,23 @@ class Augment(object):
 
         return gt[:, :4], gt[:, 4]
         
+    def random_mask(self, img, boxes, labels, points):
+        # Only support labelme format 
+        # Mask sure to do this augmentation before the random rotate
+        # Because currently the random rotate will not rotate the points
+        # Will remain at lease one defect label
+        if self.train_parameters['label_format'] not in ['labelme', 'json']:
+            return img, boxes, labels
+        elif np.random.uniform(0, 1) > self.train_parameters['image_distort_strategy']['mask_prob']:
+            return img, boxes, labels
+        elif len(boxes) == 1:
+            return img, boxes, labels
+            
+        max_mask_num = self.train_parameters['image_distort_strategy']['max_mask_num']
+        
+        
     def random_rotate(self, img, boxes):
+        # Please do this augmentation after the random mask
         if np.random.uniform(0, 1) > self.train_parameters['image_distort_strategy']['rotate_prob']:
             return img, boxes
             
@@ -161,7 +178,7 @@ class Augment(object):
         angle = np.random.uniform(-1*angle_delta, angle_delta)
         
         img_w, img_h = img.size
-        img = img.rotate(angle, fillcolor=(127,127,127))
+        img = img.rotate(angle, fillcolor=self.mask_color)
         boxes = self._rotate_boxes(boxes, img_h, img_w, angle)
         
         return img, boxes
