@@ -18,16 +18,15 @@ from PIL import Image, ImageEnhance, ImageDraw
 import config
 from data import Augment, PascalVocParser, LabelmeParser
 
+
 train_parameters = config.init_train_parameters()
 aug = Augment(train_parameters)
-if train_parameters['label_format'] in ['labelme', 'json']: 
-    use_labelme = True
-else: use_labelme = False
 
 if train_parameters['label_format'].lower() in ['voc', 'pascalvoc', 'labelimg', 'xml']:
     parser = PascalVocParser(train_parameters)
 elif train_parameters['label_format'].lower() in ['labelme', 'json']:
     parser = LabelmeParser(train_parameters)
+    use_labelme = True
 else:
     raise ValueError('Invalid label format.')
 
@@ -84,6 +83,8 @@ def preprocess(img, bbox_labels, input_size, mode):
 
 
 def custom_reader(file_list, data_dir,input_size, mode):
+    if use_labelme: label_suffix = '.json'
+    else: label_suffix = '.xml'
 
     def reader():
         np.random.shuffle(file_list)
@@ -92,7 +93,7 @@ def custom_reader(file_list, data_dir,input_size, mode):
                 
                 fname = line.replace("\n","")
                 image_path = os.path.join(data_dir, fname+".bmp")
-                label_path = os.path.join(data_dir, fname+".xml")
+                label_path = os.path.join(data_dir, fname+label_suffix)
                 img = Image.open(image_path)
                 if img.mode != 'RGB':
                     img = img.convert('RGB')

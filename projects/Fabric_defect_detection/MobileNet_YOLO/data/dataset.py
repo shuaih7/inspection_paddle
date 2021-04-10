@@ -3,7 +3,7 @@
 
 '''
 Created on 12.09.2020
-Updated on 12.09.2020
+Updated on 04.10.2020
 
 Author: haoshaui@handaotech.com
 '''
@@ -59,8 +59,12 @@ def create_txt_file(path_dict, save_path=None, save_name='List', is_shuffle=True
     for path_info in file_paths:
         file_path = path_info[0]
         ratio = min(1, max(0, path_info[1]))
+        
         full_path = os.path.join(data_path, file_path)
-        file_list = gb.glob(full_path + r'/*.xml')
+        if not os.path.exists(full_path):
+            raise ValueError('Could not find path', full_path)
+            
+        file_list = gb.glob(full_path + r'/*.json')
         file_list = random_select_list(file_list, file_path, ratio)
         full_path_list += file_list
     
@@ -255,29 +259,37 @@ def random_crop(ann_file,
         
 if __name__ == "__main__":
     file_path = r"E:\Projects\Fabric_Defect_Detection\model_dev\v1.1.0\dataset\valid"
-    save_path = r"C:\Users\shuai\Documents\GitHub\inspection_paddle\projects\Fabric_defect_detection\MobileNet_YOLO"
+    save_path = r"E:\Projects\Fabric_Defect_Detection\model_dev\v1.3.0-double\dataset"
     
     train_path_dict = {
-        'data_path': r'E:\Projects\Fabric_Defect_Detection\model_dev\v1.2.0\dataset\train',
+        'data_path': r'E:\Projects\Fabric_Defect_Detection\model_dev\v1.3.0-double\dataset\train',
         'file_paths': [
-            [r'darkgray-300mus-12gain-horizontal_type2+vertical', 1.0],
-            [r'white-300mus-12gain-horizontal_type2+vertical', 1.0],
-            [r'train_v1.1.0', 0.5]
+            [r'white_10gain_in_vertical', 1.0],
+            [r'white_10gain_out_vertical', 1.0],
+            [r'white_10gain_spandex_break', 1.0],
+            [r'white_10gain_spandex_slip', 1.0],
+            [r'light_gray_10gain_in_vertical', 1.0],
+            [r'light_gray_10gain_out_vertical', 1.0],
+            [r'light_gray_10gain_spandex_break', 1.0],
+            [r'light_gray_10gain_spandex_slip', 1.0]
         ]
     }
     
     valid_path_dict = {
-        'data_path': r'E:\Projects\Fabric_Defect_Detection\model_dev\v1.2.0\dataset\valid',
+        'data_path': r'E:\Projects\Fabric_Defect_Detection\model_dev\v1.3.0-double\dataset\valid',
         'file_paths': [
-            [r'darkgray-300mus-8gain-horizontal_type2+vertical', 1.0],
-            [r'darkgray-300mus-12gain-vertical', 1.0],
-            [r'darkgray-300mus-14gain-horizontal_type2+vertical', 1.0],
-            [r'white-300mus-8gain-horizontal_type2+vertical', 1.0],
-            [r'white-300mus-12gain-vertical', 1.0],
-            [r'white-300mus-14gain-horizontal_type2+vertical', 1.0]
+            [r'white_10gain_in_vertical', 1.0],
+            [r'white_10gain_out_vertical', 1.0],
+            [r'white_10gain_spandex_break', 1.0],
+            [r'white_10gain_spandex_slip', 1.0],
+            [r'light_gray_10gain_in_vertical', 1.0],
+            [r'light_gray_10gain_out_vertical', 1.0],
+            [r'light_gray_10gain_spandex_break', 1.0],
+            [r'light_gray_10gain_spandex_slip', 1.0]
         ]
     }
     
+    create_txt_file(train_path_dict, save_path, save_name='train')
     create_txt_file(valid_path_dict, save_path, save_name='valid')
     # write_into_txt(file_path, save_path=save_path, save_name="valid")
 

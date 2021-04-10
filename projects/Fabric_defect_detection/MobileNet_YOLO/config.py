@@ -7,11 +7,11 @@ import logging
 import codecs
 
 train_parameters = {
-    "data_dir": r"E:\Projects\Fabric_Defect_Detection\model_dev\v1.2.0\dataset\train",
-    "val_dir": r"E:\Projects\Fabric_Defect_Detection\model_dev\v1.2.0\dataset\valid",
+    "data_dir": r"E:\Projects\Fabric_Defect_Detection\model_dev\v1.3.0-double\dataset\train",
+    "val_dir": r"E:\Projects\Fabric_Defect_Detection\model_dev\v1.3.0-double\dataset\valid",
     "label_format": 'labelme',
-    "train_list": "train.txt",
-    "eval_list": "valid.txt",
+    "train_list": r"E:\Projects\Fabric_Defect_Detection\model_dev\v1.3.0-double\dataset\train.txt",
+    "eval_list": r"E:\Projects\Fabric_Defect_Detection\model_dev\v1.3.0-double\dataset\valid.txt",
     "use_filter": False,
     "class_dim": -1,
     "label_dict": {},
@@ -25,6 +25,8 @@ train_parameters = {
     "model_prefix": "yolo-v3",
     "freeze_dir": r"E:\Projects\Fabric_Defect_Detection\model_dev\v1.3.0-double\freeze_model",
     "use_tiny": False,          # 是否使用 裁剪 tiny 模型
+    "min_box_h": 20,
+    "min_box_w": 20,
     "max_box_num": 10,          # 一幅图上最多有多少个目标
     "num_epochs": 100,
     "train_batch_size": 16,      # 对于完整 yolov3，每一批的训练样本不能太多，内存会炸掉
@@ -32,7 +34,7 @@ train_parameters = {
     "yolo_cfg": {
         "input_size": [3, 352, 352],    # 原版的边长大小为608，为了提高训练速度和预测速度，此处压缩为448
         # "anchors": [10, 13, 16, 30, 33, 23, 30, 61, 62, 45, 59, 119, 116, 90, 156, 198, 373, 326], #416
-        "anchors": [260, 16, 346, 18, 14, 349],#384
+        "anchors": [260, 16, 346, 18, 16, 350],#384
         # "anchors": [8, 10, 12, 23, 25, 18, 23, 47, 48, 35, 45, 92, 89, 69, 120, 152, 287, 251],#320
         "anchor_mask": [[0, 1, 2]]
     },
@@ -58,7 +60,7 @@ train_parameters = {
         "mask_prob": 0.5,
         "max_mask_num": 2,
         "rotate_prob": 0.5,
-        "rotate_delta": 1.5,
+        "rotate_delta": 2.,
         "hue_prob": 0.5,
         "hue_delta": 18,
         "contrast_prob": 0.5,
