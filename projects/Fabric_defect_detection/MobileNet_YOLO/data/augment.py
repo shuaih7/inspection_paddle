@@ -13,7 +13,7 @@ import cv2
 import math
 import random
 import numpy as np
-from PIL import Image, ImageEnhance
+from PIL import Image, ImageEnhance, ImageDraw
 from .utils import box_to_center_relative
 
 
@@ -30,6 +30,7 @@ class Augment(object):
     def update(self, train_parameters):
         self.train_parameters = train_parameters
         self.mask_color = (127,127,127)
+        self.mask_width = 20
         
     def distort_image(self, img):
         ''' 
@@ -154,10 +155,10 @@ class Augment(object):
 
         return gt[:, :4], gt[:, 4]
         
-    def random_mask(self, img, boxes, labels, points):
+    def random_mask(self, img, boxes, labels, lines):
         # Only support labelme format 
         # Mask sure to do this augmentation before the random rotate
-        # Because currently the random rotate will not rotate the points
+        # Because currently the random rotate will not rotate the lines
         # Will remain at lease one defect label
         if self.train_parameters['label_format'] not in ['labelme', 'json']:
             return img, boxes, labels
@@ -166,8 +167,20 @@ class Augment(object):
         elif len(boxes) == 1:
             return img, boxes, labels
             
-        max_mask_num = self.train_parameters['image_distort_strategy']['max_mask_num']
+        max_mask_num = min(self.train_parameters['image_distort_strategy']['max_mask_num'], len(boxes)-1)
+        mask_num = random.randint(1, max_mask_num)
+        index_list = random.sample(range(0, len(boxes)), mask_num)
+        index_list = sorted(index_list, reverse=True)
+        draw = ImageDraw.Draw(img)
         
+        for index in index_list:
+            pts = self._arrange_points(lines[index])
+            draw.line(pts, fill=self.mask_color, width=self.mask_width)
+            boxes = np.delete(boxes, index, axis=0)
+            labels = np.delete(labels, index)
+            # lines.pop(index)
+            
+        return img, boxes, labels
         
     def random_rotate(self, img, boxes):
         # Please do this augmentation after the random mask
@@ -329,6 +342,14 @@ class Augment(object):
         rot_point = [x2+img_w/2, img_h/2-y2]
         
         return rot_point
+        
+    def _arrange_points(self, points):
+        pts = list()
+        for point in points:
+            pt = (point[0], point[1])
+            pts.append(pt)
+        return pts
+            
         
         
 

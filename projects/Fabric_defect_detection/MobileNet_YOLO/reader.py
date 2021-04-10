@@ -20,6 +20,9 @@ from data import Augment, PascalVocParser, LabelmeParser
 
 train_parameters = config.init_train_parameters()
 aug = Augment(train_parameters)
+if train_parameters['label_format'] in ['labelme', 'json']: 
+    use_labelme = True
+else: use_labelme = False
 
 if train_parameters['label_format'].lower() in ['voc', 'pascalvoc', 'labelimg', 'xml']:
     parser = PascalVocParser(train_parameters)
@@ -52,6 +55,7 @@ def preprocess(img, bbox_labels, input_size, mode):
     sample_labels = np.array(bbox_labels)
     gtlabels = sample_labels[:, 0]
     gtboxes = sample_labels[:, 1:5]
+    if use_labelme: gtlines = sample_labels[:, -1]
     
     if mode == 'train':
         if train_parameters['apply_distort']:
@@ -60,6 +64,8 @@ def preprocess(img, bbox_labels, input_size, mode):
         img, gtboxes, gtlabels = aug.random_crop(img, gtboxes, gtlabels)
         img, gtboxes = aug.random_flip_left_right(img, gtboxes)
         img, gtboxes = aug.random_flip_top_bottom(img, gtboxes)
+        img, gtboxes, gtlabels = aug.random_mask(img, gtboxes, gtlabels, gtlines)
+        img, gtboxes = aug.random_rotate(img, gtboxes)
         gtboxes, gtlabels = aug.shuffle_gtbox(gtboxes, gtlabels)
         sample_labels[:, 0] = gtlabels
         sample_labels[:, 1:5] = gtboxes
@@ -144,13 +150,16 @@ def preprocess_test(image_path):
     sample_labels = np.array(bbox_labels)
     gtlabels = sample_labels[:, 0]
     gtboxes = sample_labels[:, 1:5]
+    gtlines = sample_labels[:, -1]
     #if train_parameters['apply_distort']:
     #    img = distort_image(img)
     #img, gtboxes = aug.random_expand(img, gtboxes)
     img0 = img.copy()
     gtboxes0 = gtboxes.copy()
     gtlabels0 = gtlabels.copy()
+    gtlines0 = gtlines.copy()
     #img0, gtboxes0, gtlabels = aug.random_crop(img0, gtboxes0, gtlabels0)
+    img0, gtboxes0, gtlabels0 = aug.random_mask(img0, gtboxes0, gtlabels0, gtlines0)
     img0, gtboxes0 = aug.random_rotate(img0, gtboxes0)
     #img0, gtboxes0 = aug.random_flip_top_bottom(img0, gtboxes0)
     
@@ -161,9 +170,12 @@ def preprocess_test(image_path):
     plt.show()
 
 if __name__ == "__main__":
+    import glob as gb
     from matplotlib import pyplot as plt
-    image_path = r"E:\Projects\Fabric_Defect_Detection\model_dev\v1.3.0-double\dataset\label_test\MER2-041-436U3M(FDL21010006)_2021-03-25_15_36_37_717-0.bmp"
-    preprocess_test(image_path)
+    image_path = r"E:\Projects\Fabric_Defect_Detection\model_dev\v1.3.0-double\dataset\label_test"
+    img_list = gb.glob(image_path + r'/*.bmp')
+    for image_file in img_list:
+        preprocess_test(image_file)
     '''
     img = Image.open(image_path)
     img_r = img.rotate(10, fillcolor=127)

@@ -4,7 +4,7 @@
 """
 import paddle.fluid as fluid
 # from YOLOv3 import get_yolo
-from FastYOLO import get_yolo
+from model.mobilev2 import get_yolo
 import config
 
 

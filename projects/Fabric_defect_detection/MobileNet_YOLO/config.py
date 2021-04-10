@@ -66,7 +66,7 @@ train_parameters = {
         "saturation_prob": 0.5,
         "saturation_delta": 0.5,
         "brightness_prob": 0.5,
-        "brightness_delta": 0.6
+        "brightness_delta": 0.4
     },
     "sgd_strategy": {
         "learning_rate": 0.002,
