@@ -155,17 +155,17 @@ class Augment(object):
 
         return gt[:, :4], gt[:, 4]
         
-    def random_mask(self, img, boxes, labels, lines):
+    def random_mask(self, img, boxes, labels, diffs, lines):
         # Only support labelme format 
         # Mask sure to do this augmentation before the random rotate
         # Because currently the random rotate will not rotate the lines
         # Will remain at lease one defect label
         if self.train_parameters['label_format'] not in ['labelme', 'json']:
-            return img, boxes, labels
+            return img, boxes, labels, diffs
         elif np.random.uniform(0, 1) > self.train_parameters['image_distort_strategy']['mask_prob']:
-            return img, boxes, labels
+            return img, boxes, labels, diffs
         elif len(boxes) == 1:
-            return img, boxes, labels
+            return img, boxes, labels, diffs
             
         max_mask_num = min(self.train_parameters['image_distort_strategy']['max_mask_num'], len(boxes)-1)
         mask_num = random.randint(1, max_mask_num)
@@ -178,9 +178,10 @@ class Augment(object):
             draw.line(pts, fill=self.mask_color, width=self.mask_width)
             boxes = np.delete(boxes, index, axis=0)
             labels = np.delete(labels, index)
+            diffs = np.delete(diffs, index)
             # lines.pop(index)
             
-        return img, boxes, labels
+        return img, boxes, labels, diffs
         
     def random_rotate(self, img, boxes):
         # Please do this augmentation after the random mask

@@ -55,6 +55,7 @@ def preprocess(img, bbox_labels, input_size, mode):
     sample_labels = np.array(bbox_labels)
     gtlabels = sample_labels[:, 0]
     gtboxes = sample_labels[:, 1:5]
+    gtdiffs = sample_labels[:, 5]
     if use_labelme: gtlines = sample_labels[:, -1]
     
     if mode == 'train':
@@ -64,11 +65,15 @@ def preprocess(img, bbox_labels, input_size, mode):
         img, gtboxes, gtlabels = aug.random_crop(img, gtboxes, gtlabels)
         img, gtboxes = aug.random_flip_left_right(img, gtboxes)
         img, gtboxes = aug.random_flip_top_bottom(img, gtboxes)
-        img, gtboxes, gtlabels = aug.random_mask(img, gtboxes, gtlabels, gtlines)
+        
+        if use_labelme:
+            img, gtboxes, gtlabels, gtdiffs = aug.random_mask(img, gtboxes, gtlabels, gtdiffs, gtlines)
         img, gtboxes = aug.random_rotate(img, gtboxes)
         gtboxes, gtlabels = aug.shuffle_gtbox(gtboxes, gtlabels)
-        sample_labels[:, 0] = gtlabels
-        sample_labels[:, 1:5] = gtboxes
+        
+        gtlabels = gtlabels.reshape((-1,1))
+        gtdiffs = gtdiffs.reshape((-1,1))
+        sample_labels = np.hstack((gtlabels, gtboxes, gtdiffs))
     # img = resize_img(img, sample_labels, input_size)
     img = random_interp(img, input_size)
     img = np.array(img).astype('float32')
@@ -150,21 +155,27 @@ def preprocess_test(image_path):
     sample_labels = np.array(bbox_labels)
     gtlabels = sample_labels[:, 0]
     gtboxes = sample_labels[:, 1:5]
-    gtlines = sample_labels[:, -1]
+    gtdiffs = sample_labels[:, 5]
+    if use_labelme: gtlines = sample_labels[:, -1]
     #if train_parameters['apply_distort']:
     #    img = distort_image(img)
     #img, gtboxes = aug.random_expand(img, gtboxes)
     img0 = img.copy()
     gtboxes0 = gtboxes.copy()
     gtlabels0 = gtlabels.copy()
+    gtdiffs0 = gtdiffs.copy()
     gtlines0 = gtlines.copy()
     #img0, gtboxes0, gtlabels = aug.random_crop(img0, gtboxes0, gtlabels0)
-    img0, gtboxes0, gtlabels0 = aug.random_mask(img0, gtboxes0, gtlabels0, gtlines0)
+    if use_labelme: 
+        img0, gtboxes0, gtlabels0, gtdiffs0 = aug.random_mask(img0, gtboxes0, gtlabels0, gtdiffs0, gtlines0)
     img0, gtboxes0 = aug.random_rotate(img0, gtboxes0)
     #img0, gtboxes0 = aug.random_flip_top_bottom(img0, gtboxes0)
     
     draw_img = draw_bbox_image(img, gtboxes, img.size[0], img.size[1])
     draw_img0 = draw_bbox_image(img0, gtboxes0, img.size[0], img.size[1])
+    gtlabels0 = gtlabels0.reshape((-1,1))
+    gtdiffs0 = gtdiffs0.reshape((-1,1))
+    sample_labels0 = np.hstack((gtlabels0, gtboxes0, gtdiffs0))
     plt.subplot(1,2,1), plt.imshow(draw_img)
     plt.subplot(1,2,2), plt.imshow(draw_img0)
     plt.show()
@@ -175,7 +186,7 @@ if __name__ == "__main__":
     image_path = r"E:\Projects\Fabric_Defect_Detection\model_dev\v1.3.0-double\dataset\label_test"
     img_list = gb.glob(image_path + r'/*.bmp')
     for image_file in img_list:
-        preprocess_test(image_file)
+       preprocess_test(image_file)
     '''
     img = Image.open(image_path)
     img_r = img.rotate(10, fillcolor=127)
@@ -183,5 +194,21 @@ if __name__ == "__main__":
     plt.subplot(1,2,2), plt.imshow(img_r, cmap='gray'), plt.title('Rotated')
     plt.show()
     '''
+    '''
+    sample_labels = np.array([[0,11,22,33,44,1],
+                       [0,11,22,33,44,1],
+                       [0,11,22,33,44,1],
+                       [0,11,22,33,44,1]], dtype=np.float32)
+                       
+    labels = sample_labels[:, 0].reshape((-1,1))
+    boxes = sample_labels[:, 1:5]
+    diffs = sample_labels[:, 5].reshape((-1,1))
     
+    print(labels.shape)
+    print(boxes.shape)
+    print(diffs.shape)
+    
+    nlabels = np.hstack((labels, boxes, diffs))
+    print(nlabels)
+    '''
     
