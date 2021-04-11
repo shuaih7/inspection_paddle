@@ -21,8 +21,8 @@ class LabelmeParser(object):
         
     def update(self, train_parameters):
         self.train_parameters = train_parameters
-        self.min_h = 20  # Minimum label height
-        self.min_w = 20  # Minimum label width
+        self.min_h = train_parameters['min_box_h']  # Minimum label height
+        self.min_w = train_parameters['min_box_w']  # Minimum label width
         
     def __call__(self, ann_file):
         bbox_labels = []
@@ -49,6 +49,36 @@ class LabelmeParser(object):
             f.close()
         
         return bbox_labels
+        
+        
+class LabelmeValidParser(object):
+    def __init__(self, train_parameters):
+        self.update(train_parameters)
+        
+    def update(self, train_parameters):
+        self.train_parameters = train_parameters
+        self.min_h = train_parameters['min_box_h']  # Minimum label height
+        self.min_w = train_parameters['min_box_w']  # Minimum label width
+        
+    def __call__(self, ann_file):
+        gt_labels = []
+        gt_boxes = []
+        difficult = []
+        
+        with open(ann_file, "r", encoding="utf-8") as f:
+            js_obj = json.load(f)
+            img_h = js_obj['imageHeight']
+            img_w = js_obj['imageWidth']
+            
+            for elem in js_obj['shapes']:
+                gt_labels.append(float(self.train_parameters['label_dict'][elem['label']]))
+                xmin, ymin, xmax, ymax = create_box_from_polygon(elem['points'], 
+                    img_h, img_w, self.min_h, self.min_w)
+                gt_boxes.append([float(xmin)/img_w, float(ymin)/img_h, float(xmax)/img_w, float(ymax)/img_h])
+                difficult.append(float(0))
+            f.close()
+        
+        return gt_labels, gt_boxes, difficult
     
 
 class PascalVocParser(object):
@@ -84,4 +114,32 @@ class PascalVocParser(object):
             bbox_labels.append(bbox_sample)
         
         return bbox_labels
+        
+        
+class PascalVocValidParser(object):
+    def __init__(self, train_parameters):
+        self.update(train_parameters)
+        
+    def update(self, train_parameters):
+        self.train_parameters = train_parameters
+        
+    def __call__(self, ann_file):
+        root = xml.etree.ElementTree.parse(ann_file).getroot()
+        # Fetch image information
+        size = root.find('size')
+        im_height = float(size.find('height').text)
+        im_width = float(size.find('width').text)
+        
+        # Fetch bbox information
+        gt_labels = []
+        gt_boxes = []
+        difficult = []
+        for object in root.findall('object'):
+            gt_labels.append(float(self.train_parameters['label_dict'][object.find('name').text]))
+            bbox = object.find('bndbox')
+            gt_boxes.append([float(bbox.find('xmin').text)/im_width, float(bbox.find('ymin').text)/im_height,
+                             float(bbox.find('xmax').text)/im_width, float(bbox.find('ymax').text)/im_height])
+            difficult.append(float(object.find('difficult').text))
+            
+        return gt_labels, gt_boxes, difficult
         

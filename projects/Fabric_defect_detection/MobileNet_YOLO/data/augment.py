@@ -30,7 +30,7 @@ class Augment(object):
     def update(self, train_parameters):
         self.train_parameters = train_parameters
         self.mask_color = (127,127,127)
-        self.mask_width = 20
+        self.mask_width = int((train_parameters['min_box_h']+train_parameters['min_box_w'])/2)
         
     def distort_image(self, img):
         ''' 
@@ -60,6 +60,16 @@ class Augment(object):
                 img = ImageEnhance.Color(img).enhance(delta)
             return img
 
+            prob = np.random.uniform(0, 1)
+            if prob < self.train_parameters['image_distort_strategy']['hue_prob']:
+                hue_delta = self.train_parameters['image_distort_strategy']['hue_delta']
+                delta = np.random.uniform(-hue_delta, hue_delta)
+                img_hsv = np.array(img.convert('HSV'))
+                img_hsv[:, :, 0] = img_hsv[:, :, 0] + delta
+                img = Image.fromarray(img_hsv, mode='HSV').convert('RGB')
+            return img
+            
+        def random_hue(img):
             prob = np.random.uniform(0, 1)
             if prob < self.train_parameters['image_distort_strategy']['hue_prob']:
                 hue_delta = self.train_parameters['image_distort_strategy']['hue_delta']

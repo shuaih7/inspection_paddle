@@ -3,17 +3,21 @@
 模型训练
 """
 from __future__ import division
+
 import os
-import time
-import config
 import cv2
-import numpy as np
-from model.mobilev2 import get_yolo
-import paddle.fluid as fluid
-from reader import single_custom_reader
-from PIL import Image
-import shutil
 import xml
+import time
+import shutil
+import numpy as np
+from PIL import Image
+import paddle.fluid as fluid
+
+import config
+from model.mobilev2 import get_yolo
+from reader import single_custom_reader
+from data import PascalVocValidParser, LabelmeValidParser
+
 
 logger = config.init_log_config()
 train_parameters = config.init_train_parameters()
@@ -28,47 +32,37 @@ label_dict = dict(zip(label_dict.values(), label_dict.keys()))
 #test_file_path = os.path.join(data_dir, train_parameters['eval_list'])
 test_file_path = train_parameters['eval_list']
 val_data = []
-val_data2 = []
 print(label_dict)
+
 
 with open(test_file_path, 'r') as f:
     lines = f.readlines()
+    if train_parameters['label_format'].lower() in ['labelme', 'json']:
+        valid_parser = LabelmeValidParser(train_parameters)
+        label_suffix = '.json'
+    elif train_parameters['label_format'].lower() in ['pascalvoc', 'voc', 'xml']:
+        valid_parser = PascalVocValidParser(train_parameters)
+        label_suffix = '.xml'
+    else:
+        raise ValueError('Unsupported label format.')
+    
     for sample in range(len(lines)):
         fname = lines[sample].replace("\n","")
         image_path = os.path.join(val_dir, fname+".bmp")
-        label_path = os.path.join(val_dir, fname+".xml")
+        label_path = os.path.join(val_dir, fname+label_suffix)
         
         img = Image.open(image_path)
         if img.mode != 'RGB':
             img = img.convert('RGB')
-        im_width, im_height = img.size
-        # layout: label | xmin | ymin | xmax | ymax | difficult
-        # print(label_path[:-1])
-        root = xml.etree.ElementTree.parse(label_path).getroot()
-        gt_label = []
-        gt_boxes = []
-        difficult = []
-        gt_list = []
-        for object in root.findall('object'):
-            bbox_sample = []
-            # start from 1
-            gt_label.append(float(train_parameters['label_dict'][object.find('name').text]))
-            bbox = object.find('bndbox')
-            gt_boxes.append([float(bbox.find('xmin').text)/im_width, float(bbox.find('ymin').text)/im_height,
-                             float(bbox.find('xmax').text)/im_width, float(bbox.find('ymax').text)/im_height])
-            difficult.append(float(object.find('difficult').text))
-            gt_list.append([int(train_parameters['label_dict'][object.find('name').text]),
-                            float(bbox.find('xmin').text), float(bbox.find('ymin').text),
-                            float(bbox.find('xmax').text), float(bbox.find('ymax').text)])
+        gt_label, gt_boxes, difficult = valid_parser(label_path)
+        
         if len(gt_label) == 0:
-            continue
-        # print(np.array(gt_list).shape)
-        # print(gt_list)
+            continue  
         img = cv2.imread(image_path)
         try:
             img = Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
         except:
-            print(image_path)
+            print('Warning: Could not find image path', image_path)
             continue
         input_w, input_h = img.size[0], img.size[1]
         image_shape = np.array([input_h, input_w], dtype='int32')
@@ -80,7 +74,6 @@ with open(test_file_path, 'r') as f:
         img *= 0.007843
         img = img[np.newaxis, :]
         val_data.append([img, image_shape, gt_label, gt_boxes, difficult, image_path])
-        val_data2.append([img, image_shape, gt_list])
 
 
 def create_tmp_var(programe, name, dtype, shape):

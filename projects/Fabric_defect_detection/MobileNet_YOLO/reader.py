@@ -74,7 +74,7 @@ def preprocess(img, bbox_labels, input_size, mode):
         gtdiffs = gtdiffs.reshape((-1,1))
         sample_labels = np.hstack((gtlabels, gtboxes, gtdiffs))
     # img = resize_img(img, sample_labels, input_size)
-    img = random_interp(img, input_size)
+    img = aug.random_interp(img, input_size)
     img = np.array(img).astype('float32')
     img -= train_parameters['mean_rgb']
     img = img.transpose((2, 0, 1))  # HWC to CHW
