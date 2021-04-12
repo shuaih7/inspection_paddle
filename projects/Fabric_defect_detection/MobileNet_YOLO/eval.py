@@ -50,10 +50,12 @@ class Evaluation(object):
         
     def __call__(self, input):
         if os.path.isfile(input):
+            self._check_save_dir(file=input)
             results = self.infer(input)
             self._process_results(input, results)
             self._display_results()
         elif os.path.exists(input):
+            self._check_save_dir(path=input)
             image_list = self._load_image_list(input)
             for image_file in image_list:
                 results = self.infer(image_file)
@@ -61,6 +63,9 @@ class Evaluation(object):
             self._display_results()
         else:
             raise ValueError('Invalid input.')
+            
+        if self.params['is_write_results']:
+            self._save_results()
          
     def infer(self, image_file):
         print('Processing file', image_file, '...')
@@ -81,7 +86,7 @@ class Evaluation(object):
         #print(bboxes)
         if bboxes.shape[1] != 6:
             # print("No object found")
-            return [img, [], [], [], period]
+            return [origin, [], [], [], period]
         labels = bboxes[:, 0].astype('int32')
         scores = bboxes[:, 1].astype('float32')
         boxes = bboxes[:, 2:].astype('float32')
@@ -124,10 +129,8 @@ class Evaluation(object):
         
         if self.params['is_write_image']:
             img = self._draw_bbox_image(img, gt_boxes, gt_labels, gt_scores, gt=True)
-            #img = self._draw_bbox_image(img, boxes, labels, scores)
+            img = self._draw_bbox_image(img, boxes, labels, scores)
             self._save_img(img, image_file)
-        if self.params['is_write_results']:
-            self._save_results()
         
     def _parse_results(self, results, gt_results):
         img, boxes, labels, scores, period = results
@@ -278,6 +281,16 @@ class Evaluation(object):
             draw.text((xmin, ymin), str(score), (255, 255, 0))
         return img
         
+    def _check_save_dir(self, file=None, path=None):
+        if self.save_dir is not None and os.path.exists(self.save_dir): return 
+        elif file is None and path is None: return
+        elif file is not None and path is None:
+            path, _ = os.path.split(file)
+            
+        self.save_dir = os.path.join(path, 'output')
+        if not os.path.exists(self.save_dir):
+            os.mkdir(self.save_dir)
+        
     def _save_img(self, img, image_file):
         img = cv2.cvtColor(np.asarray(img), cv2.COLOR_RGB2BGR)
         _, filename = os.path.split(image_file)
@@ -296,7 +309,7 @@ if __name__ == '__main__':
         'supported_images': ['.bmp', '.png', '.jpg', '.tif'],
         'label_format': 'labelme',
         'label_dir': None,
-        'save_dir': r'E:\Projects\Fabric_Defect_Detection\model_dev\v1.3.0-single\dataset\test_output',
+        'save_dir': None,
         'iou_thresh': 0.399,
         'is_write_image': True,
         'is_write_results': True,
@@ -307,7 +320,7 @@ if __name__ == '__main__':
         'pascalvoc': {}
     }
     
-    image_path = r'E:\Projects\Fabric_Defect_Detection\model_dev\v1.3.0-single\dataset\test'
+    image_path = r'E:\Projects\Fabric_Defect_Detection\model_dev\v1.3.0-double\dataset\valid\white_10gain_spandex_slip'
     eval = Evaluation(params)
     eval(image_path)
     
