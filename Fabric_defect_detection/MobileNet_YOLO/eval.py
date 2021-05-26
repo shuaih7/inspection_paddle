@@ -320,7 +320,7 @@ if __name__ == '__main__':
         'pascalvoc': {}
     }
     
-    image_path = r'E:\Projects\Fabric_Defect_Detection\model_dev\v1.3.0-double\dataset\valid\white_10gain_spandex_slip'
+    image_path = r'E:\Projects\Fabric_Defect_Detection\model_dev\v1.3.0-double\dataset\test\light_gray_12gain_in_vertical'
     eval = Evaluation(params)
     eval(image_path)
     
